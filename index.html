@@ -1876,7 +1876,7 @@ function speak(text, fallback = '') {
 ───────────────────────────────────────────────────────────── */
 async function fetchLiveWord() {
   try {
-    const res = await fetch('https://raw.githubusercontent.com/mio/thaicore/main/vocabulary.json');
+    const res = await fetch('https://raw.githubusercontent.com/aolmio/thaicore/main/output.json');
     if (!res.ok) throw new Error();
     const data = await res.json();
     const entries = Array.isArray(data) ? data : data.words || [];
