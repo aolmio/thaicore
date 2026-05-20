@@ -892,70 +892,65 @@
   </div>
 
   <!-- ══════════════════════ CALCULATOR PANEL ══════════════════════ -->
-  <div id="p-calc" class="view-panel active" role="tabpanel">
-    <div class="info-strip">
-      <b>Step-by-step Tone Calculator:</b> Select the consonant class, tone marker, and syllable environment to instantly derive the acoustic output.
-    </div>
-    <div class="step-grid">
+   <div id="p-interactive" class="view-panel active">
+            <div class="interactive-grid">
+                
+                <div class="step-box">
+                    <div class="step-title">1. Initial Consonant Class</div>
+                    <div class="btn-row">
+                        <button class="choice-btn" onclick="setParam('class', 'mid', this)">Mid (กลาง)</button>
+                        <button class="choice-btn" onclick="setParam('class', 'high', this)">High (สูง)</button>
+                        <button class="choice-btn" onclick="setParam('class', 'low', this)">Low (ต่ำ)</button>
+                    </div>
+                </div>
 
-      <div class="step-box" id="step1">
-        <div class="step-title"><span class="step-num">1</span> Initial Consonant Class</div>
-        <div class="btn-row">
-          <button class="choice-btn" onclick="setParam('class','mid',this)">Mid · กลาง</button>
-          <button class="choice-btn" onclick="setParam('class','high',this)">High · สูง</button>
-          <button class="choice-btn" onclick="setParam('class','low',this)">Low · ต่ำ</button>
-        </div>
-      </div>
+                <div class="step-box">
+                    <div class="step-title">2. Tone Marker Icon</div>
+                    <div class="btn-row" id="tone-row">
+                        <button class="choice-btn" onclick="setParam('mark', 'none', this)">None (่-)</button>
+                        <button class="choice-btn" onclick="setParam('mark', 'ek', this)">Mai Ek (่)</button>
+                        <button class="choice-btn" onclick="setParam('mark', 'tho', this)">Mai Tho (้)</button>
+                        <button class="choice-btn" id="m-tri" onclick="setParam('mark', 'tri', this)">Mai Tri (๊)</button>
+                        <button class="choice-btn" id="m-chatt" onclick="setParam('mark', 'chattawa', this)">Mai Chat. (๋)</button>
+                    </div>
+                </div>
 
-      <div class="step-box" id="step2">
-        <div class="step-title"><span class="step-num">2</span> Tone Marker (Mai)</div>
-        <div class="btn-row" id="tone-row">
-          <button class="choice-btn" onclick="setParam('mark','none',this)">None —</button>
-          <button class="choice-btn" onclick="setParam('mark','ek',this)">Mai Ek ่</button>
-          <button class="choice-btn" onclick="setParam('mark','tho',this)">Mai Tho ้</button>
-          <button class="choice-btn" id="m-tri"   onclick="setParam('mark','tri',this)">Mai Tri ๊</button>
-          <button class="choice-btn" id="m-chatt" onclick="setParam('mark','chattawa',this)">Mai Chat. ๋</button>
-        </div>
-      </div>
+                <div class="step-box" id="box-type">
+                    <div class="step-title">3. Terminal Syllable Type</div>
+                    <div class="btn-row">
+                        <button class="choice-btn" id="type-live" onclick="setParam('type', 'live', this)">Live (คำเป็น)</button>
+                        <button class="choice-btn" id="type-dead" onclick="setParam('type', 'dead', this)">Dead (คำตาย)</button>
+                    </div>
+                </div>
 
-      <div class="step-box" id="step3" style="display:none;">
-        <div class="step-title"><span class="step-num">3</span> Syllable Type</div>
-        <div class="btn-row">
-          <button class="choice-btn" id="type-live" onclick="setParam('type','live',this)">Live · คำเป็น</button>
-          <button class="choice-btn" id="type-dead" onclick="setParam('type','dead',this)">Dead · คำตาย</button>
-        </div>
-      </div>
+                <div class="step-box" id="box-vowel" style="display:none;">
+                    <div class="step-title">4. Vowel Acoustic Duration</div>
+                    <div class="btn-row">
+                        <button class="choice-btn" id="vow-short" onclick="setParam('vowel', 'short', this)">Short (สระสั้น)</button>
+                        <button class="choice-btn" id="vow-long" onclick="setParam('vowel', 'long', this)">Long (สระยาว)</button>
+                    </div>
+                </div>
 
-      <div class="step-box" id="step4" style="display:none;">
-        <div class="step-title"><span class="step-num">4</span> Vowel Duration</div>
-        <div class="btn-row">
-          <button class="choice-btn" id="vow-short" onclick="setParam('vowel','short',this)">Short · สระสั้น</button>
-          <button class="choice-btn" id="vow-long"  onclick="setParam('vowel','long',this)">Long · สระยาว</button>
-        </div>
-      </div>
+                <div class="result-box" id="output-screen" data-tone-type="mid">
+                    <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; opacity:0.7; margin-bottom:2px;">Calculated Output Accent</div>
+                    <div class="res-tone">
+                        <span id="res-tone-title">Mid Tone —</span>
+                        <button class="audio-trigger-icon" id="speak-tone-btn" title="Listen Audio">🔊</button>
+                    </div>
+                    <div class="res-rule" id="res-rule-desc">Rule metadata.</div>
+                    
+                    <div class="translation-card">
+                        <div style="font-size:0.65rem; font-weight:800; color:var(--muted); text-transform:uppercase; margin-bottom:6px; letter-spacing:0.02em;">Target Context Word Realization</div>
+                        <div class="tx-thai">
+                            <span id="ctx-thai">กาน</span>
+                            <button class="audio-trigger-icon" id="speak-word-btn" title="Listen Word">🔊</button>
+                        </div>
+                        <div class="tx-details" id="ctx-details">kaan • "to manage"</div>
+                    </div>
+                </div>
 
-      <div class="result-box" id="result-box" data-tone-type="mid">
-        <div class="res-label">Calculated Tone Output</div>
-        <div class="res-tone">
-          <span id="res-tone-name">Mid Tone —</span>
-          <button class="audio-btn" id="speak-tone-btn" title="Hear tone name">🔊</button>
+            </div>
         </div>
-        <div class="res-rule" id="res-rule"></div>
-        <div class="example-card">
-          <div>
-            <div style="font-size:.62rem;font-weight:800;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;letter-spacing:.05em;">Example Word</div>
-            <div class="ex-thai" id="ex-thai">กา</div>
-          </div>
-          <div class="ex-meta">
-            <div class="ex-roman" id="ex-roman">kaa</div>
-            <div class="ex-meaning" id="ex-meaning">'crow'</div>
-          </div>
-          <button class="audio-btn" id="speak-word-btn" title="Hear example word" style="width:40px;height:40px;font-size:1rem;">🔊</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
 
   <!-- ══════════════════════ FLOW MAP PANEL ══════════════════════ -->
   <div id="p-flow" class="view-panel" role="tabpanel">
