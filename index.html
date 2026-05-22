@@ -1,2115 +1,2086 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Thai Tone Master Pro</title>
-
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json">
-
-  <!-- iOS / Safari PWA -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="ThaiTone Pro">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5315/5315372.png">
-
-  <!-- Android / Chrome -->
-  <meta name="theme-color" content="#0f172a" id="meta-theme">
-  <meta name="mobile-web-app-capable" content="yes">
-
-  <!-- SEO & Social -->
-  <meta name="description" content="Master Thai tones with interactive rules, flowcharts, phonetic analyzer, and a practice game. Works offline.">
-  <meta name="keywords" content="Thai language, Thai tones, learn Thai, tone calculator">
-
-  <!-- Preconnect -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js" defer></script>
-
-  <style>
-    /* ══════════════════════════════════════════
-       DESIGN TOKENS
-    ══════════════════════════════════════════ */
-    :root {
-      /* Palette – Light */
-      --bg:           #f0f4f8;
-      --surface:      #ffffff;
-      --surface2:     #f8fafc;
-      --text:         #0c1a2e;
-      --text-muted:   #64748b;
-      --border:       #e2e8f0;
-      --border-focus: #3b82f6;
-      --primary:      #1d4ed8;
-      --primary-lt:   #dbeafe;
-      --accent:       #0ea5e9;
-      --shadow-sm:    0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
-      --shadow-md:    0 4px 16px rgba(0,0,0,.08);
-      --shadow-lg:    0 16px 48px rgba(0,0,0,.12);
-      --radius-sm:    8px;
-      --radius-md:    12px;
-      --radius-lg:    18px;
-      --radius-xl:    24px;
-      --tab-bg:       #eef2f7;
-
-      /* Tone Colors */
-      --t-mid:        #475569; --t-mid-bg: #f1f5f9; --t-mid-bd: #94a3b8;
-      --t-low:        #059669; --t-low-bg: #d1fae5; --t-low-bd: #34d399;
-      --t-fall:       #dc2626; --t-fall-bg:#fee2e2; --t-fall-bd:#f87171;
-      --t-high:       #7c3aed; --t-high-bg:#f3e8ff; --t-high-bd:#a78bfa;
-      --t-rise:       #d97706; --t-rise-bg:#fef3c7; --t-rise-bd:#fbbf24;
-
-      /* Class Colors */
-      --cls-mid:      #0284c7; --cls-mid-bg:#e0f2fe;
-      --cls-high:     #ea580c; --cls-high-bg:#ffedd5;
-      --cls-low:      #db2777; --cls-low-bg:#fce7f3;
-
-      /* Typography */
-      --font-body:    'Space Grotesk', sans-serif;
-      --font-thai:    'Noto Sans Thai', sans-serif;
-      --font-mono:    'JetBrains Mono', monospace;
-
-      /* Transitions */
-      --ease:         cubic-bezier(.4,0,.2,1);
-      --dur-fast:     120ms;
-      --dur-mid:      220ms;
-    }
-
-    [data-theme="dark"] {
-      --bg:           #070d1a;
-      --surface:      #0f1e33;
-      --surface2:     #162236;
-      --text:         #f1f5f9;
-      --text-muted:   #8ba2c0;
-      --border:       #1e3352;
-      --border-focus: #60a5fa;
-      --primary:      #3b82f6;
-      --primary-lt:   #1e3a8a;
-      --accent:       #38bdf8;
-      --tab-bg:       #132035;
-      --shadow-sm:    0 1px 3px rgba(0,0,0,.4);
-      --shadow-md:    0 4px 20px rgba(0,0,0,.5);
-      --shadow-lg:    0 16px 48px rgba(0,0,0,.7);
-
-      --t-mid:        #94a3b8; --t-mid-bg:#1e293b; --t-mid-bd:#475569;
-      --t-low:        #34d399; --t-low-bg:#064e3b; --t-low-bd:#059669;
-      --t-fall:       #f87171; --t-fall-bg:#7f1d1d; --t-fall-bd:#dc2626;
-      --t-high:       #a78bfa; --t-high-bg:#3b0764; --t-high-bd:#7c3aed;
-      --t-rise:       #fbbf24; --t-rise-bg:#78350f; --t-rise-bd:#d97706;
-
-      --cls-mid:      #38bdf8; --cls-mid-bg:#0c4a6e;
-      --cls-high:     #fb923c; --cls-high-bg:#7c2d12;
-      --cls-low:      #f472b6; --cls-low-bg:#701a75;
-    }
-
-    /* ══════════════════════════════════════════
-       RESET & BASE
-    ══════════════════════════════════════════ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      padding:
-        calc(env(safe-area-inset-top) + 12px)
-        calc(env(safe-area-inset-right) + 12px)
-        calc(env(safe-area-inset-bottom) + 12px)
-        calc(env(safe-area-inset-left) + 12px);
-      transition: background var(--dur-mid) var(--ease), color var(--dur-mid) var(--ease);
-    }
-
-    /* ══════════════════════════════════════════
-       INSTALL BANNER
-    ══════════════════════════════════════════ */
-    #install-banner {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      background: var(--primary);
-      color: #fff;
-      padding: 10px 14px;
-      border-radius: var(--radius-md);
-      margin-bottom: 10px;
-      font-size: .85rem;
-      font-weight: 600;
-      box-shadow: var(--shadow-md);
-      animation: slideDown .3s var(--ease);
-    }
-    #install-banner.show { display: flex; }
-    #install-banner button {
-      background: rgba(255,255,255,.2); border: none; color: #fff;
-      padding: 5px 12px; border-radius: 20px; font-size: .8rem;
-      font-weight: 700; cursor: pointer; margin-left: auto;
-    }
-    #install-banner .dismiss-btn { background: transparent; font-size: 1rem; padding: 4px 8px; }
-
-    /* ══════════════════════════════════════════
-       OFFLINE TOAST
-    ══════════════════════════════════════════ */
-    #offline-toast {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
-      background: #1e293b; color: #f1f5f9; border-radius: 30px;
-      padding: 10px 20px; font-size: .85rem; font-weight: 600;
-      box-shadow: var(--shadow-lg); z-index: 9999;
-      transition: transform .3s var(--ease);
-      display: flex; align-items: center; gap: 8px;
-    }
-    #offline-toast.show { transform: translateX(-50%) translateY(0); }
-
-    /* ══════════════════════════════════════════
-       APP SHELL
-    ══════════════════════════════════════════ */
-    .app-shell {
-      width: 100%;
-      max-width: 1400px;
-      margin: 0 auto;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 16px;
-      box-shadow: var(--shadow-lg);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: background var(--dur-mid) var(--ease), border-color var(--dur-mid) var(--ease);
-    }
-
-    /* ══════════════════════════════════════════
-       HEADER
-    ══════════════════════════════════════════ */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .logo-block { display: flex; flex-direction: column; }
-    .logo-label {
-      font-size: .65rem; font-weight: 800;
-      color: var(--primary); text-transform: uppercase; letter-spacing: .08em;
-    }
-    h1 {
-      font-size: 1.35rem; font-weight: 800; letter-spacing: -.03em;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .header-actions { display: flex; align-items: center; gap: 8px; }
-
-    .streak-badge {
-      background: var(--t-rise-bg); color: var(--t-rise);
-      border: 1px solid var(--t-rise-bd);
-      padding: 5px 10px; border-radius: 20px;
-      font-size: .75rem; font-weight: 800;
-      display: flex; align-items: center; gap: 4px;
-    }
-
-    .icon-btn {
-      background: var(--tab-bg); border: 1px solid var(--border);
-      color: var(--text); width: 38px; height: 38px;
-      border-radius: var(--radius-sm); font-size: 1rem;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
-    }
-    .icon-btn:hover { background: var(--primary-lt); transform: scale(1.05); }
-    .icon-btn:active { transform: scale(.95); }
-
-    /* ══════════════════════════════════════════
-       PROGRESS BAR (daily XP)
-    ══════════════════════════════════════════ */
-    .xp-bar-wrap {
-      background: var(--tab-bg); border-radius: 6px; height: 6px;
-      overflow: hidden; flex: 1; min-width: 80px; max-width: 200px;
-    }
-    .xp-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      border-radius: 6px;
-      transition: width .5s var(--ease);
-    }
-    .xp-label { font-size: .7rem; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
-
-    /* ══════════════════════════════════════════
-       TABS
-    ══════════════════════════════════════════ */
-    .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      background: var(--tab-bg);
-      padding: 4px;
-      border-radius: var(--radius-md);
-    }
-
-    .tab-btn {
-      flex: 1;
-      min-width: 90px;
-      padding: 9px 6px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      font-family: var(--font-body);
-      font-weight: 700;
-      font-size: .8rem;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      text-align: center;
-      transition: all var(--dur-fast) var(--ease);
-      white-space: nowrap;
-    }
-    .tab-btn:hover:not(.active) { color: var(--text); background: var(--surface); }
-    .tab-btn.active {
-      background: var(--surface);
-      color: var(--primary);
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* ══════════════════════════════════════════
-       PANELS
-    ══════════════════════════════════════════ */
-    .view-panel { display: none; flex: 1; animation: fadeIn .2s var(--ease); }
-    .view-panel.active { display: flex; flex-direction: column; gap: 10px; }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
-
-    /* ══════════════════════════════════════════
-       INFO STRIP
-    ══════════════════════════════════════════ */
-    .info-strip {
-      background: var(--primary-lt);
-      border-left: 4px solid var(--primary);
-      padding: 10px 12px;
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      font-size: .85rem;
-      line-height: 1.5;
-      color: var(--text);
-    }
-
-    /* ══════════════════════════════════════════
-       INTERACTIVE CALCULATOR
-    ══════════════════════════════════════════ */
-    .step-grid { display: flex; flex-direction: column; gap: 10px; }
-
-    .step-box {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      transition: border-color var(--dur-fast);
-    }
-    .step-box.active-step { border-color: var(--primary); }
-
-    .step-title {
-      font-size: .72rem; font-weight: 800;
-      color: var(--text-muted); text-transform: uppercase;
-      letter-spacing: .06em; margin-bottom: 8px;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .step-num {
-      background: var(--primary); color: #fff;
-      width: 18px; height: 18px; border-radius: 50%;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: .65rem; font-weight: 900; flex-shrink: 0;
-    }
-
-    .btn-row { display: flex; flex-wrap: wrap; gap: 6px; }
-
-    .choice-btn {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      color: var(--text);
-      padding: 9px 14px;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-body);
-      font-size: .85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--dur-fast) var(--ease);
-      flex: 1;
-      min-width: 90px;
-    }
-    .choice-btn:hover:not(:disabled):not(.selected) {
-      border-color: var(--primary);
-      background: var(--primary-lt);
-      transform: translateY(-1px);
-    }
-    .choice-btn.selected {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-      box-shadow: 0 2px 8px rgba(29,78,216,.3);
-    }
-    .choice-btn:disabled { opacity: .28; cursor: not-allowed; }
-    .choice-btn:active { transform: scale(.97); }
-
-    /* ══════════════════════════════════════════
-       RESULT BOX
-    ══════════════════════════════════════════ */
-    .result-box {
-      padding: 16px;
-      border-radius: var(--radius-lg);
-      display: none;
-      border: 2px solid transparent;
-      transition: all var(--dur-mid) var(--ease);
-    }
-    .result-box.show { display: block; animation: fadeIn .3s var(--ease); }
-    .result-box[data-tone-type="mid"]     { background: var(--t-mid-bg); border-color: var(--t-mid-bd); }
-    .result-box[data-tone-type="low"]     { background: var(--t-low-bg); border-color: var(--t-low-bd); }
-    .result-box[data-tone-type="falling"] { background: var(--t-fall-bg); border-color: var(--t-fall-bd); }
-    .result-box[data-tone-type="high"]    { background: var(--t-high-bg); border-color: var(--t-high-bd); }
-    .result-box[data-tone-type="rising"]  { background: var(--t-rise-bg); border-color: var(--t-rise-bd); }
-
-    .res-label { font-size: .65rem; font-weight: 800; text-transform: uppercase; opacity: .65; margin-bottom: 4px; letter-spacing: .06em; }
-    .res-tone { font-size: 1.5rem; font-weight: 900; display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-    .res-rule { font-size: .87rem; line-height: 1.5; opacity: .9; margin-bottom: 12px; }
-
-    .example-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .ex-thai {
-      font-family: var(--font-thai);
-      font-size: 2.4rem;
-      font-weight: 900;
-      line-height: 1;
-    }
-    .ex-meta { flex: 1; }
-    .ex-roman { font-family: var(--font-mono); font-size: .9rem; color: var(--text-muted); }
-    .ex-meaning { font-size: .85rem; font-weight: 600; margin-top: 2px; }
-
-    /* ══════════════════════════════════════════
-       AUDIO BUTTON
-    ══════════════════════════════════════════ */
-    .audio-btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: var(--primary-lt); color: var(--primary);
-      border: none; cursor: pointer;
-      font-size: .85rem;
-      transition: all var(--dur-fast) var(--ease);
-      flex-shrink: 0;
-    }
-    .audio-btn:hover { background: var(--primary); color: #fff; transform: scale(1.1); }
-    .audio-btn:active { transform: scale(.9); }
-    .audio-btn.speaking { animation: pulse .6s ease infinite alternate; }
-    @keyframes pulse { to { transform: scale(1.15); background: var(--primary); color: #fff; } }
-
-    /* ══════════════════════════════════════════
-       FLOWCHART / GRAPH
-    ══════════════════════════════════════════ */
-    .graph-area {
-      position: relative;
-      width: 100%;
-      flex: 1;
-      min-height: 60vh;
-      background: var(--surface2);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-    #mermaid-target { width: 100%; height: 100%; min-height: 500px; }
-
-    .graph-controls {
-      position: absolute;
-      bottom: 12px; right: 12px;
-      display: flex; gap: 6px; flex-direction: column;
-      z-index: 10;
-    }
-    .graph-ctrl-btn {
-      width: 36px; height: 36px;
-      background: var(--surface); border: 1px solid var(--border);
-      color: var(--text); border-radius: var(--radius-sm);
-      cursor: pointer; font-size: 1rem; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: var(--shadow-sm);
-      transition: background var(--dur-fast);
-    }
-    .graph-ctrl-btn:hover { background: var(--primary-lt); }
-
-    /* ══════════════════════════════════════════
-       DICTIONARY / REFERENCE GRIDS
-    ══════════════════════════════════════════ */
-    .sub-tabs {
-      display: flex; flex-wrap: wrap; gap: 4px;
-      border-bottom: 2px solid var(--border); padding-bottom: 6px;
-    }
-    .sub-tab-btn {
-      background: transparent; border: none;
-      padding: 6px 14px; font-family: var(--font-body);
-      font-size: .8rem; font-weight: 700;
-      color: var(--text-muted); cursor: pointer;
-      border-radius: var(--radius-sm);
-      transition: all var(--dur-fast);
-    }
-    .sub-tab-btn.active {
-      background: var(--primary-lt);
-      color: var(--primary);
-    }
-    .sub-panel { display: none; }
-    .sub-panel.active { display: block; animation: fadeIn .2s var(--ease); }
-
-    /* Search bar */
-    .search-wrap {
-      display: flex; align-items: center; gap: 8px;
-      background: var(--surface2); border: 1.5px solid var(--border);
-      border-radius: var(--radius-md); padding: 8px 12px;
-      margin-bottom: 10px;
-      transition: border-color var(--dur-fast);
-    }
-    .search-wrap:focus-within { border-color: var(--border-focus); }
-    .search-wrap input {
-      background: none; border: none; outline: none;
-      font-family: var(--font-body); font-size: .9rem;
-      color: var(--text); flex: 1;
-    }
-    .search-wrap input::placeholder { color: var(--text-muted); }
-    .search-icon { color: var(--text-muted); font-size: 1rem; }
-
-    /* Filter pills */
-    .filter-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-    .pill {
-      padding: 4px 12px; border-radius: 20px;
-      font-size: .75rem; font-weight: 700; cursor: pointer;
-      border: 1.5px solid var(--border);
-      background: var(--surface); color: var(--text-muted);
-      transition: all var(--dur-fast);
-    }
-    .pill:hover { border-color: var(--primary); color: var(--primary); }
-    .pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-    .matrix-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
-      gap: 8px;
-    }
-    @media(min-width: 1024px) { .matrix-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); } }
-
-    .char-tile {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      position: relative;
-      transition: box-shadow var(--dur-fast), border-color var(--dur-fast);
-    }
-    .char-tile:hover { box-shadow: var(--shadow-md); }
-    .char-tile::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 4px;
-      border-top-left-radius: var(--radius-md);
-      border-bottom-left-radius: var(--radius-md);
-    }
-    .tile-mid::before  { background: var(--cls-mid); }
-    .tile-high::before { background: var(--cls-high); }
-    .tile-low::before  { background: var(--cls-low); }
-
-    .tile-head {
-      display: flex; align-items: center;
-      justify-content: space-between;
-    }
-    .tile-glyph {
-      font-family: var(--font-thai);
-      font-size: 1.8rem; font-weight: 900; line-height: 1;
-    }
-    .tile-name { font-size: .8rem; font-weight: 600; margin-top: 2px; }
-    .tile-meta { font-size: .73rem; color: var(--text-muted); line-height: 1.45; }
-
-    .cls-badge {
-      font-size: .6rem; font-weight: 800; text-transform: uppercase;
-      padding: 2px 6px; border-radius: 4px; letter-spacing: .05em;
-    }
-    .cls-badge.mid  { background: var(--cls-mid-bg); color: var(--cls-mid); }
-    .cls-badge.high { background: var(--cls-high-bg); color: var(--cls-high); }
-    .cls-badge.low  { background: var(--cls-low-bg); color: var(--cls-low); }
-
-    /* ══════════════════════════════════════════
-       TONE RULES QUICK TABLE
-    ══════════════════════════════════════════ */
-    .tone-table {
-      width: 100%; border-collapse: collapse;
-      font-size: .82rem; margin-top: 8px;
-    }
-    .tone-table th {
-      background: var(--tab-bg); padding: 8px 10px;
-      text-align: left; font-weight: 700; font-size: .72rem;
-      text-transform: uppercase; letter-spacing: .05em;
-      border-bottom: 2px solid var(--border);
-    }
-    .tone-table td {
-      padding: 8px 10px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-    .tone-table tr:last-child td { border-bottom: none; }
-    .tone-table tr:hover td { background: var(--surface2); }
-
-    .tone-pip {
-      display: inline-block; padding: 2px 8px; border-radius: 20px;
-      font-size: .72rem; font-weight: 800; letter-spacing: .03em;
-    }
-    .pip-mid    { background: var(--t-mid-bg); color: var(--t-mid); border: 1px solid var(--t-mid-bd); }
-    .pip-low    { background: var(--t-low-bg); color: var(--t-low); border: 1px solid var(--t-low-bd); }
-    .pip-fall   { background: var(--t-fall-bg); color: var(--t-fall); border: 1px solid var(--t-fall-bd); }
-    .pip-high   { background: var(--t-high-bg); color: var(--t-high); border: 1px solid var(--t-high-bd); }
-    .pip-rise   { background: var(--t-rise-bg); color: var(--t-rise); border: 1px solid var(--t-rise-bd); }
-
-    /* ══════════════════════════════════════════
-       ANALYZER ENGINE
-    ══════════════════════════════════════════ */
-    .engine-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px; flex: 1;
-    }
-    @media(min-width: 768px) { .engine-grid { grid-template-columns: 1fr 1fr; } }
-
-    .panel-label {
-      font-size: .72rem; font-weight: 800; text-transform: uppercase;
-      letter-spacing: .06em; color: var(--text-muted); margin-bottom: 6px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-
-    .thai-textarea {
-      width: 100%; min-height: 110px;
-      background: var(--surface); border: 2px solid var(--border);
-      border-radius: var(--radius-md); padding: 12px;
-      font-family: var(--font-thai); font-size: 1.4rem;
-      color: var(--text); resize: none; outline: none;
-      transition: border-color var(--dur-fast);
-      line-height: 1.6;
-    }
-    .thai-textarea:focus { border-color: var(--border-focus); }
-    @media(min-width: 768px) { .thai-textarea { height: 100%; } }
-
-    .trace-output {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: var(--radius-md); padding: 12px;
-      min-height: 120px; overflow-y: auto;
-      font-size: .85rem;
-    }
-
-    .trace-node {
-      border-left: 3px solid var(--border);
-      padding: 4px 0 8px 12px; margin-bottom: 4px;
-      position: relative;
-    }
-    .trace-node::before {
-      content: '';
-      position: absolute; left: -5px; top: 6px;
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--text-muted);
-    }
-    .trace-node.ok::before { background: var(--t-low); }
-    .trace-node-title {
-      font-size: .68rem; font-weight: 800; text-transform: uppercase;
-      color: var(--text-muted); margin-bottom: 2px; letter-spacing: .04em;
-    }
-    .trace-node-body { font-size: .85rem; line-height: 1.45; }
-
-    /* Multi-syllable results */
-    .syllable-cards {
-      display: flex; flex-direction: column; gap: 8px;
-    }
-    .syllable-card {
-      border-left: 3px solid var(--t-mid-bd);
-      background: var(--surface); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      padding: 10px 12px;
-    }
-
-    /* ══════════════════════════════════════════
-       MNEMONICS
-    ══════════════════════════════════════════ */
-    .m-grid { display: flex; flex-direction: column; gap: 10px; }
-    .m-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      border-left: 4px solid var(--primary);
-      transition: box-shadow var(--dur-fast);
-    }
-    .m-card:hover { box-shadow: var(--shadow-md); }
-    .m-header {
-      display: flex; align-items: center; gap: 8px;
-      font-weight: 800; font-size: .95rem; margin-bottom: 6px;
-    }
-    .m-tag {
-      margin-left: auto;
-      font-size: .65rem; font-weight: 800; text-transform: uppercase;
-      padding: 2px 8px; border-radius: 20px;
-    }
-    .m-desc { font-size: .87rem; line-height: 1.55; color: var(--text); }
-
-    /* ══════════════════════════════════════════
-       GAME
-    ══════════════════════════════════════════ */
-    .game-layout {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      padding: 10px 0;
-      text-align: center;
-      flex: 1;
-    }
-
-    .game-score-row {
-      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
-    }
-    .score-chip {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: var(--radius-md); padding: 8px 16px;
-      font-size: .8rem; font-weight: 700;
-    }
-    .score-chip span { font-size: 1.3rem; font-weight: 900; display: block; color: var(--primary); }
-
-    .conn-tag {
-      font-size: .72rem; font-weight: 700;
-      padding: 3px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px;
-    }
-    .conn-online  { background: var(--t-low-bg); color: var(--t-low); border: 1px solid var(--t-low-bd); }
-    .conn-offline { background: var(--t-rise-bg); color: var(--t-rise); border: 1px solid var(--t-rise-bd); }
-
-    .game-word-card {
-      background: var(--surface2); border: 2px solid var(--border);
-      border-radius: var(--radius-xl); padding: 24px 32px;
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      width: 100%; max-width: 520px;
-      box-shadow: var(--shadow-md);
-    }
-    .game-word {
-      font-family: var(--font-thai);
-      font-size: 4rem; font-weight: 900; line-height: 1.1;
-    }
-    .game-meta {
-      font-size: .88rem; color: var(--text-muted); line-height: 1.5;
-    }
-
-    .options-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
-      gap: 8px; width: 100%; max-width: 580px;
-    }
-
-    .game-btn {
-      background: var(--surface); border: 2px solid var(--border);
-      color: var(--text); padding: 14px 10px;
-      border-radius: var(--radius-md);
-      font-family: var(--font-body); font-size: .95rem; font-weight: 700;
-      cursor: pointer;
-      transition: all var(--dur-fast) var(--ease);
-    }
-    .game-btn:hover:not(:disabled) {
-      border-color: var(--primary); background: var(--primary-lt);
-      transform: translateY(-2px); box-shadow: var(--shadow-md);
-    }
-    .game-btn:active { transform: scale(.97); }
-    .game-btn.correct { background: var(--t-low-bg) !important; border-color: var(--t-low) !important; color: var(--t-low) !important; }
-    .game-btn.wrong   { background: var(--t-fall-bg) !important; border-color: var(--t-fall) !important; color: var(--t-fall) !important; }
-
-    .game-feedback {
-      font-size: 1.1rem; font-weight: 800; min-height: 28px;
-      transition: color var(--dur-fast);
-    }
-
-    .next-btn {
-      background: var(--primary); color: #fff;
-      border: none; padding: 12px 28px;
-      border-radius: 30px; font-family: var(--font-body);
-      font-size: .95rem; font-weight: 700; cursor: pointer;
-      box-shadow: 0 4px 14px rgba(29,78,216,.4);
-      transition: all var(--dur-fast) var(--ease);
-      display: none;
-    }
-    .next-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(29,78,216,.5); }
-    .next-btn:active { transform: scale(.97); }
-
-    /* Result streak indicator */
-    .result-streak {
-      font-size: .8rem; font-weight: 800;
-      display: flex; align-items: center; gap: 4px;
-    }
-
-    /* ══════════════════════════════════════════
-       SETTINGS MODAL
-    ══════════════════════════════════════════ */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
-      z-index: 1000; display: none;
-      align-items: center; justify-content: center;
-      padding: 16px;
-    }
-    .modal-overlay.open { display: flex; animation: fadeIn .2s var(--ease); }
-    .modal {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius-xl); padding: 24px;
-      max-width: 420px; width: 100%;
-      box-shadow: var(--shadow-lg);
-    }
-    .modal-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .modal-title { font-size: 1.1rem; font-weight: 800; }
-    .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.3rem; cursor: pointer; }
-
-    .setting-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 0; border-bottom: 1px solid var(--border);
-    }
-    .setting-row:last-child { border-bottom: none; }
-    .setting-label { font-weight: 600; font-size: .9rem; }
-    .setting-sub { font-size: .78rem; color: var(--text-muted); margin-top: 2px; }
-
-    /* Toggle switch */
-    .toggle-switch { position: relative; width: 44px; height: 24px; cursor: pointer; flex-shrink: 0; }
-    .toggle-switch input { opacity: 0; width: 0; height: 0; }
-    .toggle-slider {
-      position: absolute; inset: 0;
-      background: var(--border); border-radius: 12px;
-      transition: background .2s;
-    }
-    .toggle-slider::before {
-      content: '';
-      position: absolute; width: 18px; height: 18px;
-      left: 3px; top: 3px;
-      background: #fff; border-radius: 50%;
-      transition: transform .2s;
-      box-shadow: 0 1px 3px rgba(0,0,0,.2);
-    }
-    .toggle-switch input:checked + .toggle-slider { background: var(--primary); }
-    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
-
-    /* Font size select */
-    .size-select {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: 6px 10px;
-      font-family: var(--font-body); font-size: .85rem; color: var(--text);
-      cursor: pointer; outline: none;
-    }
-
-    /* ══════════════════════════════════════════
-       RESPONSIVE
-    ══════════════════════════════════════════ */
-    @media(max-width: 480px) {
-      h1 { font-size: 1.1rem; }
-      .tab-btn { font-size: .72rem; padding: 8px 4px; min-width: 70px; }
-      .game-word { font-size: 3rem; }
-      .options-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    /* ══════════════════════════════════════════
-       PRINT
-    ══════════════════════════════════════════ */
-    @media print {
-      body { background: #fff; }
-      .tabs, header { display: none; }
-      .view-panel { display: flex !important; }
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
-    /* Thai font global */
-    [lang="th"], .thai { font-family: var(--font-thai); }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Thai Tone Master — เสียงวรรณยุกต์</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d1117">
+<link rel="manifest" href="./manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700;800&family=Kanit:wght@300;400;500;700;900&family=Prompt:wght@300;400;500;700&family=Mitr:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════ */
+:root {
+  --bg:          #0d1117;
+  --surface:     #161b22;
+  --surface2:    #21262d;
+  --surface3:    #30363d;
+  --border:      #30363d;
+  --border2:     #484f58;
+  --text:        #e6edf3;
+  --text2:       #8b949e;
+  --text3:       #6e7681;
+  --primary:     #58a6ff;
+  --primary-dim: rgba(88,166,255,0.12);
+  --primary-glow:rgba(88,166,255,0.3);
+
+  --tone-mid:    #58a6ff;  --tone-mid-bg:  rgba(88,166,255,0.1);
+  --tone-low:    #3fb950;  --tone-low-bg:  rgba(63,185,80,0.1);
+  --tone-fall:   #f85149;  --tone-fall-bg: rgba(248,81,73,0.1);
+  --tone-high:   #bc8cff;  --tone-high-bg: rgba(188,140,255,0.1);
+  --tone-rise:   #ffa657;  --tone-rise-bg: rgba(255,166,87,0.1);
+
+  --cls-mid:     #79c0ff;  --cls-mid-bg:   rgba(121,192,255,0.12);
+  --cls-high:    #ffa657;  --cls-high-bg:  rgba(255,166,87,0.12);
+  --cls-low:     #ff7b72;  --cls-low-bg:   rgba(255,123,114,0.12);
+
+  --srs-new:     #58a6ff;
+  --srs-learn:   #ffa657;
+  --srs-review:  #3fb950;
+  --srs-mature:  #bc8cff;
+
+  --thai-font:   'Sarabun', sans-serif;
+  --ui-font:     'Space Grotesk', sans-serif;
+  --radius-sm:   6px;
+  --radius:      10px;
+  --radius-lg:   16px;
+  --radius-xl:   22px;
+  --nav-h:       54px;
+  --sidebar-w:   220px;
+  --transition:  0.18s ease;
+}
+[data-theme="light"] {
+  --bg:          #f0f2f5;
+  --surface:     #ffffff;
+  --surface2:    #f6f8fa;
+  --surface3:    #eaeef2;
+  --border:      #d0d7de;
+  --border2:     #afb8c1;
+  --text:        #1f2328;
+  --text2:       #656d76;
+  --text3:       #8c959f;
+  --primary:     #0969da;
+  --primary-dim: rgba(9,105,218,0.1);
+  --primary-glow:rgba(9,105,218,0.25);
+  --tone-mid-bg: rgba(9,105,218,0.08);
+  --tone-low-bg: rgba(26,127,55,0.08);
+  --tone-fall-bg:rgba(207,34,46,0.08);
+  --tone-high-bg:rgba(130,80,223,0.08);
+  --tone-rise-bg:rgba(185,114,0,0.08);
+  --cls-mid-bg:  rgba(9,105,218,0.08);
+  --cls-high-bg: rgba(185,114,0,0.08);
+  --cls-low-bg:  rgba(207,34,46,0.08);
+}
+[data-font-style="kanit"]  { --thai-font: 'Kanit', sans-serif; }
+[data-font-style="prompt"] { --thai-font: 'Prompt', sans-serif; }
+[data-font-style="mitr"]   { --thai-font: 'Mitr', sans-serif; }
+
+/* ═══════════════════════════════════════════════
+   RESET + BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--ui-font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding-top: var(--nav-h);
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+.thai { font-family: var(--thai-font) !important; }
+
+/* ═══════════════════════════════════════════════
+   TOP NAV
+═══════════════════════════════════════════════ */
+.topnav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--nav-h);
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+}
+[data-theme="light"] .topnav {
+  background: rgba(240,242,245,0.88);
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+.nav-logo {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--primary), var(--tone-high));
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  font-family: var(--thai-font);
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+.nav-title { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.02em; }
+.nav-subtitle { font-size: 0.7rem; color: var(--text2); font-weight: 500; }
+.nav-tabs {
+  flex: 1;
+  display: flex; gap: 2px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  white-space: nowrap;
+  padding: 6px 12px;
+  border: none; background: transparent;
+  color: var(--text2); font-family: var(--ui-font);
+  font-weight: 600; font-size: 0.78rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+  letter-spacing: 0.01em;
+}
+.nav-tab:hover { color: var(--text); background: var(--surface3); }
+.nav-tab.active {
+  color: var(--primary);
+  background: var(--primary-dim);
+}
+.nav-tab .tab-emoji { margin-right: 4px; }
+.nav-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.icon-btn {
+  width: 32px; height: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text2);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  transition: all var(--transition);
+}
+.icon-btn:hover { color: var(--text); border-color: var(--border2); }
+.font-select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--ui-font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0 10px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  outline: none;
+}
+
+/* ═══════════════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════════════ */
+.app-shell {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 16px;
+}
+.panel { display: none; animation: fadeUp 0.22s ease; }
+.panel.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════
+   SHARED COMPONENTS
+═══════════════════════════════════════════════ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+.card-sm {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+.card-flat {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text2);
+}
+.label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+.info-banner {
+  background: var(--primary-dim);
+  border: 1px solid var(--primary-glow);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: var(--text2);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.info-banner b { color: var(--text); }
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 16px 0;
+}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media (max-width: 640px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+}
+
+/* ═══════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  font-family: var(--ui-font);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--border2); background: var(--surface3); }
+.btn:active { transform: scale(0.97); }
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover { filter: brightness(1.12); }
+.btn-danger {
+  background: var(--tone-fall-bg);
+  border-color: var(--tone-fall);
+  color: var(--tone-fall);
+}
+.btn-full { width: 100%; }
+.speak-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--primary-dim);
+  color: var(--primary);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.speak-btn:hover { background: var(--primary); color: #fff; }
+.speak-btn:active { transform: scale(0.88); }
+
+/* ═══════════════════════════════════════════════
+   CHOICE BUTTONS (Calculator)
+═══════════════════════════════════════════════ */
+.choice-grid {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.choice-btn {
+  padding: 9px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text2);
+  font-family: var(--ui-font);
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.choice-btn:hover { border-color: var(--primary); color: var(--text); }
+.choice-btn.selected {
+  background: var(--primary-dim);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.choice-btn:disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+.step-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  transition: border-color var(--transition);
+}
+.step-card:focus-within { border-color: var(--border2); }
+.step-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  background: var(--primary-dim);
+  color: var(--primary);
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 800;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.step-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text2);
+  display: flex; align-items: center;
+  margin-bottom: 10px;
+}
+
+/* ═══════════════════════════════════════════════
+   RESULT CARD
+═══════════════════════════════════════════════ */
+.result-card {
+  display: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  animation: fadeUp 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.result-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background: radial-gradient(ellipse at top left, var(--accent-color, var(--primary)), transparent 60%);
+}
+.result-card.show { display: block; }
+.result-card[data-tone-type="mid"]     { --accent-color: var(--tone-mid);  border-color: rgba(88,166,255,0.3);  background: linear-gradient(135deg, rgba(88,166,255,0.05), var(--surface)); }
+.result-card[data-tone-type="low"]     { --accent-color: var(--tone-low);  border-color: rgba(63,185,80,0.3);   background: linear-gradient(135deg, rgba(63,185,80,0.05),  var(--surface)); }
+.result-card[data-tone-type="falling"] { --accent-color: var(--tone-fall); border-color: rgba(248,81,73,0.3);   background: linear-gradient(135deg, rgba(248,81,73,0.05),  var(--surface)); }
+.result-card[data-tone-type="high"]    { --accent-color: var(--tone-high); border-color: rgba(188,140,255,0.3); background: linear-gradient(135deg, rgba(188,140,255,0.05),var(--surface)); }
+.result-card[data-tone-type="rising"]  { --accent-color: var(--tone-rise); border-color: rgba(255,166,87,0.3);  background: linear-gradient(135deg, rgba(255,166,87,0.05), var(--surface)); }
+.result-tone-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--accent-color, var(--text));
+}
+.result-rule { font-size: 0.85rem; color: var(--text2); margin-bottom: 14px; line-height: 1.5; }
+.example-word {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+.example-thai {
+  font-family: var(--thai-font);
+  font-size: 2.2rem;
+  font-weight: 800;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.example-details { font-size: 0.82rem; color: var(--text2); }
+
+/* ═══════════════════════════════════════════════
+   PITCH CANVAS
+═══════════════════════════════════════════════ */
+.pitch-wrap {
+  margin-top: 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+.pitch-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); margin-bottom: 8px; }
+canvas.pitch-canvas {
+  width: 100%; height: 80px;
+  display: block;
+  border-radius: var(--radius-sm);
+}
+
+/* ═══════════════════════════════════════════════
+   REFERENCE / TILES
+═══════════════════════════════════════════════ */
+.matrix-section-title {
+  font-size: 0.82rem; font-weight: 700;
+  margin: 18px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+@media (min-width: 1024px) { .tile-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); } }
+.char-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 10px 10px 14px;
+  display: flex; flex-direction: column; gap: 4px;
+  position: relative;
+  transition: border-color var(--transition), transform var(--transition);
+  cursor: default;
+}
+.char-tile:hover { border-color: var(--border2); transform: translateY(-1px); }
+.char-tile::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  border-radius: 10px 0 0 10px;
+}
+.tile-mid::before  { background: var(--cls-mid); }
+.tile-high::before { background: var(--cls-high); }
+.tile-low::before  { background: var(--cls-low); }
+.tile-short::before { background: var(--tone-fall); }
+.tile-long::before  { background: var(--tone-low); }
+.tile-head { display: flex; align-items: center; justify-content: space-between; }
+.tile-glyph { font-family: var(--thai-font); font-size: 1.7rem; font-weight: 800; line-height: 1; }
+.tile-name { font-size: 0.75rem; font-weight: 600; color: var(--text2); }
+.tile-meta { font-size: 0.72rem; color: var(--text3); line-height: 1.4; }
+
+/* ═══════════════════════════════════════════════
+   SUB TABS
+═══════════════════════════════════════════════ */
+.subtabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px; padding-bottom: 0;
+}
+.subtab {
+  padding: 8px 14px;
+  border: none; border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--text2); font-family: var(--ui-font);
+  font-weight: 600; font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  margin-bottom: -1px;
+}
+.subtab:hover { color: var(--text); }
+.subtab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.subpanel { display: none; }
+.subpanel.active { display: block; animation: fadeUp 0.18s ease; }
+.minitabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px; }
+.minitab {
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--text2); font-family: var(--ui-font);
+  font-weight: 600; font-size: 0.74rem;
+  cursor: pointer; transition: all var(--transition);
+}
+.minitab.active { background: var(--primary-dim); border-color: var(--primary); color: var(--primary); }
+
+/* ═══════════════════════════════════════════════
+   VOWEL ROWS
+═══════════════════════════════════════════════ */
+.vowel-pair-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 600px) { .vowel-pair-grid { grid-template-columns: 1fr; } }
+.vowel-row {
+  display: flex; align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  gap: 10px;
+}
+.vowel-glyph { font-family: var(--thai-font); font-size: 1.4rem; font-weight: 800; min-width: 48px; }
+.vowel-info { flex: 1; font-size: 0.74rem; color: var(--text2); }
+
+/* ═══════════════════════════════════════════════
+   MNEMONIC CARDS
+═══════════════════════════════════════════════ */
+.mnemonic-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 16px 16px 20px;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.mnemonic-card::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+}
+.mnemonic-card.accent-mid::before   { background: var(--tone-mid); }
+.mnemonic-card.accent-fall::before  { background: var(--tone-fall); }
+.mnemonic-card.accent-high::before  { background: var(--tone-high); }
+.mnemonic-card.accent-low::before   { background: var(--tone-low); }
+.mnemonic-card.accent-rise::before  { background: var(--tone-rise); }
+.mnemonic-card.accent-primary::before { background: var(--primary); }
+.mnemonic-title {
+  font-size: 0.92rem; font-weight: 700;
+  margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+}
+.mnemonic-body { font-size: 0.84rem; color: var(--text2); line-height: 1.6; }
+.mnemonic-body b { color: var(--text); }
+.mnemonic-body .thai-inline { font-family: var(--thai-font); font-weight: 700; }
+
+/* ═══════════════════════════════════════════════
+   SOUND TABLE
+═══════════════════════════════════════════════ */
+.sound-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+.sound-table th, .sound-table td {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  text-align: left;
+}
+.sound-table th { background: var(--surface2); font-weight: 700; color: var(--text); }
+.sound-table td { color: var(--text2); }
+.sound-table b { color: var(--text); }
+
+/* ═══════════════════════════════════════════════
+   GAME SECTION
+═══════════════════════════════════════════════ */
+.game-arena {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+@media (max-width: 900px) { .game-arena { grid-template-columns: 1fr; } }
+.game-pod {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px 20px;
+  display: flex; flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  min-height: 420px;
+}
+.game-pod-header { width: 100%; text-align: left; }
+.game-pod-title { font-size: 0.92rem; font-weight: 700; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
+.game-score {
+  font-size: 0.78rem; font-weight: 700;
+  color: var(--primary); letter-spacing: 0.04em;
+}
+.game-target {
+  font-family: var(--thai-font);
+  font-size: clamp(2.8rem, 8vw, 4.5rem);
+  font-weight: 900;
+  color: var(--text);
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  min-height: 90px;
+  line-height: 1;
+}
+.game-meta {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  width: 100%;
+  font-size: 0.84rem; color: var(--text2); text-align: left; line-height: 1.5;
+}
+.game-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+@media (max-width: 480px) { .game-options { grid-template-columns: 1fr 1fr; } }
+.game-opt {
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 8px;
+  font-family: var(--ui-font);
+  font-size: 0.82rem; font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.game-opt:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); background: var(--primary-dim); }
+.game-opt:disabled { cursor: not-allowed; }
+.game-opt.correct { background: rgba(63,185,80,0.12) !important; border-color: var(--tone-low) !important; color: var(--tone-low) !important; }
+.game-opt.wrong   { background: rgba(248,81,73,0.12) !important; border-color: var(--tone-fall) !important; color: var(--tone-fall) !important; }
+.game-opt .lbl    { font-size: 0.68rem; color: var(--text3); font-weight: 500; }
+.game-feedback {
+  font-size: 1rem; font-weight: 800;
+  min-height: 24px;
+  width: 100%;
+  text-align: center;
+}
+.conn-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.68rem; font-weight: 700;
+}
+.conn-online  { background: rgba(63,185,80,0.15); color: var(--tone-low); }
+.conn-offline { background: rgba(255,166,87,0.15); color: var(--tone-rise); }
+
+/* ═══════════════════════════════════════════════
+   ALPHABET COMPARE
+═══════════════════════════════════════════════ */
+.compare-search {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text); font-family: var(--ui-font); font-size: 0.9rem;
+  outline: none; margin-bottom: 14px;
+  transition: border-color var(--transition);
+}
+.compare-search:focus { border-color: var(--primary); }
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+.compare-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 8px;
+  text-align: center;
+  display: flex; flex-direction: column; gap: 4px;
+  align-items: center;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.compare-tile:hover { border-color: var(--primary); transform: translateY(-2px); }
+.compare-char-traditional { font-family: 'Sarabun', sans-serif; font-size: 2rem; font-weight: 800; }
+.compare-char-modern      { font-family: var(--thai-font); font-size: 2rem; font-weight: 800; color: var(--primary); }
+.compare-divider { font-size: 0.6rem; color: var(--text3); font-weight: 600; text-transform: uppercase; }
+
+/* ═══════════════════════════════════════════════
+   SRS LOG
+═══════════════════════════════════════════════ */
+.srs-stats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.srs-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  min-width: 75px;
+}
+.srs-stat-n { font-size: 1.5rem; font-weight: 900; }
+.srs-stat-l { font-size: 0.7rem; color: var(--text2); font-weight: 600; text-transform: uppercase; }
+.srs-table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+.srs-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.srs-table th {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 10px;
+  text-align: left;
+  font-weight: 700;
+  white-space: nowrap;
+  position: sticky; top: 0;
+}
+.srs-table td { border-bottom: 1px solid var(--border); padding: 9px 10px; }
+.srs-table tr:last-child td { border-bottom: none; }
+.srs-table tr:hover td { background: var(--surface2); }
+.badge-new    { background: rgba(88,166,255,0.15);  color: var(--srs-new); }
+.badge-learn  { background: rgba(255,166,87,0.15);  color: var(--srs-learn); }
+.badge-review { background: rgba(63,185,80,0.15);   color: var(--srs-review); }
+.badge-mature { background: rgba(188,140,255,0.15); color: var(--srs-mature); }
+.srs-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+
+/* ═══════════════════════════════════════════════
+   ANALYZER
+═══════════════════════════════════════════════ */
+.analyzer-layout {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+@media (max-width: 700px) { .analyzer-layout { grid-template-columns: 1fr; } }
+.analyzer-input {
+  width: 100%;
+  padding: 12px;
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--thai-font);
+  font-size: 1.5rem;
+  resize: none;
+  min-height: 100px;
+  outline: none;
+  transition: border-color var(--transition);
+}
+.analyzer-input:focus { border-color: var(--primary); }
+.trace-node {
+  border-left: 2px solid var(--border);
+  padding-left: 12px;
+  margin-bottom: 12px;
+  position: relative;
+}
+.trace-node::before {
+  content: '';
+  position: absolute; left: -5px; top: 5px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--text3);
+}
+.trace-node.success::before { background: var(--tone-low); }
+.trace-title {
+  font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text3); margin-bottom: 3px;
+}
+.trace-body { font-size: 0.85rem; line-height: 1.5; color: var(--text2); }
+.trace-body b { color: var(--text); }
+
+/* ═══════════════════════════════════════════════
+   IMPLICIT VOWEL PARSER
+═══════════════════════════════════════════════ */
+.ivp-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 700px) { .ivp-layout { grid-template-columns: 1fr; } }
+.ivp-result {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  min-height: 100px;
+  line-height: 1.8;
+}
+.ivp-block {
+  display: inline-flex; flex-direction: column; align-items: center;
+  margin: 4px 6px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px; background: var(--surface);
+  vertical-align: top;
+}
+.ivp-thai { font-family: var(--thai-font); font-size: 1.4rem; font-weight: 800; }
+.ivp-rom  { font-size: 0.72rem; color: var(--text2); }
+.ivp-tag  { font-size: 0.62rem; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-top: 3px; text-transform: uppercase; }
+.ivp-implicit { background: rgba(255,166,87,0.18); color: var(--tone-rise); }
+.ivp-explicit { background: rgba(63,185,80,0.15);  color: var(--tone-low); }
+.ivp-examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+#toast {
+  position: fixed; right: 20px; bottom: 24px; z-index: 9999;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px 18px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  font-size: 0.84rem; font-weight: 600;
+  opacity: 0; transform: translateY(12px);
+  pointer-events: none;
+  transition: all 0.22s ease;
+  max-width: 280px;
+}
+#toast.show { opacity: 1; transform: translateY(0); }
+
+/* ═══════════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
+
+/* ═══════════════════════════════════════════════
+   FOCUS RING
+═══════════════════════════════════════════════ */
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+</style>
 </head>
 <body>
 
-<!-- ────────── INSTALL BANNER ────────── -->
-<div id="install-banner">
-  <span>📲</span>
-  <span>Add Thai Tone Master to your home screen for offline access</span>
-  <button id="install-btn" onclick="triggerInstall()">Install</button>
-  <button class="dismiss-btn" onclick="dismissInstall()">✕</button>
-</div>
-
-<!-- ────────── OFFLINE TOAST ────────── -->
-<div id="offline-toast">🔌 You're offline — local data active</div>
-
-<!-- ────────── APP SHELL ────────── -->
-<div class="app-shell">
-
-  <!-- HEADER -->
-  <header>
-    <div class="logo-block">
-      <span class="logo-label">Acoustic Mapping Workbench</span>
-      <h1>Thai Tone Master Pro</h1>
-    </div>
-    <div class="header-actions">
-      <div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end;">
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span class="xp-label" id="xp-label">XP 0/100</span>
-          <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xp-bar" style="width:0%"></div></div>
-        </div>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <div class="streak-badge" id="streak-badge">🔥 0 day streak</div>
-        </div>
-      </div>
-      <button class="icon-btn" onclick="openSettings()" title="Settings" aria-label="Settings">⚙️</button>
-      <button class="icon-btn" onclick="toggleDark()" id="theme-btn" title="Toggle theme" aria-label="Toggle theme">🌙</button>
-    </div>
-  </header>
-
-  <!-- TABS -->
-  <div class="tabs" role="tablist">
-    <button class="tab-btn active" id="t-calc"    onclick="switchTab('calc')"     role="tab">🧮 Calculator</button>
-    <button class="tab-btn"        id="t-flow"    onclick="switchTab('flow')"     role="tab">🗺 Flow Map</button>
-    <button class="tab-btn"        id="t-rules"   onclick="switchTab('rules')"    role="tab">📋 Rules Table</button>
-    <button class="tab-btn"        id="t-dict"    onclick="switchTab('dict')"     role="tab">📚 Reference</button>
-    <button class="tab-btn"        id="t-engine"  onclick="switchTab('engine')"   role="tab">🔬 Analyzer</button>
-    <button class="tab-btn"        id="t-mnemo"   onclick="switchTab('mnemo')"    role="tab">💡 Mnemonics</button>
-    <button class="tab-btn"        id="t-game"    onclick="switchTab('game')"     role="tab">🎯 Game</button>
-  </div>
-
-  <!-- ══════════════════════ CALCULATOR PANEL ══════════════════════ -->
-   <div id="p-interactive" class="view-panel active">
-            <div class="interactive-grid">
-                
-                <div class="step-box">
-                    <div class="step-title">1. Initial Consonant Class</div>
-                    <div class="btn-row">
-                        <button class="choice-btn" onclick="setParam('class', 'mid', this)">Mid (กลาง)</button>
-                        <button class="choice-btn" onclick="setParam('class', 'high', this)">High (สูง)</button>
-                        <button class="choice-btn" onclick="setParam('class', 'low', this)">Low (ต่ำ)</button>
-                    </div>
-                </div>
-
-                <div class="step-box">
-                    <div class="step-title">2. Tone Marker Icon</div>
-                    <div class="btn-row" id="tone-row">
-                        <button class="choice-btn" onclick="setParam('mark', 'none', this)">None (่-)</button>
-                        <button class="choice-btn" onclick="setParam('mark', 'ek', this)">Mai Ek (่)</button>
-                        <button class="choice-btn" onclick="setParam('mark', 'tho', this)">Mai Tho (้)</button>
-                        <button class="choice-btn" id="m-tri" onclick="setParam('mark', 'tri', this)">Mai Tri (๊)</button>
-                        <button class="choice-btn" id="m-chatt" onclick="setParam('mark', 'chattawa', this)">Mai Chat. (๋)</button>
-                    </div>
-                </div>
-
-                <div class="step-box" id="box-type">
-                    <div class="step-title">3. Terminal Syllable Type</div>
-                    <div class="btn-row">
-                        <button class="choice-btn" id="type-live" onclick="setParam('type', 'live', this)">Live (คำเป็น)</button>
-                        <button class="choice-btn" id="type-dead" onclick="setParam('type', 'dead', this)">Dead (คำตาย)</button>
-                    </div>
-                </div>
-
-                <div class="step-box" id="box-vowel" style="display:none;">
-                    <div class="step-title">4. Vowel Acoustic Duration</div>
-                    <div class="btn-row">
-                        <button class="choice-btn" id="vow-short" onclick="setParam('vowel', 'short', this)">Short (สระสั้น)</button>
-                        <button class="choice-btn" id="vow-long" onclick="setParam('vowel', 'long', this)">Long (สระยาว)</button>
-                    </div>
-                </div>
-
-                <div class="result-box" id="output-screen" data-tone-type="mid">
-                    <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; opacity:0.7; margin-bottom:2px;">Calculated Output Accent</div>
-                    <div class="res-tone">
-                        <span id="res-tone-title">Mid Tone —</span>
-                        <button class="audio-trigger-icon" id="speak-tone-btn" title="Listen Audio">🔊</button>
-                    </div>
-                    <div class="res-rule" id="res-rule-desc">Rule metadata.</div>
-                    
-                    <div class="translation-card">
-                        <div style="font-size:0.65rem; font-weight:800; color:var(--muted); text-transform:uppercase; margin-bottom:6px; letter-spacing:0.02em;">Target Context Word Realization</div>
-                        <div class="tx-thai">
-                            <span id="ctx-thai">กาน</span>
-                            <button class="audio-trigger-icon" id="speak-word-btn" title="Listen Word">🔊</button>
-                        </div>
-                        <div class="tx-details" id="ctx-details">kaan • "to manage"</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-  <!-- ══════════════════════ FLOW MAP PANEL ══════════════════════ -->
-  <div id="p-flow" class="view-panel" role="tabpanel">
-    <div class="info-strip">
-      <b>Interactive Decision Flowchart:</b> Mouse-wheel to zoom, drag to pan. On mobile, pinch &amp; drag. Colors match tone categories.
-    </div>
-    <div class="graph-area">
-      <div id="mermaid-target"></div>
-      <div class="graph-controls">
-        <button class="graph-ctrl-btn" onclick="pzReset()" title="Reset view">⊙</button>
-        <button class="graph-ctrl-btn" onclick="pzZoomIn()" title="Zoom in">+</button>
-        <button class="graph-ctrl-btn" onclick="pzZoomOut()" title="Zoom out">−</button>
-      </div>
+<!-- ════════════ TOP NAV ════════════ -->
+<nav class="topnav">
+  <div class="nav-brand">
+    <div class="nav-logo">ก</div>
+    <div>
+      <div class="nav-title">Thai Tone Master</div>
+      <div class="nav-subtitle">เสียงวรรณยุกต์ v3</div>
     </div>
   </div>
 
-  <!-- ══════════════════════ RULES TABLE PANEL ══════════════════════ -->
-  <div id="p-rules" class="view-panel" role="tabpanel">
-    <div class="info-strip">
-      <b>Complete Tone Rules Matrix:</b> All possible initial consonant class × condition → tone outcomes, at a glance.
+  <div class="nav-tabs">
+    <button class="nav-tab active" id="t-calc"      onclick="switchTab('calc')">      <span class="tab-emoji">🎯</span>Calculator</button>
+    <button class="nav-tab"        id="t-analyzer"  onclick="switchTab('analyzer')">  <span class="tab-emoji">🔬</span>Analyzer</button>
+    <button class="nav-tab"        id="t-ref"       onclick="switchTab('ref')">       <span class="tab-emoji">📖</span>Reference</button>
+    <button class="nav-tab"        id="t-ivp"       onclick="switchTab('ivp')">       <span class="tab-emoji">🔍</span>Implicit Vowels</button>
+    <button class="nav-tab"        id="t-mnemonics" onclick="switchTab('mnemonics')"> <span class="tab-emoji">💡</span>Mnemonics</button>
+    <button class="nav-tab"        id="t-game"      onclick="switchTab('game')">      <span class="tab-emoji">🎮</span>Practice</button>
+    <button class="nav-tab"        id="t-compare"   onclick="switchTab('compare')">   <span class="tab-emoji">🔤</span>Fonts</button>
+    <button class="nav-tab"        id="t-srs"       onclick="switchTab('srs')">       <span class="tab-emoji">📚</span>SRS Log</button>
+  </div>
+
+  <div class="nav-actions">
+    <select class="font-select" onchange="changeFontStyle(this.value)" title="Thai Font">
+      <option value="traditional">Sarabun</option>
+      <option value="kanit">Kanit</option>
+      <option value="prompt">Prompt</option>
+      <option value="mitr">Mitr</option>
+    </select>
+    <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+    <button class="icon-btn" id="installBtn" style="display:none;" title="Install App">⬇</button>
+  </div>
+</nav>
+
+<!-- ════════════ MAIN ════════════ -->
+<main class="app-shell">
+
+<!-- ─── CALCULATOR ─── -->
+<section id="p-calc" class="panel active">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <div class="step-card">
+        <div class="step-title"><span class="step-num">1</span>Initial Consonant Class</div>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="setParam('class','mid',this)">Mid <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">กลาง</span></button>
+          <button class="choice-btn" onclick="setParam('class','high',this)">High <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">สูง</span></button>
+          <button class="choice-btn" onclick="setParam('class','low',this)">Low <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">ต่ำ</span></button>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title"><span class="step-num">2</span>Tone Mark</div>
+        <div class="choice-grid" id="tone-row">
+          <button class="choice-btn" onclick="setParam('mark','none',this)">None</button>
+          <button class="choice-btn" onclick="setParam('mark','ek',this)">Mai Ek <span class="thai" style="font-size:1rem;">่</span></button>
+          <button class="choice-btn" onclick="setParam('mark','tho',this)">Mai Tho <span class="thai" style="font-size:1rem;">้</span></button>
+          <button class="choice-btn" id="m-tri"   onclick="setParam('mark','tri',this)">Mai Tri <span class="thai" style="font-size:1rem;">๊</span></button>
+          <button class="choice-btn" id="m-chatt" onclick="setParam('mark','chattawa',this)">Mai Chatt. <span class="thai" style="font-size:1rem;">๋</span></button>
+        </div>
+      </div>
+
+      <div class="step-card" id="box-type" style="display:none;">
+        <div class="step-title"><span class="step-num">3</span>Syllable Type</div>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="setParam('type','live',this)">Live <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">คำเป็น</span></button>
+          <button class="choice-btn" onclick="setParam('type','dead',this)">Dead <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">คำตาย</span></button>
+        </div>
+      </div>
+
+      <div class="step-card" id="box-vowel" style="display:none;">
+        <div class="step-title"><span class="step-num">4</span>Vowel Duration</div>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="setParam('vowel','short',this)">Short <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">สระสั้น</span></button>
+          <button class="choice-btn" onclick="setParam('vowel','long',this)">Long <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">สระยาว</span></button>
+        </div>
+      </div>
     </div>
+
+    <div>
+      <div class="result-card" id="output-screen" data-tone-type="mid">
+        <div class="label">Calculated Tone</div>
+        <div class="result-tone-name">
+          <span id="res-tone-title">Mid Tone —</span>
+          <button class="speak-btn" id="speak-tone-btn" title="Speak tone name">🔊</button>
+        </div>
+        <div class="result-rule" id="res-rule-desc"></div>
+        <div class="example-word">
+          <div class="label">Example Word</div>
+          <div class="example-thai">
+            <span id="ctx-thai" class="thai">กา</span>
+            <button class="speak-btn" id="speak-word-btn">🔊</button>
+          </div>
+          <div class="example-details" id="ctx-details"></div>
+        </div>
+        <div class="pitch-wrap">
+          <div class="pitch-label">Pitch Contour</div>
+          <canvas class="pitch-canvas" id="pitch-canvas-calc" width="600" height="80"></canvas>
+        </div>
+        <div style="margin-top:12px;">
+          <button class="btn btn-primary btn-full" onclick="srsLogFromCalculator()">📚 Log to SRS Deck</button>
+        </div>
+      </div>
+
+      <!-- Quick reference tone table -->
+      <div class="card" id="calc-hint-card">
+        <div class="label" style="margin-bottom:12px;">Thai Tone Rules — Quick Reference</div>
+        <table class="sound-table">
+          <thead><tr><th>Class</th><th>No Mark</th><th>Mai Ek ่</th><th>Mai Tho ้</th><th>Mai Tri ๊</th><th>Mai Chat ๋</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--cls-mid);font-weight:700;">Mid</td><td>Mid/Low*</td><td>Low</td><td>Falling</td><td>High</td><td>Rising</td></tr>
+            <tr><td style="color:var(--cls-high);font-weight:700;">High</td><td>Rising/Low*</td><td>Low</td><td>Falling</td><td>—</td><td>—</td></tr>
+            <tr><td style="color:var(--cls-low);font-weight:700;">Low</td><td>Mid/High*/Fall*</td><td>Falling</td><td>High</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:0.72rem;color:var(--text3);margin-top:8px;">* depends on live/dead syllable and vowel length</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ANALYZER ─── -->
+<section id="p-analyzer" class="panel">
+  <div class="info-banner"><b>Parsing Engine:</b> Enter any Thai word — the system reads consonant class, tone mark, and syllable structure to deduce the tone with step-by-step reasoning.</div>
+  <div class="analyzer-layout">
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div class="label" style="margin:0;">Thai Input</div>
+        <div style="display:flex;gap:6px;">
+          <button class="speak-btn" onclick="speakInputText()" title="Speak">🔊</button>
+          <button class="btn" style="font-size:0.72rem;padding:4px 10px;" onclick="srsLogFromAnalyzer()">📚 Log SRS</button>
+        </div>
+      </div>
+      <textarea class="analyzer-input" id="analyzer-input" placeholder="Type Thai here… e.g. กบ, รัก, พูด, หมา, อยู่" oninput="runAcousticAnalysis()" rows="4"></textarea>
+      <div style="margin-top:10px;">
+        <div class="label">Quick Examples</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <button class="btn" onclick="setAnalyzer('กบ')">กบ</button>
+          <button class="btn" onclick="setAnalyzer('รัก')">รัก</button>
+          <button class="btn" onclick="setAnalyzer('พูด')">พูด</button>
+          <button class="btn" onclick="setAnalyzer('หมา')">หมา</button>
+          <button class="btn" onclick="setAnalyzer('อยู่')">อยู่</button>
+          <button class="btn" onclick="setAnalyzer('ขา')">ขา</button>
+          <button class="btn" onclick="setAnalyzer('สี่')">สี่</button>
+          <button class="btn" onclick="setAnalyzer('ม้า')">ม้า</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="label" style="margin-bottom:8px;">Analysis Trace</div>
+      <div class="card" id="analyzer-output" style="min-height:160px;font-size:0.85rem;">
+        <span style="color:var(--text3);">Enter a Thai word to begin parsing…</span>
+      </div>
+      <div class="pitch-wrap" id="analyzer-canvas-wrap" style="display:none;">
+        <div class="pitch-label">Pitch Contour</div>
+        <canvas class="pitch-canvas" id="pitch-canvas-analyzer" width="600" height="80"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── REFERENCE ─── -->
+<section id="p-ref" class="panel">
+  <div class="subtabs">
+    <button class="subtab active" onclick="switchSub('sub-consonants',this)">Consonants</button>
+    <button class="subtab" onclick="switchSub('sub-vowels',this)">Vowels</button>
+    <button class="subtab" onclick="switchSub('sub-syllables',this)">Live & Dead Syllables</button>
+    <button class="subtab" onclick="switchSub('sub-tones',this)">Tone Matrix</button>
+  </div>
+
+  <div id="sub-consonants" class="subpanel active">
+    <div class="info-banner">Thai has <b>44 consonants</b> grouped into <b>Mid (9)</b>, <b>High (11)</b>, and <b>Low (24)</b> classes — the class determines baseline tone behavior.</div>
+    <div class="minitabs">
+      <button class="minitab active" onclick="filterCons('all',this)">All</button>
+      <button class="minitab" onclick="filterCons('mid',this)">Mid Class</button>
+      <button class="minitab" onclick="filterCons('high',this)">High Class</button>
+      <button class="minitab" onclick="filterCons('low',this)">Low Class</button>
+    </div>
+    <div id="cgroup-mid"><div class="matrix-section-title" style="color:var(--cls-mid);">● Mid Class — อักษรกลาง (9 consonants)</div><div class="tile-grid" id="con-mid-target"></div></div>
+    <div id="cgroup-high"><div class="matrix-section-title" style="color:var(--cls-high);">● High Class — อักษรสูง (11 consonants)</div><div class="tile-grid" id="con-high-target"></div></div>
+    <div id="cgroup-low"><div class="matrix-section-title" style="color:var(--cls-low);">● Low Class — อักษรต่ำ (24 consonants)</div><div class="tile-grid" id="con-low-target"></div></div>
+  </div>
+
+  <div id="sub-vowels" class="subpanel">
+    <div class="info-banner">Thai has <b>32 vowel forms</b>. Duration (short vs long) is fundamental — it can flip a syllable from live to dead, changing tone entirely.</div>
+    <div class="minitabs">
+      <button class="minitab active" onclick="filterVowels('all',this)">Side by Side</button>
+      <button class="minitab" onclick="filterVowels('short',this)">Short Only</button>
+      <button class="minitab" onclick="filterVowels('long',this)">Long Only</button>
+    </div>
+    <div id="vgroup-all" class="minisubpanel" style="display:block;">
+      <div class="vowel-pair-grid">
+        <div><div class="matrix-section-title" style="color:var(--tone-fall);">● Short Vowels — สระสั้น</div><div id="vowel-side-short"></div></div>
+        <div><div class="matrix-section-title" style="color:var(--tone-low);">● Long Vowels — สระยาว</div><div id="vowel-side-long"></div></div>
+      </div>
+    </div>
+    <div id="vgroup-short" class="minisubpanel" style="display:none;"><div class="tile-grid" id="vowel-short-target"></div></div>
+    <div id="vgroup-long"  class="minisubpanel" style="display:none;"><div class="tile-grid" id="vowel-long-target"></div></div>
+  </div>
+
+  <div id="sub-syllables" class="subpanel">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="mnemonic-card accent-low">
+        <div class="mnemonic-title">🟢 Live Syllables — คำเป็น</div>
+        <div class="mnemonic-body">Ends with a long vowel (no stop), or a sonorant final: <b>-n, -m, -ng, -w, -y</b>. Baseline tone follows normal class rules.</div>
+      </div>
+      <div class="mnemonic-card accent-fall">
+        <div class="mnemonic-title">🔴 Dead Syllables — คำตาย</div>
+        <div class="mnemonic-body">Ends with a short vowel alone, or a plosive stop: <b>-k, -p, -t</b>. Tone is forced into altered paths — no tone mark needed for effect.</div>
+      </div>
+    </div>
+    <div class="mnemonic-card accent-primary" style="margin-top:12px;">
+      <div class="mnemonic-title">🎵 The ห Leading Rule</div>
+      <div class="mnemonic-body"><b>ห</b> directly before a low class sonorant (<b class="thai-inline">ม น ง ว ล ย ร</b>) elevates that consonant to <b>High Class</b> behavior. The ห is silent but acts as a class elevator. Examples: <b class="thai-inline">หมา</b> (rising ˇ), <b class="thai-inline">หนาว</b> (rising ˇ), <b class="thai-inline">หวาน</b> (rising ˇ).</div>
+    </div>
+    <div class="mnemonic-card" style="border-left:4px solid var(--cls-mid);margin-top:10px;">
+      <div class="mnemonic-title">🔵 The อ Leading Rule — อ นำ</div>
+      <div class="mnemonic-body">Silent <b class="thai-inline">อ</b> before <b class="thai-inline">ย</b> or <b class="thai-inline">ว</b> elevates those low-class consonants to <b>Mid Class</b>. The อ disappears phonetically but controls the class. Examples: <b class="thai-inline">อยู่</b> (yuu) → Low Tone, <b class="thai-inline">อย่าง</b> (yaang) → Low Tone.</div>
+    </div>
+    <div class="card-sm" style="margin-top:16px;">
+      <div class="label">Final Consonant Sound Mutations</div>
+      <table class="sound-table">
+        <thead><tr><th>Consonants</th><th>Initial Sound</th><th>Final Stop</th><th>Syllable Type</th></tr></thead>
+        <tbody>
+          <tr><td><b>ก ข ค ฆ</b></td><td>k/kh</td><td>-k</td><td>Dead</td></tr>
+          <tr><td><b>บ ป พ ฟ ภ</b></td><td>b/p/ph/f</td><td>-p</td><td>Dead</td></tr>
+          <tr><td><b>ด ต ถ ท ธ ศ ษ ส จ ช</b></td><td>d/t/th/s/j</td><td>-t</td><td>Dead</td></tr>
+          <tr><td><b>น ณ ญ ร ล ฬ</b></td><td>n/y/r/l</td><td>-n</td><td>Live</td></tr>
+          <tr><td><b>ม</b></td><td>m</td><td>-m</td><td>Live</td></tr>
+          <tr><td><b>ง</b></td><td>ng</td><td>-ng</td><td>Live</td></tr>
+          <tr><td><b>ว ย</b></td><td>w/y</td><td>-w/-y</td><td>Live</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="sub-tones" class="subpanel">
+    <div class="info-banner">Complete tone outcome matrix. <b>*</b> = depends on live/dead syllable and vowel length.</div>
     <div style="overflow-x:auto;">
-      <table class="tone-table">
+      <table class="sound-table" style="min-width:600px;">
         <thead>
           <tr>
             <th>Class</th>
-            <th>No Marker · Live</th>
-            <th>No Marker · Dead Short</th>
-            <th>No Marker · Dead Long</th>
+            <th>No Mark (Live)</th>
+            <th>No Mark (Dead Short)</th>
+            <th>No Mark (Dead Long)</th>
             <th>Mai Ek ่</th>
             <th>Mai Tho ้</th>
             <th>Mai Tri ๊</th>
-            <th>Mai Chat. ๋</th>
+            <th>Mai Chatt ๋</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><b>Mid</b> · <span style="color:var(--cls-mid);">กลาง</span></td>
-            <td><span class="tone-pip pip-mid">Mid —</span></td>
-            <td><span class="tone-pip pip-low">Low ˋ</span></td>
-            <td><span class="tone-pip pip-low">Low ˋ</span></td>
-            <td><span class="tone-pip pip-low">Low ˋ</span></td>
-            <td><span class="tone-pip pip-fall">Falling ˆ</span></td>
-            <td><span class="tone-pip pip-high">High ˊ</span></td>
-            <td><span class="tone-pip pip-rise">Rising ˇ</span></td>
+            <td style="color:var(--cls-mid);font-weight:700;">Mid</td>
+            <td style="color:var(--tone-mid);">Mid —</td>
+            <td style="color:var(--tone-low);">Low ˋ</td>
+            <td style="color:var(--tone-low);">Low ˋ</td>
+            <td style="color:var(--tone-low);">Low ˋ</td>
+            <td style="color:var(--tone-fall);">Falling ˆ</td>
+            <td style="color:var(--tone-high);">High ˊ</td>
+            <td style="color:var(--tone-rise);">Rising ˇ</td>
           </tr>
           <tr>
-            <td><b>High</b> · <span style="color:var(--cls-high);">สูง</span></td>
-            <td><span class="tone-pip pip-rise">Rising ˇ</span></td>
-            <td><span class="tone-pip pip-low">Low ˋ</span></td>
-            <td><span class="tone-pip pip-low">Low ˋ</span></td>
-            <td><span class="tone-pip pip-low">Low ˋ</span></td>
-            <td><span class="tone-pip pip-fall">Falling ˆ</span></td>
-            <td colspan="2" style="color:var(--text-muted);font-size:.78rem;font-style:italic;">Not used with High class</td>
+            <td style="color:var(--cls-high);font-weight:700;">High</td>
+            <td style="color:var(--tone-rise);">Rising ˇ</td>
+            <td style="color:var(--tone-low);">Low ˋ</td>
+            <td style="color:var(--tone-low);">Low ˋ</td>
+            <td style="color:var(--tone-low);">Low ˋ</td>
+            <td style="color:var(--tone-fall);">Falling ˆ</td>
+            <td>—</td>
+            <td>—</td>
           </tr>
           <tr>
-            <td><b>Low</b> · <span style="color:var(--cls-low);">ต่ำ</span></td>
-            <td><span class="tone-pip pip-mid">Mid —</span></td>
-            <td><span class="tone-pip pip-high">High ˊ</span></td>
-            <td><span class="tone-pip pip-fall">Falling ˆ</span></td>
-            <td><span class="tone-pip pip-fall">Falling ˆ</span></td>
-            <td><span class="tone-pip pip-high">High ˊ</span></td>
-            <td colspan="2" style="color:var(--text-muted);font-size:.78rem;font-style:italic;">Not used with Low class</td>
+            <td style="color:var(--cls-low);font-weight:700;">Low</td>
+            <td style="color:var(--tone-mid);">Mid —</td>
+            <td style="color:var(--tone-high);">High ˊ</td>
+            <td style="color:var(--tone-fall);">Falling ˆ</td>
+            <td style="color:var(--tone-fall);">Falling ˆ</td>
+            <td style="color:var(--tone-high);">High ˊ</td>
+            <td>—</td>
+            <td>—</td>
           </tr>
         </tbody>
       </table>
     </div>
-
-    <div class="info-strip" style="margin-top:4px;">
-      <b>Dead Syllable Note:</b> A dead syllable ends in an unreleased stop consonant (-k, -p, -t) or a short vowel with no final consonant. The vowel length distinction only affects <b>Low class</b> unmarked consonants.
-    </div>
-
-    <!-- Tone Contour Visual -->
-    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;margin-top:4px;">
-      <div class="panel-label" style="justify-content:flex-start;gap:6px;margin-bottom:10px;">🎵 Pitch Contour Shapes</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;">
-        <div style="background:var(--t-mid-bg);border:1px solid var(--t-mid-bd);border-radius:var(--radius-sm);padding:10px;">
-          <div style="font-weight:800;color:var(--t-mid);margin-bottom:4px;">Mid —</div>
-          <div style="font-size:1.6rem;font-weight:900;letter-spacing:.2em;color:var(--t-mid);">―――</div>
-          <div style="font-size:.78rem;color:var(--text-muted);margin-top:4px;">Flat, middle pitch. Steady and level.</div>
-        </div>
-        <div style="background:var(--t-low-bg);border:1px solid var(--t-low-bd);border-radius:var(--radius-sm);padding:10px;">
-          <div style="font-weight:800;color:var(--t-low);margin-bottom:4px;">Low ˋ</div>
-          <div style="font-size:1.6rem;font-weight:900;letter-spacing:.1em;color:var(--t-low);">‾\__</div>
-          <div style="font-size:.78rem;color:var(--text-muted);margin-top:4px;">Starts low, stays low. Below baseline.</div>
-        </div>
-        <div style="background:var(--t-fall-bg);border:1px solid var(--t-fall-bd);border-radius:var(--radius-sm);padding:10px;">
-          <div style="font-weight:800;color:var(--t-fall);margin-bottom:4px;">Falling ˆ</div>
-          <div style="font-size:1.6rem;font-weight:900;letter-spacing:.1em;color:var(--t-fall);">‾‾\</div>
-          <div style="font-size:.78rem;color:var(--text-muted);margin-top:4px;">Peaks high then drops sharply.</div>
-        </div>
-        <div style="background:var(--t-high-bg);border:1px solid var(--t-high-bd);border-radius:var(--radius-sm);padding:10px;">
-          <div style="font-weight:800;color:var(--t-high);margin-bottom:4px;">High ˊ</div>
-          <div style="font-size:1.6rem;font-weight:900;letter-spacing:.2em;color:var(--t-high);">‾‾‾</div>
-          <div style="font-size:.78rem;color:var(--text-muted);margin-top:4px;">Flat but elevated. Above baseline.</div>
-        </div>
-        <div style="background:var(--t-rise-bg);border:1px solid var(--t-rise-bd);border-radius:var(--radius-sm);padding:10px;">
-          <div style="font-weight:800;color:var(--t-rise);margin-bottom:4px;">Rising ˇ</div>
-          <div style="font-size:1.6rem;font-weight:900;letter-spacing:.1em;color:var(--t-rise);">__/‾</div>
-          <div style="font-size:.78rem;color:var(--text-muted);margin-top:4px;">Dips down then curves upward.</div>
-        </div>
+    <!-- Tone pitch diagram cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:16px;">
+      <div class="card-sm" style="border-top:3px solid var(--tone-mid);">
+        <div style="font-weight:700;color:var(--tone-mid);margin-bottom:4px;">Mid — สามัญ</div>
+        <div style="font-size:0.78rem;color:var(--text2);">Flat, no movement. Voice stays level in the middle range.</div>
+      </div>
+      <div class="card-sm" style="border-top:3px solid var(--tone-low);">
+        <div style="font-weight:700;color:var(--tone-low);margin-bottom:4px;">Low ˋ เอก</div>
+        <div style="font-size:0.78rem;color:var(--text2);">Starts slightly below mid, gently descends and levels out low.</div>
+      </div>
+      <div class="card-sm" style="border-top:3px solid var(--tone-fall);">
+        <div style="font-weight:700;color:var(--tone-fall);margin-bottom:4px;">Falling ˆ โท</div>
+        <div style="font-size:0.78rem;color:var(--text2);">Peaks high early, then drops sharply to the bottom.</div>
+      </div>
+      <div class="card-sm" style="border-top:3px solid var(--tone-high);">
+        <div style="font-weight:700;color:var(--tone-high);margin-bottom:4px;">High ˊ ตรี</div>
+        <div style="font-size:0.78rem;color:var(--text2);">Starts mid-high, rises to peak, holds with slight tail drop.</div>
+      </div>
+      <div class="card-sm" style="border-top:3px solid var(--tone-rise);">
+        <div style="font-weight:700;color:var(--tone-rise);margin-bottom:4px;">Rising ˇ จัตวา</div>
+        <div style="font-size:0.78rem;color:var(--text2);">Dips low first, then climbs steeply all the way up.</div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- ══════════════════════ DICTIONARY PANEL ══════════════════════ -->
-  <div id="p-dict" class="view-panel" role="tabpanel">
-    <div class="sub-tabs" id="dict-sub-tabs">
-      <button class="sub-tab-btn active" onclick="switchSub('consonants',this,'dict-sub-tabs')">Consonants (44)</button>
-      <button class="sub-tab-btn"       onclick="switchSub('vowels',this,'dict-sub-tabs')">Vowels (32)</button>
-      <button class="sub-tab-btn"       onclick="switchSub('syllables',this,'dict-sub-tabs')">Live &amp; Dead</button>
+<!-- ─── IMPLICIT VOWEL PARSER ─── -->
+<section id="p-ivp" class="panel">
+  <div class="info-banner"><b>Invisible Vowel Parser:</b> Thai often omits the short inherent vowel between consonant clusters in written form. This tool reconstructs implied vowels and marks each syllable block.</div>
+  <div class="ivp-layout">
+    <div>
+      <div class="label">Thai Input</div>
+      <textarea class="analyzer-input" id="ivp-input" placeholder="e.g. คน สบาย กรุงเทพ ประเทศ" oninput="runImplicitVowelParser()" rows="4"></textarea>
+      <div class="ivp-examples">
+        <button class="btn" onclick="setIVP('คน')">คน</button>
+        <button class="btn" onclick="setIVP('สบาย')">สบาย</button>
+        <button class="btn" onclick="setIVP('กรุงเทพ')">กรุงเทพ</button>
+        <button class="btn" onclick="setIVP('ประเทศ')">ประเทศ</button>
+        <button class="btn" onclick="setIVP('คน กิน ข้าว')">คน กิน ข้าว</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;font-size:0.76rem;font-weight:700;">
+        <span><span class="ivp-tag ivp-implicit" style="font-size:0.68rem;">IMPLICIT</span> = vowel inferred</span>
+        <span><span class="ivp-tag ivp-explicit" style="font-size:0.68rem;">EXPLICIT</span> = vowel written</span>
+      </div>
     </div>
-
-    <!-- Consonants -->
-    <div id="sub-consonants" class="sub-panel active">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="search" id="con-search" placeholder="Search consonant or name…" oninput="filterConsonants()">
-      </div>
-      <div class="filter-pills">
-        <span class="pill active" data-cls="all"  onclick="filterByClass(this)">All 44</span>
-        <span class="pill"        data-cls="mid"  onclick="filterByClass(this)" style="color:var(--cls-mid);">Mid (9)</span>
-        <span class="pill"        data-cls="high" onclick="filterByClass(this)" style="color:var(--cls-high);">High (11)</span>
-        <span class="pill"        data-cls="low"  onclick="filterByClass(this)" style="color:var(--cls-low);">Low (24)</span>
-      </div>
-      <div class="matrix-grid" id="consonant-grid"></div>
-    </div>
-
-    <!-- Vowels -->
-    <div id="sub-vowels" class="sub-panel">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="search" id="vow-search" placeholder="Search vowel or romanization…" oninput="filterVowels()">
-      </div>
-      <div class="filter-pills">
-        <span class="pill active" data-len="all"   onclick="filterByLen(this)">All 32</span>
-        <span class="pill"        data-len="short"  onclick="filterByLen(this)" style="color:var(--t-fall);">Short</span>
-        <span class="pill"        data-len="long"   onclick="filterByLen(this)" style="color:var(--t-low);">Long</span>
-      </div>
-      <div class="matrix-grid" id="vowel-grid"></div>
-    </div>
-
-    <!-- Live / Dead syllables -->
-    <div id="sub-syllables" class="sub-panel">
-      <div style="display:grid;grid-template-columns:1fr;gap:12px;">
-        <div class="m-card" style="border-left-color:var(--t-low);">
-          <div class="m-header">🟢 Live Syllables <span lang="th">(คำเป็น)</span></div>
-          <div class="m-desc">
-            The syllable's sound can sustain freely — the vocal pathway stays open.<br><br>
-            <b>Signs of a Live syllable:</b>
-            <ul style="margin-left:18px;margin-top:6px;line-height:1.7;">
-              <li>Ends with a <b>long vowel</b> and no final stop (e.g., มา <i>maa</i>)</li>
-              <li>Ends with a <b>nasal</b>: -n (น ณ ร ล ฬ ญ), -m (ม), -ng (ง)</li>
-              <li>Ends with a <b>semi-vowel</b>: -w (ว), -y (ย)</li>
-            </ul>
-          </div>
-        </div>
-        <div class="m-card" style="border-left-color:var(--t-fall);">
-          <div class="m-header">🔴 Dead Syllables <span lang="th">(คำตาย)</span></div>
-          <div class="m-desc">
-            The air column is arrested abruptly — pressure stops suddenly.<br><br>
-            <b>Signs of a Dead syllable:</b>
-            <ul style="margin-left:18px;margin-top:6px;line-height:1.7;">
-              <li>Ends with a <b>short vowel</b> and no final consonant (e.g., จะ <i>ja</i>)</li>
-              <li>Ends with an unreleased <b>stop</b>: -k (ก ข ค ฆ), -p (บ ป พ ฟ ภ), -t (ด ต ถ ท ธ ศ ษ ส…)</li>
-            </ul>
-          </div>
-        </div>
-        <div class="m-card" style="border-left-color:var(--accent);">
-          <div class="m-header">🎵 The ห Leading Rule</div>
-          <div class="m-desc">
-            When <b>ห</b> (high class) leads a low class consonant like ม, น, ง, ว, ล, ย, ร, the <b>ห</b> acts as a class elevator — the pair behaves as <b>High class</b>. This is why หมา (<i>dog</i>) is a Rising tone, not Mid.
-          </div>
-        </div>
-      </div>
+    <div>
+      <div class="label">Syllable Analysis</div>
+      <div class="ivp-result" id="ivp-result"><span style="color:var(--text3);">Awaiting input…</span></div>
     </div>
   </div>
+  <div class="mnemonic-card accent-primary" style="margin-top:16px;">
+    <div class="mnemonic-title">📖 Common Implicit Vowel Patterns</div>
+    <table class="sound-table">
+      <thead><tr><th>Written</th><th>Implied Vowel</th><th>Romanized</th><th>Example</th><th>Rule</th></tr></thead>
+      <tbody>
+        <tr><td>C + C (no marker)</td><td>-o- or -a-</td><td>o / a</td><td class="thai">คน (khon)</td><td>Short inherent vowel between clusters</td></tr>
+        <tr><td>CC at word start</td><td>อะ (a) implied</td><td>a</td><td class="thai">กระ (gra)</td><td>Cluster onset + short a</td></tr>
+        <tr><td>สบ-</td><td>อะ → sa+b</td><td>sa</td><td class="thai">สบาย (sabaai)</td><td>Initial consonant cluster</td></tr>
+        <tr><td>กร-</td><td>อะ between ก+ร</td><td>ga</td><td class="thai">กระทะ (grata)</td><td>Cluster onset implied vowel</td></tr>
+        <tr><td>ทร-</td><td>Reads as /s/ sound</td><td>s</td><td class="thai">ทราย (saai)</td><td>ทร special cluster = /s/</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
-  <!-- ══════════════════════ ANALYZER PANEL ══════════════════════ -->
-  <div id="p-engine" class="view-panel" role="tabpanel">
-    <div class="info-strip">
-      <b>Phonetic Parsing Engine:</b> Type or paste Thai text. Each syllable is decomposed and its tone calculated. Tap 🔊 to hear audio.
-    </div>
-    <div class="engine-grid" style="flex:1;">
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div class="panel-label">
-          Input Array
-          <button class="audio-btn" onclick="speakInputText()" title="Speak full input">🔊</button>
-        </div>
-        <textarea class="thai-textarea" id="analyzer-input"
-          placeholder="กบ, รัก, พูด, ไก่, ห้า…"
-          oninput="runAnalysis()"></textarea>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="choice-btn" style="flex:0;padding:6px 14px;font-size:.8rem;" onclick="clearAnalyzer()">Clear</button>
-          <button class="choice-btn" style="flex:0;padding:6px 14px;font-size:.8rem;" onclick="pasteExample()">Paste Example</button>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div class="panel-label">Real-Time Analysis Trace</div>
-        <div class="trace-output" id="analyzer-output">
-          <p style="color:var(--text-muted);font-size:.88rem;">Awaiting input…</p>
-        </div>
-      </div>
+<!-- ─── MNEMONICS ─── -->
+<section id="p-mnemonics" class="panel">
+  <div class="mnemonic-card accent-mid">
+    <div class="mnemonic-title">🪞 The Mid Class Mirror <span class="badge" style="background:var(--tone-mid-bg);color:var(--tone-mid);">Anchor</span></div>
+    <div class="mnemonic-body">Mid class consonants are stable anchors. <b>Whatever tone mark appears, that exact tone sounds perfectly</b> — Ek→Low, Tho→Falling, Tri→High, Chattawa→Rising. No surprises.</div>
+  </div>
+  <div class="mnemonic-card accent-fall">
+    <div class="mnemonic-title">🏴‍☠️ The Low Class Rebel Shift <span class="badge" style="background:var(--tone-fall-bg);color:var(--tone-fall);">Frequency Jump</span></div>
+    <div class="mnemonic-body">Low class with tone marks defies expectations — they jump one level higher: <b>Mai Ek (่) → Falling</b>, <b>Mai Tho (้) → High</b>. Think of the rebel climbing above its station.</div>
+  </div>
+  <div class="mnemonic-card accent-high">
+    <div class="mnemonic-title">💥 Dead Syllable Choke-Spike <span class="badge" style="background:var(--tone-high-bg);color:var(--tone-high);">Pressure Rule</span></div>
+    <div class="mnemonic-body">Unmarked Low Class + <b>short</b> dead vowel → <b>High Tone ˊ</b> (air pressure spike). Long dead vowel → <b>Falling ˆ</b>. The abrupt stop "chokes" the pitch upward.</div>
+  </div>
+  <div class="mnemonic-card accent-low">
+    <div class="mnemonic-title">🍏 Baseline Syllable Checklist <span class="badge" style="background:var(--tone-low-bg);color:var(--tone-low);">Foundation</span></div>
+    <div class="mnemonic-body"><b>Live</b> (คำเป็น): long vowel or nasal ending → Mid Tone baseline.<br/><b>Dead</b> (คำตาย): stop consonant or short vowel → Low or High depending on class.</div>
+  </div>
+  <div class="mnemonic-card accent-primary">
+    <div class="mnemonic-title">🎵 ห Leading Elevator</div>
+    <div class="mnemonic-body"><b class="thai-inline">ห</b> before low class sonorant (ม น ง ว ล ย ร) → acts as <b>High Class</b>. <b class="thai-inline">หมา</b> = rising ˇ, <b class="thai-inline">หนาว</b> = rising ˇ, <b class="thai-inline">หวาน</b> = rising ˇ. ห is silent but it carries the class.</div>
+  </div>
+  <div class="mnemonic-card" style="border-left:4px solid var(--cls-mid);">
+    <div class="mnemonic-title">🔵 อ Leading Silencer — อ นำ</div>
+    <div class="mnemonic-body">Silent <b class="thai-inline">อ</b> (mid class) before <b class="thai-inline">ย</b> or <b class="thai-inline">ว</b> elevates them to <b>Mid Class</b> behavior. <b class="thai-inline">อยู่</b> (yuu) with Mai Ek → Low Tone. The อ is invisible in pronunciation but controls the rule engine.</div>
+  </div>
+  <div class="mnemonic-card accent-rise" style="margin-top:0;">
+    <div class="mnemonic-title">🕳️ The Invisible Vowel Rule</div>
+    <div class="mnemonic-body">Thai frequently omits the short inherent vowel /o/ or /a/ between consonants. <b class="thai-inline">คน</b> = kh+<b>o</b>+n. <b class="thai-inline">กระ</b> = g+r+<b>a</b>. When two consonants appear without a vowel marker, assume a short inherent vowel is hiding between them.</div>
+  </div>
+  <div class="mnemonic-card" style="border-left:4px solid #bc8cff;">
+    <div class="mnemonic-title">📈 Pitch Contour Memory Aid</div>
+    <div class="mnemonic-body">
+      <b>Mid —</b> Flat line, no movement.<br/>
+      <b>Low ˋ</b> Slightly below mid, gently descends and holds.<br/>
+      <b>Falling ˆ</b> Starts high, curves sharply all the way down.<br/>
+      <b>High ˊ</b> Starts mid, rises high, holds and slightly falls at end.<br/>
+      <b>Rising ˇ</b> Dips low first, then climbs steeply to the top.<br/>
+      Use the Rule Calculator to see each pitch contour animated visually.
     </div>
   </div>
+</section>
 
-  <!-- ══════════════════════ MNEMONICS PANEL ══════════════════════ -->
-  <div id="p-mnemo" class="view-panel" role="tabpanel">
-    <div class="info-strip">
-      <b>Memory Shortcuts:</b> These conceptual anchors map the underlying logic of Thai tones to intuitive mental models.
+<!-- ─── PRACTICE GAME ─── -->
+<section id="p-game" class="panel">
+  <div class="info-banner"><b>Interactive Practice:</b> Tap 🔊 to verify audio. Correct answers are auto-logged to your SRS deck.</div>
+  <div class="game-arena">
+    <!-- Tone Game -->
+    <div class="game-pod">
+      <div class="game-pod-header">
+        <div class="game-pod-title">💬 Word Tone Practice</div>
+        <div class="game-score">Score: <span id="game-score-val">0</span> / <span id="game-total-val">0</span></div>
+        <div id="game-conn-status" style="margin-top:4px;"></div>
+      </div>
+      <div class="game-target">
+        <span id="g-word-target" class="thai">---</span>
+        <button class="speak-btn" style="width:38px;height:38px;font-size:1.1rem;" onclick="speakGameWord()">🔊</button>
+      </div>
+      <div class="game-meta" id="g-word-meta">Tap "New Round" to start…</div>
+      <div class="game-options" id="tone-options">
+        <button class="game-opt" data-tone="mid"     onclick="submitGameGuess('mid')">Mid Tone<span class="lbl">—</span></button>
+        <button class="game-opt" data-tone="low"     onclick="submitGameGuess('low')">Low Tone<span class="lbl">ˋ</span></button>
+        <button class="game-opt" data-tone="falling" onclick="submitGameGuess('falling')">Falling<span class="lbl">ˆ</span></button>
+        <button class="game-opt" data-tone="high"    onclick="submitGameGuess('high')">High Tone<span class="lbl">ˊ</span></button>
+        <button class="game-opt" data-tone="rising"  onclick="submitGameGuess('rising')">Rising<span class="lbl">ˇ</span></button>
+      </div>
+      <div class="game-feedback" id="g-feedback-box"></div>
+      <button class="btn btn-primary btn-full" id="g-next-btn" style="display:none;" onclick="generateNewGameRound()">Next Word →</button>
+      <button class="btn btn-full" id="g-start-btn" onclick="generateNewGameRound()">New Round</button>
     </div>
-    <div class="m-grid">
-      <div class="m-card" style="border-left-color:var(--cls-mid);">
-        <div class="m-header">🪞 The Mid Class Mirror <span class="m-tag" style="background:var(--cls-mid-bg);color:var(--cls-mid);">Perfect Map</span></div>
-        <div class="m-desc">Mid class consonants are perfectly obedient. Whatever tone mark is written, that <i>exact</i> tone comes out. Ek → Low, Tho → Falling, Tri → High, Chattawa → Rising. No surprises.</div>
-      </div>
-      <div class="m-card" style="border-left-color:var(--t-fall);">
-        <div class="m-header">🏴‍☠️ The Low Class Rebel Jump <span class="m-tag" style="background:var(--t-fall-bg);color:var(--t-fall);">+1 Shift</span></div>
-        <div class="m-desc">Low class consonants with a tone mark shift the output one rung <i>higher</i> than you'd expect. Mai Ek normally makes Low → but on Low class it makes <b>Falling</b>. Mai Tho normally makes Falling → but on Low class it makes <b>High</b>. Rebel jump!</div>
-      </div>
-      <div class="m-card" style="border-left-color:var(--t-high);">
-        <div class="m-header">💥 The Dead Syllable Pressure Spike <span class="m-tag" style="background:var(--t-high-bg);color:var(--t-high);">Air Burst</span></div>
-        <div class="m-desc">Unmarked Low class + Short dead stop (e.g., รัก) can't release the air pressure — it spikes into <b>High</b>. A long vowel dead stop (e.g., พูด) has room to climb then drop: <b>Falling</b>. Think of a balloon — tiny fast pop vs. slow release arc.</div>
-      </div>
-      <div class="m-card" style="border-left-color:var(--t-rise);">
-        <div class="m-header">🌄 High Class Natural Rise <span class="m-tag" style="background:var(--t-rise-bg);color:var(--t-rise);">Default Up</span></div>
-        <div class="m-desc">Unmarked High class consonants in live syllables (e.g., ขา) naturally produce a <b>Rising</b> tone. Think "High class = high ambitions" — they rise by default, not fall.</div>
-      </div>
-      <div class="m-card" style="border-left-color:var(--t-low);">
-        <div class="m-header">🔑 The ห Elevator <span class="m-tag" style="background:var(--t-low-bg);color:var(--t-low);">Class Lift</span></div>
-        <div class="m-desc">ห (high class) silently elevates the class of a following Low class consonant: หมา, หนา, หนัก all behave as High class even though ม, น are Low. ห provides the "elevator" — you don't hear it but it changes everything.</div>
-      </div>
-      <div class="m-card" style="border-left-color:var(--t-mid);">
-        <div class="m-header">🪨 Mid Class Default Anchor <span class="m-tag" style="background:var(--t-mid-bg);color:var(--t-mid);">Ground Level</span></div>
-        <div class="m-desc">Unmarked Mid class in a live syllable is your reference zero: flat <b>Mid</b> tone. Unmarked Mid class in a dead syllable drops to <b>Low</b>. Death drags it down.</div>
-      </div>
-    </div>
-  </div>
 
-  <!-- ══════════════════════ GAME PANEL ══════════════════════ -->
-  <div id="p-game" class="view-panel" role="tabpanel">
-    <div class="info-strip">
-      <b>Tone Practice Game:</b> Identify the tone of the displayed word using only the Thai script rules — no cheating with audio! Tap 🔊 after guessing.
-    </div>
-    <div class="game-layout">
-
-      <div class="game-score-row">
-        <div class="score-chip">Score<span id="g-score">0</span></div>
-        <div class="score-chip">Total<span id="g-total">0</span></div>
-        <div class="score-chip">Streak<span id="g-streak">0</span></div>
-        <div class="score-chip">Best<span id="g-best">0</span></div>
+    <!-- Consonant Class Game -->
+    <div class="game-pod">
+      <div class="game-pod-header">
+        <div class="game-pod-title">🛡️ Consonant Class Quiz</div>
+        <div class="game-score">Score: <span id="g-con-score">0</span> / <span id="g-con-total">0</span></div>
       </div>
-
-      <div id="g-conn-tag"></div>
-
-      <div class="game-word-card">
-        <div class="game-word thai" id="g-word">---</div>
-        <button class="audio-btn" style="width:42px;height:42px;font-size:1.1rem;" onclick="speakGame()" title="Hear word (after guessing)">🔊</button>
-        <div class="game-meta" id="g-meta">Initializing…</div>
+      <div class="game-target">
+        <span id="g-consonant-target" class="thai">---</span>
+        <button class="speak-btn" style="width:38px;height:38px;font-size:1.1rem;" onclick="speakGameConsonant()">🔊</button>
       </div>
-
-      <div class="options-grid">
-        <button class="game-btn" onclick="guess('mid')">Mid Tone —</button>
-        <button class="game-btn" onclick="guess('low')">Low Tone ˋ</button>
-        <button class="game-btn" onclick="guess('falling')">Falling ˆ</button>
-        <button class="game-btn" onclick="guess('high')">High Tone ˊ</button>
-        <button class="game-btn" onclick="guess('rising')">Rising ˇ</button>
+      <div class="game-meta" id="g-consonant-meta">Tap "New Round" to start…</div>
+      <div class="game-options">
+        <button class="game-opt" style="border-color:var(--cls-mid);"  onclick="submitConsonantGuess('mid')">Mid Class<span class="lbl">กลาง</span></button>
+        <button class="game-opt" style="border-color:var(--cls-high);" onclick="submitConsonantGuess('high')">High Class<span class="lbl">สูง</span></button>
+        <button class="game-opt" style="border-color:var(--cls-low);"  onclick="submitConsonantGuess('low')">Low Class<span class="lbl">ต่ำ</span></button>
       </div>
-
-      <div class="game-feedback" id="g-feedback"></div>
-      <button class="next-btn" id="g-next" onclick="newRound()">Next Word →</button>
+      <div class="game-feedback" id="g-consonant-feedback"></div>
+      <button class="btn btn-primary btn-full" id="g-con-next-btn" style="display:none;" onclick="generateNewConsonantRound()">Next Character →</button>
+      <button class="btn btn-full" id="g-con-start-btn" onclick="generateNewConsonantRound()">New Round</button>
     </div>
   </div>
+</section>
 
-</div><!-- /.app-shell -->
+<!-- ─── ALPHABET COMPARE ─── -->
+<section id="p-compare" class="panel">
+  <div class="info-banner"><b>Font Comparison:</b> Side-by-side view of Thai characters in the traditional Sarabun looped style vs your selected modern font. Switch fonts in the nav bar.</div>
+  <input class="compare-search" id="compareSearch" placeholder="Search Thai character…" oninput="renderAlphabetComparison()">
+  <div class="compare-grid" id="compare-grid"></div>
+</section>
 
-<!-- ══════════════════════ SETTINGS MODAL ══════════════════════ -->
-<div class="modal-overlay" id="settings-overlay" onclick="closeSettingsOutside(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title">⚙️ Settings</span>
-      <button class="modal-close" onclick="closeSettings()">✕</button>
+<!-- ─── SRS ─── -->
+<section id="p-srs" class="panel">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+    <div>
+      <div style="font-size:1rem;font-weight:800;margin-bottom:2px;">📚 Spaced Repetition Log</div>
+      <div style="font-size:0.8rem;color:var(--text2);">Words auto-log when you answer the practice game or use the calculator.</div>
     </div>
-
-    <div class="setting-row">
-      <div>
-        <div class="setting-label">Dark Mode</div>
-        <div class="setting-sub">Switch between light and dark theme</div>
-      </div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="dark-toggle" onchange="toggleDarkFromSettings(this)">
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
-
-    <div class="setting-row">
-      <div>
-        <div class="setting-label">Show Example Words</div>
-        <div class="setting-sub">Display example card in Calculator output</div>
-      </div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="examples-toggle" checked onchange="saveSetting('showExamples',this.checked)">
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
-
-    <div class="setting-row">
-      <div>
-        <div class="setting-label">Auto-Speak Answers</div>
-        <div class="setting-sub">Read out tone name when Calculator resolves</div>
-      </div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="autospeak-toggle" onchange="saveSetting('autoSpeak',this.checked)">
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
-
-    <div class="setting-row">
-      <div>
-        <div class="setting-label">Thai Font Size</div>
-        <div class="setting-sub">Scale for Thai glyphs in Reference grids</div>
-      </div>
-      <select class="size-select" id="font-size-select" onchange="setThaiFontSize(this.value)">
-        <option value="1.4">Small</option>
-        <option value="1.8" selected>Medium</option>
-        <option value="2.4">Large</option>
-        <option value="3">X-Large</option>
-      </select>
-    </div>
-
-    <div class="setting-row">
-      <div>
-        <div class="setting-label">Reset Progress</div>
-        <div class="setting-sub">Clear XP, streak, and game history</div>
-      </div>
-      <button class="choice-btn" style="flex:0;padding:7px 14px;color:var(--t-fall);border-color:var(--t-fall);font-size:.82rem;" onclick="resetProgress()">Reset</button>
-    </div>
-
-    <div style="margin-top:16px;font-size:.75rem;color:var(--text-muted);text-align:center;">
-      Thai Tone Master Pro v2.0 · Works Offline · PWA Ready
+    <div class="srs-stats">
+      <div class="srs-stat"><span class="srs-stat-n" id="srs-count-new" style="color:var(--srs-new);">0</span><span class="srs-stat-l">New</span></div>
+      <div class="srs-stat"><span class="srs-stat-n" id="srs-count-learn" style="color:var(--srs-learn);">0</span><span class="srs-stat-l">Learning</span></div>
+      <div class="srs-stat"><span class="srs-stat-n" id="srs-count-review" style="color:var(--srs-review);">0</span><span class="srs-stat-l">Review</span></div>
+      <div class="srs-stat"><span class="srs-stat-n" id="srs-count-mature" style="color:var(--srs-mature);">0</span><span class="srs-stat-l">Mature</span></div>
     </div>
   </div>
-</div>
+  <div class="srs-actions">
+    <button class="btn" onclick="renderSrsTable()">🔄 Refresh</button>
+    <button class="btn" onclick="exportSrsData()">⬇ Export JSON</button>
+    <button class="btn" onclick="document.getElementById('srs-import').click()">⬆ Import JSON</button>
+    <input id="srs-import" type="file" accept=".json" style="display:none" onchange="importSrsData(event)">
+    <button class="btn btn-danger" onclick="clearSrsData()">🗑 Clear All</button>
+  </div>
+  <div class="srs-table-wrap">
+    <table class="srs-table">
+      <thead>
+        <tr>
+          <th>Word</th><th>Tone</th><th>Meaning</th><th>Stage</th>
+          <th>✓</th><th>✗</th><th>Streak</th><th>Interval</th><th>Next Review</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="srs-table-body">
+        <tr><td colspan="10" style="text-align:center;color:var(--text3);padding:32px;">No entries yet — answer words in the Practice tab to build your deck.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
-<!-- ══════════════════════ SCRIPTS ══════════════════════ -->
+</main>
+<div id="toast"></div>
+
+<!-- ════════════ SCRIPT ════════════ -->
 <script>
-/* ─────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════
    DATA
-───────────────────────────────────────────────────────────── */
-const DB = {
-  "mid-none-live":       { type:"mid",     tone:"Mid Tone —",     desc:"Mid initial in a live syllable. Flat, baseline pitch — no modulation.", word:"กา",  roman:"kaa",  meaning:"'crow'" },
-  "mid-none-dead":       { type:"low",     tone:"Low Tone ˋ",     desc:"Mid initial checked by a dead boundary. The pitch drops below baseline.", word:"กบ",  roman:"gop",  meaning:"'frog'" },
-  "mid-ek":              { type:"low",     tone:"Low Tone ˋ",     desc:"Mid initial + Mai Ek. Standard low tracking output — below baseline.", word:"ไก่", roman:"gai",  meaning:"'chicken'" },
-  "mid-tho":             { type:"falling", tone:"Falling Tone ˆ", desc:"Mid initial + Mai Tho. Pitch crests high then drops sharply downward.", word:"เก้า",roman:"gao",  meaning:"'nine'" },
-  "mid-tri":             { type:"high",    tone:"High Tone ˊ",    desc:"Mid initial + Mai Tri. Elevated flat pitch — crisp and sharp.", word:"โต๊ะ",roman:"toh",  meaning:"'table'" },
-  "mid-chattawa":        { type:"rising",  tone:"Rising Tone ˇ",  desc:"Mid initial + Mai Chattawa. Dips low then curls upward to finish high.", word:"ตั๋ว",roman:"tua",  meaning:"'ticket'" },
-
-  "high-none-live":      { type:"rising",  tone:"Rising Tone ˇ",  desc:"High class inherently carries a rising contour on live syllables.", word:"ขา",  roman:"khaa", meaning:"'leg'" },
-  "high-none-dead":      { type:"low",     tone:"Low Tone ˋ",     desc:"High class slammed into a dead boundary drops output to low pitch.", word:"ไข่", roman:"khai", meaning:"'egg'" },
-  "high-ek":             { type:"low",     tone:"Low Tone ˋ",     desc:"High initial + Mai Ek locks output into low tracking frequency.", word:"สี่",  roman:"see",  meaning:"'four'" },
-  "high-tho":            { type:"falling", tone:"Falling Tone ˆ", desc:"High initial + Mai Tho forces pitch to peak then slide off sharply.", word:"ห้า",  roman:"haa",  meaning:"'five'" },
-
-  "low-none-live":       { type:"mid",     tone:"Mid Tone —",     desc:"Low initial in a live syllable rests on the flat, baseline mid channel.", word:"มา",  roman:"maa",  meaning:"'to come'" },
-  "low-none-dead-short": { type:"high",    tone:"High Tone ˊ",    desc:"Compressed short dead stop spikes air pressure into the high tone zone instantly.", word:"รัก",  roman:"rak",  meaning:"'to love'" },
-  "low-none-dead-long":  { type:"falling", tone:"Falling Tone ˆ", desc:"Long vowel dead stop gives space to crest high and arc down — falling contour.", word:"พูด",  roman:"poot", meaning:"'to speak'" },
-  "low-ek":              { type:"falling", tone:"Falling Tone ˆ", desc:"Rebel Jump: Low class + Mai Ek shifts one rung up → Falling (not Low).", word:"พี่",  roman:"phee", meaning:"'older sibling'" },
-  "low-tho":             { type:"high",    tone:"High Tone ˊ",    desc:"Rebel Jump: Low class + Mai Tho leaps two rungs → High (not Falling).", word:"ม้า",  roman:"maa",  meaning:"'horse'" },
+═══════════════════════════════════════════ */
+const database = {
+  "mid-none-live":        { type:"mid",     tone:"Mid Tone —",     desc:"Mid class + live ending → flat baseline pitch, no movement.", word:"กา",  details:"kaa • 'crow'" },
+  "mid-none-dead":        { type:"low",     tone:"Low Tone ˋ",     desc:"Mid class + dead ending → pitch drops below baseline.",         word:"กบ",  details:"gop • 'frog'" },
+  "mid-ek":               { type:"low",     tone:"Low Tone ˋ",     desc:"Mid + Mai Ek → standard low tone.",                            word:"ไก่", details:"gai • 'chicken'" },
+  "mid-tho":              { type:"falling", tone:"Falling Tone ˆ", desc:"Mid + Mai Tho → peak early, then drops sharply.",              word:"เก้า",details:"gao • 'nine'" },
+  "mid-tri":              { type:"high",    tone:"High Tone ˊ",    desc:"Mid + Mai Tri → crisp high zone, rises and holds.",            word:"โต๊ะ",details:"toh • 'table'" },
+  "mid-chattawa":         { type:"rising",  tone:"Rising Tone ˇ",  desc:"Mid + Mai Chattawa → dips low first, then swoops up.",         word:"ตั๋ว",details:"tua • 'ticket'" },
+  "high-none-live":       { type:"rising",  tone:"Rising Tone ˇ",  desc:"High class + live → deep rising contour.",                     word:"ขา",  details:"khaa • 'leg'" },
+  "high-none-dead":       { type:"low",     tone:"Low Tone ˋ",     desc:"High class + dead stop → drops to low zone.",                  word:"ไข่", details:"khai • 'egg'" },
+  "high-ek":              { type:"low",     tone:"Low Tone ˋ",     desc:"High + Mai Ek → locks into low frequency.",                    word:"สี่", details:"see • 'four'" },
+  "high-tho":             { type:"falling", tone:"Falling Tone ˆ", desc:"High + Mai Tho → crest then slides sharply off.",              word:"ห้า", details:"haa • 'five'" },
+  "low-none-live":        { type:"mid",     tone:"Mid Tone —",     desc:"Low class + live ending → flat mid baseline.",                  word:"มา",  details:"maa • 'to come'" },
+  "low-none-dead-short":  { type:"high",    tone:"High Tone ˊ",    desc:"Low + short dead → air compression spikes pitch instantly.",    word:"รัก", details:"rak • 'to love'" },
+  "low-none-dead-long":   { type:"falling", tone:"Falling Tone ˆ", desc:"Low + long dead → extended stop forces peak then drop.",        word:"พูด", details:"poot • 'to speak'" },
+  "low-ek":               { type:"falling", tone:"Falling Tone ˆ", desc:"Rebel Jump: Low + Mai Ek → Falling (one step above normal).",   word:"พี่", details:"phee • 'older sibling'" },
+  "low-tho":              { type:"high",    tone:"High Tone ˊ",    desc:"Rebel Jump: Low + Mai Tho → High (one step above normal).",     word:"ม้า", details:"maa • 'horse'" }
 };
 
-const CONSONANTS = [
-  {char:"ก",name:"Kor Kai",  cls:"mid",  init:"k",   fin:"k",  meaning:"Chicken"},
-  {char:"จ",name:"Jor Jan",  cls:"mid",  init:"j",   fin:"t",  meaning:"Plate"},
-  {char:"ด",name:"Dor Dek",  cls:"mid",  init:"d",   fin:"t",  meaning:"Child"},
-  {char:"ต",name:"Tor Tao",  cls:"mid",  init:"t",   fin:"t",  meaning:"Turtle"},
-  {char:"บ",name:"Bor Baimai",cls:"mid", init:"b",   fin:"p",  meaning:"Leaf"},
-  {char:"ป",name:"Por Pla",  cls:"mid",  init:"p",   fin:"p",  meaning:"Fish"},
-  {char:"อ",name:"Or Ang",   cls:"mid",  init:"vowel",fin:"-", meaning:"Basin"},
-  {char:"ฎ",name:"Dor Chada",cls:"mid",  init:"d",   fin:"t",  meaning:"Headdress"},
-  {char:"ฏ",name:"Tor Patak",cls:"mid",  init:"t",   fin:"t",  meaning:"Goad"},
-  {char:"ข",name:"Khor Khai",cls:"high", init:"kh",  fin:"k",  meaning:"Egg"},
-  {char:"ฃ",name:"Khor Khuat",cls:"high",init:"kh",  fin:"k",  meaning:"Bottle (Obs.)"},
-  {char:"ฉ",name:"Chor Ching",cls:"high",init:"ch",  fin:"-",  meaning:"Cymbals"},
-  {char:"ถ",name:"Thor Thung",cls:"high",init:"th",  fin:"t",  meaning:"Sack"},
-  {char:"ฐ",name:"Thor Than", cls:"high",init:"th",  fin:"t",  meaning:"Pedestal"},
-  {char:"ผ",name:"Phor Phung",cls:"high",init:"ph",  fin:"-",  meaning:"Bee"},
-  {char:"ฝ",name:"For Fa",   cls:"high", init:"f",   fin:"-",  meaning:"Lid"},
-  {char:"ศ",name:"Sor Sala",  cls:"high",init:"s",   fin:"t",  meaning:"Pavilion"},
-  {char:"ษ",name:"Sor Ruesi", cls:"high",init:"s",   fin:"t",  meaning:"Hermit"},
-  {char:"ส",name:"Sor Suea",  cls:"high",init:"s",   fin:"t",  meaning:"Tiger"},
-  {char:"ห",name:"Hor Hip",   cls:"high",init:"h",   fin:"-",  meaning:"Chest"},
-  {char:"ค",name:"Khor Khwai",cls:"low", init:"kh",  fin:"k",  meaning:"Buffalo"},
-  {char:"ฅ",name:"Khor Khon", cls:"low", init:"kh",  fin:"k",  meaning:"Person (Obs.)"},
-  {char:"ฆ",name:"Khor Rakang",cls:"low",init:"kh",  fin:"k",  meaning:"Bell"},
-  {char:"ง",name:"Ngor Ngu",  cls:"low", init:"ng",  fin:"ng", meaning:"Snake"},
-  {char:"ช",name:"Chor Chang",cls:"low", init:"ch",  fin:"t",  meaning:"Elephant"},
-  {char:"ซ",name:"Sor So",    cls:"low", init:"s",   fin:"t",  meaning:"Chain"},
-  {char:"ฌ",name:"Chor Chee", cls:"low", init:"ch",  fin:"-",  meaning:"Tree"},
-  {char:"ญ",name:"Yor Ying",  cls:"low", init:"y",   fin:"n",  meaning:"Woman"},
-  {char:"ฑ",name:"Thor Montho",cls:"low",init:"th",  fin:"t",  meaning:"Montho"},
-  {char:"ฒ",name:"Thor Phuthao",cls:"low",init:"th", fin:"t",  meaning:"Elderly"},
-  {char:"ณ",name:"Nor Nen",   cls:"low", init:"n",   fin:"n",  meaning:"Novice Monk"},
-  {char:"ท",name:"Thor Thahan",cls:"low",init:"th",  fin:"t",  meaning:"Soldier"},
-  {char:"ธ",name:"Thor Thong",cls:"low", init:"th",  fin:"t",  meaning:"Flag"},
-  {char:"น",name:"Nor Nu",    cls:"low", init:"n",   fin:"n",  meaning:"Mouse"},
-  {char:"พ",name:"Phor Phan", cls:"low", init:"ph",  fin:"p",  meaning:"Tray"},
-  {char:"ฟ",name:"For Fan",   cls:"low", init:"f",   fin:"p",  meaning:"Teeth"},
-  {char:"ภ",name:"Phor Samphao",cls:"low",init:"ph", fin:"p",  meaning:"Sailboat"},
-  {char:"ม",name:"Mor Ma",    cls:"low", init:"m",   fin:"m",  meaning:"Horse"},
-  {char:"ย",name:"Yor Yak",   cls:"low", init:"y",   fin:"y",  meaning:"Giant"},
-  {char:"ร",name:"Ror Ruea",  cls:"low", init:"r",   fin:"n",  meaning:"Boat"},
-  {char:"ล",name:"Lor Ling",  cls:"low", init:"l",   fin:"n",  meaning:"Monkey"},
-  {char:"ว",name:"Wor Waen",  cls:"low", init:"w",   fin:"w",  meaning:"Ring"},
-  {char:"ฬ",name:"Lor Chula", cls:"low", init:"l",   fin:"n",  meaning:"Kite"},
-  {char:"ฮ",name:"Hor Nokhuak",cls:"low",init:"h",   fin:"-",  meaning:"Owl"},
+const consonantsData = [
+  {char:"ก",name:"Kor Kai",   class:"mid", sound:"k/k",   meaning:"Chicken"},
+  {char:"จ",name:"Jor Jan",   class:"mid", sound:"j/t",   meaning:"Plate"},
+  {char:"ด",name:"Dor Dek",   class:"mid", sound:"d/t",   meaning:"Child"},
+  {char:"ต",name:"Tor Tao",   class:"mid", sound:"t/t",   meaning:"Turtle"},
+  {char:"บ",name:"Bor Baimai",class:"mid", sound:"b/p",   meaning:"Leaf"},
+  {char:"ป",name:"Por Pla",   class:"mid", sound:"p/p",   meaning:"Fish"},
+  {char:"อ",name:"Or Ang",    class:"mid", sound:"vowel/-",meaning:"Basin"},
+  {char:"ฎ",name:"Dor Chada", class:"mid", sound:"d/t",   meaning:"Headdress"},
+  {char:"ฏ",name:"Tor Patak", class:"mid", sound:"t/t",   meaning:"Goad"},
+  {char:"ข",name:"Khor Khai", class:"high",sound:"kh/k",  meaning:"Egg"},
+  {char:"ฃ",name:"Khor Khuat",class:"high",sound:"kh/k",  meaning:"Bottle (Obsolete)"},
+  {char:"ฉ",name:"Chor Ching",class:"high",sound:"ch/-",  meaning:"Cymbals"},
+  {char:"ถ",name:"Thor Thung",class:"high",sound:"th/t",  meaning:"Sack"},
+  {char:"ฐ",name:"Thor Than", class:"high",sound:"th/t",  meaning:"Pedestal"},
+  {char:"ผ",name:"Phor Pheung",class:"high",sound:"ph/-", meaning:"Bee"},
+  {char:"ฝ",name:"For Fa",    class:"high",sound:"f/-",   meaning:"Lid"},
+  {char:"ศ",name:"Sor Sala",  class:"high",sound:"s/t",   meaning:"Pavilion"},
+  {char:"ษ",name:"Sor Ruesi", class:"high",sound:"s/t",   meaning:"Hermit"},
+  {char:"ส",name:"Sor Suea",  class:"high",sound:"s/t",   meaning:"Tiger"},
+  {char:"ห",name:"Hor Hip",   class:"high",sound:"h/-",   meaning:"Chest"},
+  {char:"ค",name:"Khor Khwai",class:"low", sound:"kh/k",  meaning:"Buffalo"},
+  {char:"ฅ",name:"Khor Khon", class:"low", sound:"kh/k",  meaning:"Person (Obsolete)"},
+  {char:"ฆ",name:"Khor Rakang",class:"low",sound:"kh/k",  meaning:"Bell"},
+  {char:"ง",name:"Ngor Ngu",  class:"low", sound:"ng/ng", meaning:"Snake"},
+  {char:"ช",name:"Chor Chang",class:"low", sound:"ch/t",  meaning:"Elephant"},
+  {char:"ซ",name:"Sor So",    class:"low", sound:"s/t",   meaning:"Chain"},
+  {char:"ฌ",name:"Chor Chee", class:"low", sound:"ch/-",  meaning:"Tree"},
+  {char:"ญ",name:"Yor Ying",  class:"low", sound:"y/n",   meaning:"Woman"},
+  {char:"ฑ",name:"Thor Montho",class:"low",sound:"th/t",  meaning:"Montho"},
+  {char:"ฒ",name:"Thor Phuthao",class:"low",sound:"th/t", meaning:"Elderly Person"},
+  {char:"ณ",name:"Nor Nen",   class:"low", sound:"n/n",   meaning:"Novice Monk"},
+  {char:"ท",name:"Thor Thahan",class:"low",sound:"th/t",  meaning:"Soldier"},
+  {char:"ธ",name:"Thor Thong",class:"low", sound:"th/t",  meaning:"Flag"},
+  {char:"น",name:"Nor Nu",    class:"low", sound:"n/n",   meaning:"Mouse"},
+  {char:"พ",name:"Phor Phan", class:"low", sound:"ph/p",  meaning:"Tray"},
+  {char:"ฟ",name:"For Fan",   class:"low", sound:"f/p",   meaning:"Teeth"},
+  {char:"ภ",name:"Phor Samphao",class:"low",sound:"ph/p", meaning:"Sailboat"},
+  {char:"ม",name:"Mor Ma",    class:"low", sound:"m/m",   meaning:"Horse"},
+  {char:"ย",name:"Yor Yak",   class:"low", sound:"y/y",   meaning:"Giant"},
+  {char:"ร",name:"Ror Ruea",  class:"low", sound:"r/n",   meaning:"Boat"},
+  {char:"ล",name:"Lor Ling",  class:"low", sound:"l/n",   meaning:"Monkey"},
+  {char:"ว",name:"Wor Waen",  class:"low", sound:"w/w",   meaning:"Ring"},
+  {char:"ฬ",name:"Lor Chula", class:"low", sound:"l/n",   meaning:"Kite"},
+  {char:"ฮ",name:"Hor Nokhuak",class:"low",sound:"h/-",   meaning:"Owl"}
 ];
 
-const VOWELS = [
-  {char:"ะ",  len:"short",rom:"a",   ex:"กะ (ga)"},
-  {char:"า",  len:"long",  rom:"aa",  ex:"กา (gaa)"},
-  {char:"ิ",  len:"short",rom:"i",   ex:"กิ (gi)"},
-  {char:"ี",  len:"long",  rom:"ii",  ex:"กี (gii)"},
-  {char:"ึ",  len:"short",rom:"ue",  ex:"กึ (gue)"},
-  {char:"ื",  len:"long",  rom:"uee", ex:"กือ (guee)"},
-  {char:"ุ",  len:"short",rom:"u",   ex:"กุ (gu)"},
-  {char:"ู",  len:"long",  rom:"uu",  ex:"กู (guu)"},
-  {char:"เะ", len:"short",rom:"e",   ex:"เกะ (ge)"},
-  {char:"เ",  len:"long",  rom:"ee",  ex:"เก (gee)"},
-  {char:"แะ", len:"short",rom:"ae",  ex:"แกะ (gae)"},
-  {char:"แ",  len:"long",  rom:"aee", ex:"แก (gaee)"},
-  {char:"โะ", len:"short",rom:"o",   ex:"โกะ (go)"},
-  {char:"โ",  len:"long",  rom:"oo",  ex:"โก (goo)"},
-  {char:"เาะ",len:"short",rom:"or",  ex:"เกาะ (gor)"},
-  {char:"อ",  len:"long",  rom:"orr", ex:"กอ (gorr)"},
-  {char:"เิะ",len:"short",rom:"oe",  ex:"เกิธ (goe)"},
-  {char:"เอ", len:"long",  rom:"oee", ex:"เจอ (joee)"},
-  {char:"เอียะ",len:"short",rom:"ia", ex:"เกียะ (gia)"},
-  {char:"เอีย",len:"long", rom:"iia", ex:"เกีย (giia)"},
-  {char:"เอือะ",len:"short",rom:"uea",ex:"เกือะ (guea)"},
-  {char:"เอือ",len:"long", rom:"uuea",ex:"เสือ (suuea)"},
-  {char:"อัวะ",len:"short",rom:"ua", ex:"กัวะ (gua)"},
-  {char:"อัว", len:"long", rom:"uua", ex:"ตัว (tuua)"},
-  {char:"ำ",  len:"short",rom:"am",  ex:"รำ (ram)"},
-  {char:"ไ",  len:"short",rom:"ai",  ex:"ไม (mai)"},
-  {char:"ใ",  len:"short",rom:"ai",  ex:"ใจ (jai)"},
-  {char:"เา", len:"short",rom:"ao",  ex:"เภา (pao)"},
-  {char:"ฤ",  len:"short",rom:"ri/rue",ex:"ฤทธิ์ (rit)"},
-  {char:"ฤา", len:"long",  rom:"ruee",ex:"ฤา (ruee)"},
-  {char:"ฦ",  len:"short",rom:"lue", ex:"ฦ (lue)"},
-  {char:"ฦา", len:"long",  rom:"luee",ex:"ฦา (luee)"},
+const vowelsData = [
+  {char:"ะ",  length:"short",transcription:"a",   matching:"กะ (ga)"},
+  {char:"า",  length:"long", transcription:"aa",  matching:"กา (gaa)"},
+  {char:"ิ",  length:"short",transcription:"i",   matching:"กิ (gi)"},
+  {char:"ี",  length:"long", transcription:"ii",  matching:"กี (gii)"},
+  {char:"ึ",  length:"short",transcription:"ue",  matching:"กึ (gue)"},
+  {char:"ื",  length:"long", transcription:"uee", matching:"กือ (guee)"},
+  {char:"ุ",  length:"short",transcription:"u",   matching:"กุ (gu)"},
+  {char:"ู",  length:"long", transcription:"uu",  matching:"กู (guu)"},
+  {char:"เะ", length:"short",transcription:"e",   matching:"เกะ (ge)"},
+  {char:"เ",  length:"long", transcription:"ee",  matching:"เก (gee)"},
+  {char:"แะ", length:"short",transcription:"ae",  matching:"แกะ (gae)"},
+  {char:"แ",  length:"long", transcription:"aee", matching:"แก (gaee)"},
+  {char:"โะ", length:"short",transcription:"o",   matching:"โกะ (go)"},
+  {char:"โ",  length:"long", transcription:"oo",  matching:"โก (goo)"},
+  {char:"เาะ",length:"short",transcription:"or",  matching:"เกาะ (gor)"},
+  {char:"อ",  length:"long", transcription:"orr", matching:"กอ (gorr)"},
+  {char:"เอียะ",length:"short",transcription:"ia",matching:"เกียะ (gia)"},
+  {char:"เอีย",length:"long",transcription:"iia", matching:"เกีย (giia)"},
+  {char:"เอือะ",length:"short",transcription:"uea",matching:"เกือะ (guea)"},
+  {char:"เอือ",length:"long",transcription:"uuea",matching:"เสือ (suuea)"},
+  {char:"อัวะ",length:"short",transcription:"ua", matching:"กัวะ (gua)"},
+  {char:"อัว",length:"long",transcription:"uua",  matching:"ตัว (tuua)"},
+  {char:"ำ",  length:"short",transcription:"am",  matching:"รำ (ram)"},
+  {char:"ไ",  length:"short",transcription:"ai",  matching:"ไม (mai)"},
+  {char:"ใ",  length:"short",transcription:"ai",  matching:"ใจ (jai)"},
+  {char:"เา", length:"short",transcription:"ao",  matching:"เภา (pao)"},
+  {char:"ฤ",  length:"short",transcription:"ri/rue",matching:"ฤทธิ์ (rit)"},
+  {char:"ฤา", length:"long", transcription:"ruee",matching:"ฤา (ruee)"},
+  {char:"ฦ",  length:"short",transcription:"lue", matching:"ฦ (lue)"},
+  {char:"ฦา", length:"long", transcription:"luee",matching:"ฦา (luee)"}
 ];
 
-const OFFLINE_WORDS = [
-  {thai:"คน",  tone:"mid",     meaning:"Person",         details:"khon · Low class + Live"},
-  {thai:"กิน", tone:"mid",     meaning:"To eat",         details:"gin · Mid class + Live"},
-  {thai:"เด็ก",tone:"low",     meaning:"Child",          details:"dek · Mid class + Dead"},
-  {thai:"พูด", tone:"falling", meaning:"To speak",       details:"poot · Low class + Long dead"},
-  {thai:"รัก", tone:"high",    meaning:"To love",        details:"rak · Low class + Short dead"},
-  {thai:"มา",  tone:"mid",     meaning:"To come",        details:"maa · Low class + Live"},
-  {thai:"หมา", tone:"rising",  meaning:"Dog",            details:"maa · ห elevates ม → High class + Live"},
-  {thai:"บ้าน",tone:"falling", meaning:"House",          details:"baan · Mid class + Mai Tho"},
-  {thai:"ไก่", tone:"low",     meaning:"Chicken",        details:"gai · Mid class + Mai Ek"},
-  {thai:"ม้า", tone:"high",    meaning:"Horse",          details:"maa · Low class + Mai Tho"},
-  {thai:"พี่", tone:"falling", meaning:"Older sibling",  details:"phee · Low class + Mai Ek"},
-  {thai:"สี่", tone:"low",     meaning:"Four",           details:"see · High class + Mai Ek"},
-  {thai:"ห้า", tone:"falling", meaning:"Five",           details:"haa · High class + Mai Tho"},
-  {thai:"โต๊ะ",tone:"high",   meaning:"Table",          details:"toh · Mid class + Mai Tri"},
-  {thai:"ตั๋ว",tone:"rising", meaning:"Ticket",         details:"tua · Mid class + Mai Chattawa"},
-  {thai:"ขา",  tone:"rising",  meaning:"Leg",            details:"khaa · High class + Live"},
-  {thai:"กา",  tone:"mid",     meaning:"Crow",           details:"kaa · Mid class + Live"},
-  {thai:"ใจ",  tone:"mid",     meaning:"Heart/Mind",     details:"jai · Mid class + Live"},
-  {thai:"น้ำ", tone:"falling", meaning:"Water",          details:"naam · Low class + Mai Tho"},
-  {thai:"ข้าว",tone:"falling", meaning:"Rice",           details:"khao · High class + Mai Tho"},
+const offlineVocabularyBackup = [
+  {thai:"คน", tone:"mid",     meaning:"Person",         details:"khon • Low class + Live"},
+  {thai:"กิน",tone:"mid",     meaning:"To eat",         details:"gin • Mid class + Live"},
+  {thai:"เด็ก",tone:"low",    meaning:"Child",          details:"dek • Mid class + Dead"},
+  {thai:"พูด",tone:"falling", meaning:"To speak",       details:"poot • Low class + Long dead"},
+  {thai:"รัก",tone:"high",    meaning:"To love",        details:"rak • Low class + Short dead"},
+  {thai:"มา", tone:"mid",     meaning:"To come",        details:"maa • Low class + Live"},
+  {thai:"ไป", tone:"mid",     meaning:"To go",          details:"pai • Mid class + Live"},
+  {thai:"บ้าน",tone:"falling",meaning:"House",          details:"baan • Mid class + Mai Tho"},
+  {thai:"ไก่",tone:"low",     meaning:"Chicken",        details:"gai • Mid class + Mai Ek"},
+  {thai:"ม้า",tone:"high",    meaning:"Horse",          details:"maa • Low class + Mai Tho"},
+  {thai:"พี่",tone:"falling", meaning:"Older sibling",  details:"phee • Low class + Mai Ek"},
+  {thai:"สี่",tone:"low",     meaning:"Four",           details:"see • High class + Mai Ek"},
+  {thai:"ห้า",tone:"falling", meaning:"Five",           details:"haa • High class + Mai Tho"},
+  {thai:"โต๊ะ",tone:"high",  meaning:"Table",          details:"toh • Mid class + Mai Tri"},
+  {thai:"ตั๋ว",tone:"rising", meaning:"Ticket",         details:"tua • Mid class + Mai Chattawa"},
+  {thai:"อยู่",tone:"low",   meaning:"To stay/live",    details:"yuu • อ Leading → Mid class + Mai Ek"},
+  {thai:"หนาว",tone:"rising", meaning:"Cold",           details:"naao • ห Leading น → High class + Live"},
+  {thai:"หวาน",tone:"rising", meaning:"Sweet",          details:"waan • ห Leading ว → High class + Live"},
+  {thai:"หลาย",tone:"rising", meaning:"Many",           details:"laai • ห Leading ล → High class + Live"},
+  {thai:"สบาย",tone:"mid",    meaning:"Comfortable",    details:"sabaai • Low class + Live"},
+  {thai:"ใจ", tone:"mid",     meaning:"Heart/mind",     details:"jai • Mid class + Live"},
+  {thai:"ขา", tone:"rising",  meaning:"Leg",            details:"khaa • High class + Live"},
+  {thai:"กา", tone:"mid",     meaning:"Crow",           details:"kaa • Mid class + Live"},
+  {thai:"กบ", tone:"low",     meaning:"Frog",           details:"gop • Mid class + Dead"},
 ];
 
-/* ─────────────────────────────────────────────────────────────
-   STATE & SETTINGS
-───────────────────────────────────────────────────────────── */
-let calcState = {cls:'', mark:'', type:'', vowel:''};
-let pzInst = null;
-
-// Game state
-let gScore=0, gTotal=0, gStreak=0, gBestStreak=0, gAnswered=false, gWord=null;
-
-// Settings (localStorage)
-let settings = {
-  dark: false,
-  showExamples: true,
-  autoSpeak: false,
-  thaiFontSize: '1.8',
+/* ═══════════════════════════════════════════
+   PITCH CONTOUR
+═══════════════════════════════════════════ */
+const PITCH_CONTOURS = {
+  mid:     { points:[0.45,0.48,0.52,0.55,0.58], color:"#58a6ff", label:"Mid (สามัญ) — flat, slight drift" },
+  low:     { points:[0.65,0.72,0.78,0.82,0.82], color:"#3fb950", label:"Low (เอก) — starts low, drops and levels" },
+  falling: { points:[0.25,0.18,0.38,0.72,0.92], color:"#f85149", label:"Falling (โท) — peaks early, drops sharply" },
+  high:    { points:[0.38,0.32,0.22,0.14,0.20], color:"#bc8cff", label:"High (ตรี) — rises high, holds" },
+  rising:  { points:[0.58,0.76,0.86,0.50,0.12], color:"#ffa657", label:"Rising (จัตวา) — dips then climbs steeply" }
 };
 
-// XP / Streak
-let xp = 0, dailyStreak = 0;
-
-function loadSettings() {
-  try {
-    const s = localStorage.getItem('ttm-settings');
-    if (s) settings = {...settings, ...JSON.parse(s)};
-    const stats = localStorage.getItem('ttm-stats');
-    if (stats) {
-      const d = JSON.parse(stats);
-      xp = d.xp || 0;
-      dailyStreak = d.dailyStreak || 0;
-      gBestStreak = d.bestStreak || 0;
-      // Streak reset check (simple: by day)
-      const lastDay = d.lastDay || '';
-      const today = new Date().toDateString();
-      if (lastDay !== today) dailyStreak = 0; // reset until they play today
+function drawPitchContour(canvasId, toneType) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || canvas.width;
+  canvas.width = W; canvas.height = 80;
+  const H = 80;
+  ctx.clearRect(0,0,W,H);
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  ctx.fillStyle = isDark ? '#161b22' : '#f6f8fa';
+  ctx.fillRect(0,0,W,H);
+  const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
+  const labelColor = isDark ? '#6e7681' : '#8c959f';
+  ctx.strokeStyle = gridColor; ctx.lineWidth = 1;
+  [0.2, 0.5, 0.8].forEach(y => {
+    ctx.beginPath(); ctx.moveTo(30, y*H); ctx.lineTo(W-10, y*H); ctx.stroke();
+  });
+  ctx.fillStyle = labelColor; ctx.font = '10px monospace'; ctx.textAlign = 'right';
+  ctx.fillText('H', 24, 0.2*H+4);
+  ctx.fillText('M', 24, 0.5*H+4);
+  ctx.fillText('L', 24, 0.8*H+4);
+  const contour = PITCH_CONTOURS[toneType] || PITCH_CONTOURS.mid;
+  const pts = contour.points;
+  const xStep = (W - 40) / (pts.length - 1);
+  ctx.beginPath();
+  ctx.strokeStyle = contour.color; ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  pts.forEach((pt,i) => {
+    const x = 30 + i * xStep, y = pt * H;
+    if (i === 0) ctx.moveTo(x, y);
+    else {
+      const px = 30 + (i-1)*xStep, py = pts[i-1]*H, cpx = (px+x)/2;
+      ctx.bezierCurveTo(cpx, py, cpx, y, x, y);
     }
-  } catch(e) {}
+  });
+  ctx.stroke();
+  // Glow
+  ctx.shadowBlur = 8; ctx.shadowColor = contour.color;
+  ctx.beginPath();
+  ctx.strokeStyle = contour.color; ctx.lineWidth = 1.5; ctx.globalAlpha = 0.4;
+  pts.forEach((pt,i) => {
+    const x = 30 + i*xStep, y = pt*H;
+    if (i===0) ctx.moveTo(x,y);
+    else { const px=30+(i-1)*xStep,py=pts[i-1]*H,cpx=(px+x)/2; ctx.bezierCurveTo(cpx,py,cpx,y,x,y); }
+  });
+  ctx.stroke();
+  ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+  // Dots
+  ctx.fillStyle = contour.color;
+  pts.forEach((pt,i) => {
+    const x=30+i*xStep, y=pt*H;
+    ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2); ctx.fill();
+  });
+  ctx.fillStyle = contour.color; ctx.font = 'bold 10px monospace'; ctx.textAlign = 'left';
+  ctx.fillText(contour.label, 32, H-5);
 }
 
-function saveSettings() {
-  try { localStorage.setItem('ttm-settings', JSON.stringify(settings)); } catch(e) {}
+/* ═══════════════════════════════════════════
+   SRS ENGINE
+═══════════════════════════════════════════ */
+const SRS_INTERVALS = [1,3,7,14,30,90];
+function srsLoad() { try { return JSON.parse(localStorage.getItem('thaiSrsData')||'{}'); } catch(e) { return {}; } }
+function srsSave(d) { try { localStorage.setItem('thaiSrsData', JSON.stringify(d)); } catch(e) {} }
+function srsGetStage(card) {
+  if (card.interval >= 30) return 'mature';
+  if (card.interval >= 7)  return 'review';
+  if (card.correct > 0 || card.wrong > 0) return 'learn';
+  return 'new';
 }
-
-function saveStats() {
-  try {
-    localStorage.setItem('ttm-stats', JSON.stringify({
-      xp, dailyStreak, bestStreak: gBestStreak,
-      lastDay: new Date().toDateString()
-    }));
-  } catch(e) {}
+function srsLogWord(thai, tone, meaning, details, correct) {
+  const data = srsLoad(); const key = thai; const now = Date.now();
+  const todayStr = new Date().toLocaleDateString();
+  if (!data[key]) data[key] = { thai, tone, meaning, details, correct:0, wrong:0, streak:0, interval:1, lastReview:todayStr, nextReview:todayStr, added:todayStr };
+  const card = data[key];
+  if (correct) { card.correct++; card.streak++; const lvl=Math.min(card.streak,SRS_INTERVALS.length-1); card.interval=SRS_INTERVALS[lvl]; }
+  else         { card.wrong++; card.streak=0; card.interval=1; }
+  card.lastReview = todayStr;
+  card.nextReview = new Date(now + card.interval*86400000).toLocaleDateString();
+  srsSave(data); renderSrsTable();
 }
-
-function saveSetting(key, val) {
-  settings[key] = val;
-  saveSettings();
-}
-
-/* ─────────────────────────────────────────────────────────────
-   THEME
-───────────────────────────────────────────────────────────── */
-function applyTheme(dark) {
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : '');
-  document.getElementById('theme-btn').textContent = dark ? '☀️' : '🌙';
-  document.getElementById('dark-toggle').checked = dark;
-  document.getElementById('meta-theme').content = dark ? '#0f172a' : '#1d4ed8';
-  settings.dark = dark;
-  saveSettings();
-  if (document.getElementById('p-flow').classList.contains('active')) generateGraph();
-}
-function toggleDark() { applyTheme(!settings.dark); }
-function toggleDarkFromSettings(cb) { applyTheme(cb.checked); }
-
-/* ─────────────────────────────────────────────────────────────
-   TABS
-───────────────────────────────────────────────────────────── */
-function switchTab(key) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('t-' + key).classList.add('active');
-  document.getElementById('p-' + key).classList.add('active');
-  if (key === 'flow') setTimeout(generateGraph, 60);
-  if (key === 'game' && !gWord) newRound();
-}
-
-/* ─────────────────────────────────────────────────────────────
-   SUB TABS
-───────────────────────────────────────────────────────────── */
-function switchSub(id, btn, tabsId) {
-  const tabs = document.getElementById(tabsId);
-  tabs.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const panel = btn.closest('.view-panel');
-  panel.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
-  panel.querySelector('#sub-' + id).classList.add('active');
-}
-
-/* ─────────────────────────────────────────────────────────────
-   CALCULATOR
-───────────────────────────────────────────────────────────── */
-function setParam(key, val, el) {
-  el.parentNode.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  calcState[key] = val;
-
-  if (key === 'cls') {
-    calcState.mark = ''; calcState.type = ''; calcState.vowel = '';
-    document.querySelectorAll('#tone-row .choice-btn').forEach(b => b.classList.remove('selected'));
-    document.getElementById('m-tri').disabled  = val !== 'mid';
-    document.getElementById('m-chatt').disabled= val !== 'mid';
-  }
-  evaluateCalc();
-}
-
-function evaluateCalc() {
-  const step3 = document.getElementById('step3');
-  const step4 = document.getElementById('step4');
-  const rb     = document.getElementById('result-box');
-
-  if (!calcState.cls || !calcState.mark) { rb.classList.remove('show'); return; }
-
-  if (calcState.mark !== 'none') {
-    step3.style.display = 'none'; step4.style.display = 'none';
-    resolve(`${calcState.cls}-${calcState.mark}`);
+function renderSrsTable() {
+  const data = srsLoad(); const tbody = document.getElementById('srs-table-body');
+  const keys = Object.keys(data);
+  let nNew=0,nLearn=0,nReview=0,nMature=0;
+  if (!keys.length) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text3);padding:32px;">No entries yet.</td></tr>';
   } else {
-    step3.style.display = 'block';
-    if (!calcState.type) { rb.classList.remove('show'); return; }
-    if (calcState.type === 'dead' && calcState.cls === 'low') {
-      step4.style.display = 'block';
-      if (!calcState.vowel) { rb.classList.remove('show'); return; }
-      resolve(`low-none-dead-${calcState.vowel}`);
+    tbody.innerHTML = keys.map(k => {
+      const c = data[k]; const stage = srsGetStage(c);
+      if (stage==='new') nNew++; else if (stage==='learn') nLearn++; else if (stage==='review') nReview++; else nMature++;
+      const bc = {new:'badge-new',learn:'badge-learn',review:'badge-review',mature:'badge-mature'}[stage];
+      const sl = {new:'New',learn:'Learning',review:'Review',mature:'Mature'}[stage];
+      return `<tr>
+        <td><span class="thai" style="font-size:1.1rem;font-weight:800;">${c.thai}</span> <button class="speak-btn" style="width:22px;height:22px;font-size:11px;" onclick="speakThaiText('${c.thai}')">🔊</button></td>
+        <td>${c.tone||'—'}</td><td style="color:var(--text2);">${c.meaning||'—'}</td>
+        <td><span class="badge ${bc}">${sl}</span></td>
+        <td style="color:var(--tone-low);font-weight:700;">${c.correct}</td>
+        <td style="color:var(--tone-fall);font-weight:700;">${c.wrong}</td>
+        <td>${c.streak}🔥</td><td>${c.interval}d</td>
+        <td style="color:var(--text2);">${c.nextReview}</td>
+        <td><button class="btn" style="padding:4px 8px;font-size:0.72rem;" onclick="srsDeleteEntry('${k}')">✕</button></td>
+      </tr>`;
+    }).join('');
+  }
+  document.getElementById('srs-count-new').textContent    = nNew;
+  document.getElementById('srs-count-learn').textContent  = nLearn;
+  document.getElementById('srs-count-review').textContent = nReview;
+  document.getElementById('srs-count-mature').textContent = nMature;
+}
+function srsDeleteEntry(k) { const d=srsLoad(); delete d[k]; srsSave(d); renderSrsTable(); }
+function clearSrsData() { if (confirm('Clear all SRS data?')) { localStorage.removeItem('thaiSrsData'); renderSrsTable(); } }
+function exportSrsData() {
+  const blob = new Blob([JSON.stringify(srsLoad(),null,2)], {type:'application/json'});
+  const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download:'thai_srs_deck.json'});
+  a.click(); URL.revokeObjectURL(a.href);
+}
+function importSrsData(ev) {
+  const f = ev.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = e => { try { const d=JSON.parse(e.target.result); srsSave(d); renderSrsTable(); showToast('✅ SRS data imported!'); } catch(err) { showToast('❌ Invalid JSON file'); } };
+  r.readAsText(f); ev.target.value='';
+}
+function srsLogFromCalculator() {
+  const outEl = document.getElementById('output-screen');
+  if (!outEl.classList.contains('show')) return;
+  const tone = outEl.getAttribute('data-tone-type');
+  const word = document.getElementById('ctx-thai').textContent;
+  const details = document.getElementById('ctx-details').textContent;
+  srsLogWord(word, tone, details, details, true);
+  showToast(`📚 Logged "${word}" to SRS!`);
+}
+function srsLogFromAnalyzer() {
+  const input = document.getElementById('analyzer-input').value.trim();
+  if (!input) return;
+  const tone = calculateStringToneMetrics(input);
+  srsLogWord(input, tone, '', '', true);
+  showToast(`📚 Logged "${input}" to SRS!`);
+}
+
+/* ═══════════════════════════════════════════
+   IMPLICIT VOWEL PARSER
+═══════════════════════════════════════════ */
+const THAI_CONSONANT_SET = new Set(consonantsData.map(c=>c.char));
+const TONE_MARKS = new Set(['่','้','๊','๋']);
+const IMPLICIT_VOWEL_MAP = {
+  'คน':[{thai:'ค',rom:'kh',vowel:'o',implicit:true},{thai:'น',rom:'n',vowel:'',implicit:false}],
+  'สบาย':[{thai:'ส',rom:'sa',vowel:'a',implicit:true},{thai:'บาย',rom:'baai',vowel:'aa',implicit:false}],
+  'กรุง':[{thai:'ก',rom:'g',vowel:'a',implicit:true},{thai:'รุง',rom:'rung',vowel:'u',implicit:false}],
+  'ประ':[{thai:'ป',rom:'pra',vowel:'a',implicit:true},{thai:'ระ',rom:'ra',vowel:'a',implicit:false}]
+};
+function setIVP(txt) { document.getElementById('ivp-input').value=txt; runImplicitVowelParser(); }
+function runImplicitVowelParser() {
+  const raw = document.getElementById('ivp-input').value.trim();
+  const out = document.getElementById('ivp-result');
+  if (!raw) { out.innerHTML='<span style="color:var(--text3)">Enter Thai text above…</span>'; return; }
+  const syllables = tokenizeThaiText(raw);
+  if (!syllables.length) { out.innerHTML='<span style="color:var(--tone-fall)">No Thai characters detected.</span>'; return; }
+  out.innerHTML = syllables.map(s => {
+    const tag = s.implicit
+      ? `<span class="ivp-tag ivp-implicit">IMPLICIT ${s.impliedVowel}</span>`
+      : `<span class="ivp-tag ivp-explicit">EXPLICIT</span>`;
+    return `<div class="ivp-block"><span class="ivp-thai thai">${s.text}</span><span class="ivp-rom">${s.romanized}</span>${tag}</div>`;
+  }).join('');
+}
+function tokenizeThaiText(text) {
+  const words = text.split(/\s+/).filter(Boolean); const results = [];
+  words.forEach(word => {
+    const knownKey = Object.keys(IMPLICIT_VOWEL_MAP).find(k=>word.startsWith(k));
+    if (knownKey) {
+      IMPLICIT_VOWEL_MAP[knownKey].forEach(seg => results.push({text:seg.thai,romanized:seg.rom,implicit:seg.implicit,impliedVowel:seg.implicit?`/${seg.vowel}/`:'' }));
+      return;
+    }
+    const chars=[...word]; let i=0,block='',hasExplicit=false,prevWasCon=false,implicitInserted=false;
+    while (i<chars.length) {
+      const ch=chars[i]; const isCon=THAI_CONSONANT_SET.has(ch); const isTone=TONE_MARKS.has(ch); const isVowel=!isCon&&!isTone;
+      if (isCon) {
+        if (prevWasCon&&!hasExplicit&&block.length>0) { results.push({text:block,romanized:approxRomanize(block),implicit:true,impliedVowel:'/o/'}); block=ch; implicitInserted=true; }
+        else block+=ch;
+        hasExplicit=false; prevWasCon=true;
+      } else { block+=ch; if (!isTone) hasExplicit=true; prevWasCon=false; }
+      i++;
+    }
+    if (block) results.push({text:block,romanized:approxRomanize(block),implicit:implicitInserted&&!hasExplicit,impliedVowel:'/o/'});
+  });
+  return results;
+}
+function approxRomanize(thai) {
+  const map={'ก':'k','ข':'kh','ค':'kh','ง':'ng','จ':'j','ช':'ch','ซ':'s','ด':'d','ต':'t','ถ':'th','ท':'th','น':'n','บ':'b','ป':'p','พ':'ph','ฟ':'f','ภ':'ph','ม':'m','ย':'y','ร':'r','ล':'l','ว':'w','ส':'s','ห':'h','อ':'(-)','า':'aa','ิ':'i','ี':'ii','ุ':'u','ู':'uu','เ':'e','แ':'ae','โ':'oo','ไ':'ai','ใ':'ai','ำ':'am','ะ':'a','ั':'a','็':'','่':'','้':''};
+  return [...thai].map(c=>map[c]??c).join('');
+}
+
+/* ═══════════════════════════════════════════
+   CORE TONE CALCULATOR
+═══════════════════════════════════════════ */
+let calcState = {class:'',mark:'',type:'',vowel:''};
+let lastCalcTone='mid', lastCalcWord='';
+
+function setParam(key, value, elem) {
+  elem.closest('.step-card').querySelectorAll('.choice-btn').forEach(b=>b.classList.remove('selected'));
+  elem.classList.add('selected');
+  calcState[key] = value;
+  if (key==='class') {
+    calcState.mark=''; calcState.type=''; calcState.vowel='';
+    document.querySelectorAll('#tone-row .choice-btn').forEach(b=>b.classList.remove('selected'));
+    document.getElementById('m-tri').disabled   = (value!=='mid');
+    document.getElementById('m-chatt').disabled = (value!=='mid');
+  }
+  evaluateState();
+}
+function evaluateState() {
+  const outEl=document.getElementById('output-screen');
+  const boxType=document.getElementById('box-type');
+  const boxVowel=document.getElementById('box-vowel');
+  const hint=document.getElementById('calc-hint-card');
+  if (calcState.class && calcState.mark) {
+    if (calcState.mark!=='none') {
+      boxType.style.display='none'; boxVowel.style.display='none';
+      evaluateFinalKey(`${calcState.class}-${calcState.mark}`);
     } else {
-      step4.style.display = 'none';
-      resolve(`${calcState.cls}-none-${calcState.type}`);
+      boxType.style.display='block';
+      if (calcState.type==='dead' && calcState.class==='low') {
+        boxVowel.style.display='block';
+        if (calcState.vowel) evaluateFinalKey(`low-none-dead-${calcState.vowel}`);
+        else outEl.classList.remove('show');
+      } else if (calcState.type) {
+        boxVowel.style.display='none';
+        evaluateFinalKey(`${calcState.class}-none-${calcState.type}`);
+      } else outEl.classList.remove('show');
+    }
+    if (outEl.classList.contains('show')) hint.style.display='none';
+  } else { outEl.classList.remove('show'); hint.style.display='block'; }
+}
+function evaluateFinalKey(lk) {
+  const outEl=document.getElementById('output-screen');
+  const match=database[lk];
+  if (match) {
+    outEl.setAttribute('data-tone-type', match.type);
+    document.getElementById('res-tone-title').textContent = match.tone;
+    document.getElementById('res-rule-desc').textContent  = match.desc;
+    document.getElementById('ctx-thai').textContent       = match.word;
+    document.getElementById('ctx-details').textContent    = match.details;
+    outEl.classList.add('show');
+    outEl.scrollIntoView({behavior:'smooth',block:'nearest'});
+    document.getElementById('speak-tone-btn').onclick = () => speakThaiText(match.word);
+    document.getElementById('speak-word-btn').onclick = () => speakThaiText(match.word);
+    lastCalcTone = match.type; lastCalcWord = match.word;
+    setTimeout(()=>drawPitchContour('pitch-canvas-calc', match.type), 60);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   ACOUSTIC ANALYZER ENGINE
+═══════════════════════════════════════════ */
+function calculateStringToneMetrics(targetString) {
+  let initialConsonant=null,initialClass=null,toneMark="none",vowelLength="long",finalConsonant=null,syllableType="live";
+  if (targetString.startsWith('ห')&&targetString.length>1) {
+    const sc=targetString.charAt(1);
+    if (['ม','น','ง','ว','ล','ย','ร','ณ','ญ','ฬ'].includes(sc)) {
+      initialClass="high"; initialConsonant=consonantsData.find(c=>c.char===sc)||{char:sc,class:"high"};
     }
   }
-}
-
-function resolve(key) {
-  const m = DB[key];
-  if (!m) return;
-  const rb = document.getElementById('result-box');
-  rb.setAttribute('data-tone-type', m.type);
-  document.getElementById('res-tone-name').textContent = m.tone;
-  document.getElementById('res-rule').textContent = m.desc;
-  document.getElementById('ex-thai').textContent   = m.word;
-  document.getElementById('ex-roman').textContent  = m.roman;
-  document.getElementById('ex-meaning').textContent= m.meaning;
-
-  // Show/hide example card per setting
-  document.querySelector('.example-card').style.display = settings.showExamples ? 'flex' : 'none';
-
-  rb.classList.add('show');
-  rb.scrollIntoView({behavior:'smooth', block:'nearest'});
-
-  document.getElementById('speak-tone-btn').onclick = () => speak(m.tone.split(' ')[0]);
-  document.getElementById('speak-word-btn').onclick = () => speak(m.word);
-
-  if (settings.autoSpeak) speak(m.word);
-
-  // Award XP
-  addXP(5);
-}
-
-/* ─────────────────────────────────────────────────────────────
-   MERMAID FLOWCHART
-───────────────────────────────────────────────────────────── */
-const GRAPH_BODY = `
-    A((Start)) --> B[Mid Class]
-    A --> C[High Class]
-    A --> D[Low Class]
-
-    B --> B1{Tone Mark?}
-    B1 -->|None| B2{Syllable?}
-    B2 -->|Live| BMid[Mid Tone —]
-    B2 -->|Dead| BLow[Low Tone ˋ]
-    B1 -->|Mai Ek ่| BLow2[Low Tone ˋ]
-    B1 -->|Mai Tho ้| BFall[Falling ˆ]
-    B1 -->|Mai Tri ๊| BHigh[High Tone ˊ]
-    B1 -->|Mai Chat. ๋| BRise[Rising ˇ]
-
-    C --> C1{Tone Mark?}
-    C1 -->|None| C2{Syllable?}
-    C2 -->|Live| CRise[Rising ˇ]
-    C2 -->|Dead| CLow[Low Tone ˋ]
-    C1 -->|Mai Ek ่| CLow2[Low Tone ˋ]
-    C1 -->|Mai Tho ้| CFall[Falling ˆ]
-
-    D --> D1{Tone Mark?}
-    D1 -->|None| D2{Syllable?}
-    D2 -->|Live| DMid[Mid Tone —]
-    D2 -->|Dead| D3{Vowel Length?}
-    D3 -->|Short| DHigh[High Tone ˊ]
-    D3 -->|Long| DFall[Falling ˆ]
-    D1 -->|Mai Ek ่| DFall2[Falling ˆ]
-    D1 -->|Mai Tho ้| DHigh2[High Tone ˊ]
-
-    classDef m_c fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#0f172a;
-    classDef l_c fill:#d1fae5,stroke:#059669,stroke-width:2px,color:#064e3b;
-    classDef f_c fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#7f1d1d;
-    classDef h_c fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#3b0764;
-    classDef r_c fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f;
-
-    class BMid,DMid m_c;
-    class BLow,BLow2,CLow,CLow2 l_c;
-    class BFall,CFall,DFall,DFall2 f_c;
-    class BHigh,DHigh,DHigh2 h_c;
-    class BRise,CRise r_c;
-`;
-
-async function generateGraph() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const lc = isDark ? '#475569' : '#94a3b8';
-  const tc = isDark ? '#f1f5f9' : '#0c1a2e';
-  const bg = isDark ? '#162236' : '#f8fafc';
-  const nb = isDark ? '#334155' : '#94a3b8';
-
-  const container = document.getElementById('mermaid-target');
-  if (pzInst) { try { pzInst.destroy(); } catch(e){} pzInst = null; }
-  container.removeAttribute('data-processed');
-
-  const dir = window.innerWidth <= 640 ? 'graph TD' : 'graph LR';
-  const init = `%%{init:{"theme":"base","themeVariables":{"primaryColor":"${bg}","lineColor":"${lc}","textColor":"${tc}","mainBkg":"${bg}","nodeBorder":"${nb}"}}}%%`;
-  container.textContent = init + '\n' + dir + GRAPH_BODY;
-
-  try {
-    await mermaid.run({ nodes: [container] });
-    const svg = container.querySelector('svg');
-    if (svg && typeof svgPanZoom !== 'undefined') {
-      svg.style.width = '100%'; svg.style.height = '100%';
-      pzInst = svgPanZoom(svg, { zoomEnabled:true, controlIconsEnabled:false, fit:true, center:true, minZoom:.1, maxZoom:8 });
+  if (!initialConsonant&&targetString.startsWith('อ')&&targetString.length>1) {
+    const sc=targetString.charAt(1);
+    if (sc==='ย'||sc==='ว') {
+      initialClass="mid"; const fb=consonantsData.find(c=>c.char===sc);
+      initialConsonant=fb?{...fb,class:"mid"}:{char:sc,class:"mid"};
     }
-  } catch(e) { console.warn('Mermaid error', e); }
-}
-
-function pzReset()   { if(pzInst) { pzInst.fit(); pzInst.center(); } }
-function pzZoomIn()  { if(pzInst) pzInst.zoomIn(); }
-function pzZoomOut() { if(pzInst) pzInst.zoomOut(); }
-
-/* ─────────────────────────────────────────────────────────────
-   DICTIONARY GRIDS
-───────────────────────────────────────────────────────────── */
-let conFilter = 'all', vowFilter = 'all';
-
-function buildGrids() {
-  renderConsonants();
-  renderVowels();
-}
-
-function renderConsonants() {
-  const q = (document.getElementById('con-search')?.value || '').toLowerCase();
-  const list = CONSONANTS.filter(c => {
-    if (conFilter !== 'all' && c.cls !== conFilter) return false;
-    if (q) return c.char.includes(q) || c.name.toLowerCase().includes(q) || c.meaning.toLowerCase().includes(q);
-    return true;
-  });
-  const sz = parseFloat(settings.thaiFontSize);
-  document.getElementById('consonant-grid').innerHTML = list.map(c => `
-    <div class="char-tile tile-${c.cls}">
-      <div class="tile-head">
-        <div style="display:flex;flex-direction:column;gap:2px;">
-          <span class="tile-glyph" style="font-size:${sz}rem;">${c.char}</span>
-          <span class="tile-name">${c.name}</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-          <span class="cls-badge ${c.cls}">${c.cls.toUpperCase()}</span>
-          <button class="audio-btn" style="width:28px;height:28px;font-size:.75rem;" onclick="speak('${c.char}')" title="Hear">🔊</button>
-        </div>
-      </div>
-      <div class="tile-meta">
-        <b>Init/Final:</b> ${c.init} / ${c.fin}<br>
-        <b>Meaning:</b> ${c.meaning}
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderVowels() {
-  const q = (document.getElementById('vow-search')?.value || '').toLowerCase();
-  const list = VOWELS.filter(v => {
-    if (vowFilter !== 'all' && v.len !== vowFilter) return false;
-    if (q) return v.char.includes(q) || v.rom.toLowerCase().includes(q) || v.ex.toLowerCase().includes(q);
-    return true;
-  });
-  const sz = parseFloat(settings.thaiFontSize);
-  document.getElementById('vowel-grid').innerHTML = list.map(v => `
-    <div class="char-tile" style="border-left:4px solid ${v.len==='long'?'var(--t-low)':'var(--t-fall)'};">
-      <div class="tile-head">
-        <div style="display:flex;flex-direction:column;gap:2px;">
-          <span class="tile-glyph" style="font-size:${sz}rem;">${v.char}</span>
-          <span class="tile-name">[${v.rom}]</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-          <span style="font-size:.65rem;font-weight:800;padding:2px 6px;border-radius:10px;background:${v.len==='long'?'var(--t-low-bg)':'var(--t-fall-bg)'};color:${v.len==='long'?'var(--t-low)':'var(--t-fall)'};">${v.len.toUpperCase()}</span>
-          <button class="audio-btn" style="width:28px;height:28px;font-size:.75rem;" onclick="speak('${v.char.replace(/'/g,"\\'")}ก')" title="Hear">🔊</button>
-        </div>
-      </div>
-      <div class="tile-meta"><b>Example:</b> ${v.ex}</div>
-    </div>
-  `).join('');
-}
-
-function filterByClass(el) {
-  document.querySelectorAll('[data-cls]').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  conFilter = el.dataset.cls;
-  renderConsonants();
-}
-
-function filterByLen(el) {
-  document.querySelectorAll('[data-len]').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  vowFilter = el.dataset.len;
-  renderVowels();
-}
-
-function filterConsonants() { renderConsonants(); }
-function filterVowels()     { renderVowels(); }
-
-function setThaiFontSize(v) {
-  settings.thaiFontSize = v;
-  saveSettings();
-  renderConsonants();
-  renderVowels();
-}
-
-/* ─────────────────────────────────────────────────────────────
-   ANALYZER
-───────────────────────────────────────────────────────────── */
-const STOPS = new Set(['ก','ข','ค','ฆ','บ','ป','พ','ฟ','ภ','ด','ต','ถ','ท','ธ','ศ','ษ','ส','จ','ช','ซ','ฎ','ฏ','ฐ','ฑ','ฒ']);
-const SHORT_V = new Set(['ะ','ิ','ึ','ุ','็']);
-
-function parseSyllable(str) {
-  let initC = null, initCls = null, finalC = null;
-  let mark = 'none', markThai = 'None';
-  let vLen = 'long', sylType = 'live';
-
-  for (const ch of str) {
-    const con = CONSONANTS.find(c => c.char === ch);
-    if (con && !initC)  { initC = con; initCls = con.cls; continue; }
-    if (con && initC)     finalC = con;
-    if (ch === '่') { mark='ek';       markThai='Mai Ek (่)'; }
-    if (ch === '้') { mark='tho';      markThai='Mai Tho (้)'; }
-    if (ch === '๊') { mark='tri';      markThai='Mai Tri (๊)'; }
-    if (ch === '๋') { mark='chattawa'; markThai='Mai Chattawa (๋)'; }
-    if (SHORT_V.has(ch)) vLen = 'short';
   }
-
-  if (finalC && STOPS.has(finalC.char)) sylType = 'dead';
-  else if (!finalC && vLen === 'short') sylType = 'dead';
-
-  if (!initC) return null;
-
-  let key = `${initCls}-${mark}`;
-  if (mark === 'none') {
-    if (initCls === 'low' && sylType === 'dead') key += `-dead-${vLen}`;
-    else key += `-${sylType}`;
+  for (const char of targetString) {
+    const conMatch=consonantsData.find(c=>c.char===char);
+    if (conMatch&&!initialConsonant){initialConsonant=conMatch;initialClass=conMatch.class;continue;}
+    if (conMatch&&initialConsonant) finalConsonant=conMatch;
+    if (char==='่') toneMark="ek";
+    if (char==='้') toneMark="tho";
+    if (char==='๊') toneMark="tri";
+    if (char==='๋') toneMark="chattawa";
   }
-
-  const result = DB[key];
-  return {
-    initC, initCls, mark, markThai, vLen, sylType, finalC,
-    key, result: result || null
-  };
+  if (targetString.includes('ะ')||targetString.includes('ิ')||targetString.includes('ึ')||targetString.includes('ุ')||targetString.includes('็')) vowelLength="short";
+  if (finalConsonant) {
+    const stops=['ก','ข','ค','ฆ','บ','ป','พ','ฟ','ภ','ด','ต','ถ','ท','ธ','ศ','ษ','ส','จ','ช','ซ','ฎ','ฏ','ฐ','ฑ','ฒ'];
+    if (stops.includes(finalConsonant.char)) syllableType="dead";
+  } else if (vowelLength==="short") syllableType="dead";
+  if (!initialConsonant) return "mid";
+  let lk=`${initialClass}-${toneMark}`;
+  if (toneMark==="none") {
+    if (initialClass==="low"&&syllableType==="dead") lk+=`-dead-${vowelLength}`;
+    else lk+=`-${syllableType}`;
+  }
+  const match=database[lk]; return match?match.type:"mid";
 }
 
-function calculateTone(str) {
-  const p = parseSyllable(str);
-  if (!p || !p.result) return 'mid';
-  return p.result.type;
-}
-
-function runAnalysis() {
-  const raw = document.getElementById('analyzer-input').value.trim();
-  const out  = document.getElementById('analyzer-output');
-  if (!raw) { out.innerHTML = '<p style="color:var(--text-muted);">Awaiting input…</p>'; return; }
-
-  const p = parseSyllable(raw);
-  if (!p) {
-    out.innerHTML = `<p style="color:var(--t-fall);font-weight:700;">No identifiable initial Thai consonant found in input.</p>`;
-    return;
+function setAnalyzer(txt) { document.getElementById('analyzer-input').value=txt; runAcousticAnalysis(); }
+function runAcousticAnalysis() {
+  const raw=document.getElementById("analyzer-input").value.trim();
+  const out=document.getElementById("analyzer-output");
+  const cw=document.getElementById("analyzer-canvas-wrap");
+  if (!raw) { out.innerHTML='<span style="color:var(--text3)">Enter a Thai word to begin…</span>'; cw.style.display='none'; return; }
+  let initialConsonant=null,initialClass=null,toneMark="none",toneMarkThai="None (ไม่มี)";
+  let vowelLength="long",finalConsonant=null,syllableType="live",wasH=false,wasO=false;
+  if (raw.startsWith('ห')&&raw.length>1) {
+    const sc=raw.charAt(1);
+    if (['ม','น','ง','ว','ล','ย','ร','ณ','ญ','ฬ'].includes(sc)) {
+      initialClass="high"; initialConsonant=consonantsData.find(c=>c.char===sc)||{char:sc,class:"high",name:"Elevated Sonorant"}; wasH=true;
+    }
   }
-
-  const resultColor = p.result ? `var(--t-${p.result.type.replace('falling','fall').replace('rising','rise').replace('mid','mid').replace('low','low').replace('high','high')})` : 'var(--text-muted)';
-
-  out.innerHTML = `
+  if (!initialConsonant&&raw.startsWith('อ')&&raw.length>1) {
+    const sc=raw.charAt(1);
+    if (sc==='ย'||sc==='ว') {
+      initialClass="mid"; const fb=consonantsData.find(c=>c.char===sc);
+      initialConsonant=fb?{...fb,class:"mid"}:{char:sc,class:"mid",name:"อ-Led"}; wasO=true;
+    }
+  }
+  for (const char of raw) {
+    const conMatch=consonantsData.find(c=>c.char===char);
+    if (conMatch&&!initialConsonant){initialConsonant=conMatch;initialClass=conMatch.class;continue;}
+    if (conMatch&&initialConsonant) finalConsonant=conMatch;
+    if (char==='่'){toneMark="ek";toneMarkThai="Mai Ek (่)";}
+    if (char==='้'){toneMark="tho";toneMarkThai="Mai Tho (้)";}
+    if (char==='๊'){toneMark="tri";toneMarkThai="Mai Tri (๊)";}
+    if (char==='๋'){toneMark="chattawa";toneMarkThai="Mai Chattawa (๋)";}
+  }
+  if (raw.includes('ะ')||raw.includes('ิ')||raw.includes('ึ')||raw.includes('ุ')||raw.includes('็')) vowelLength="short";
+  if (finalConsonant) {
+    const stops=['ก','ข','ค','ฆ','บ','ป','พ','ฟ','ภ','ด','ต','ถ','ท','ธ','ศ','ษ','ส','จ','ช','ซ','ฎ','ฏ','ฐ','ฑ','ฒ'];
+    if (stops.includes(finalConsonant.char)) syllableType="dead";
+  } else if (vowelLength==="short") syllableType="dead";
+  if (!initialConsonant) { out.innerHTML='<div style="color:var(--tone-fall);font-weight:700;">No Thai consonant found.</div>'; cw.style.display='none'; return; }
+  let lk=`${initialClass}-${toneMark}`;
+  if (toneMark==="none") {
+    if (initialClass==="low"&&syllableType==="dead") lk+=`-dead-${vowelLength}`;
+    else lk+=`-${syllableType}`;
+  }
+  const result=database[lk]||{tone:"Undefined variant —",desc:"Complex consonant cluster.",type:"mid"};
+  let leadNote='';
+  if (wasH) leadNote=`<span style="color:var(--cls-high);font-weight:700;"> [ห Leading → HIGH class]</span>`;
+  if (wasO) leadNote=`<span style="color:var(--cls-mid);font-weight:700;"> [อ Leading → MID class (silent อ)]</span>`;
+  out.innerHTML=`
     <div class="trace-node">
-      <div class="trace-node-title">Initial Consonant</div>
-      <div class="trace-node-body"><b>${p.initC.char}</b> · ${p.initC.name} → Class: <b style="color:var(--cls-${p.initCls});">${p.initCls.toUpperCase()}</b></div>
+      <div class="trace-title">Parsed Initial Consonant</div>
+      <div class="trace-body"><b class="thai">${initialConsonant.char}</b> (${initialConsonant.name||''}) → Class <b>[${initialClass.toUpperCase()}]</b>${leadNote}</div>
     </div>
     <div class="trace-node">
-      <div class="trace-node-title">Tone Marker</div>
-      <div class="trace-node-body">${p.markThai}</div>
+      <div class="trace-title">Tone Mark</div>
+      <div class="trace-body"><b>${toneMarkThai}</b></div>
     </div>
     <div class="trace-node">
-      <div class="trace-node-title">Syllable Environment</div>
-      <div class="trace-node-body">Type: <b>${p.sylType.toUpperCase()}</b> · Vowel: <b>${p.vLen.toUpperCase()}</b> · Final: ${p.finalC ? p.finalC.char + ' (' + p.finalC.name + ')' : 'Open (no final)'}</div>
+      <div class="trace-title">Syllable Environment</div>
+      <div class="trace-body">Type: <b>${syllableType.toUpperCase()}</b> · Vowel: <b>${vowelLength.toUpperCase()}</b>${finalConsonant?` · Final: <b class="thai">${finalConsonant.char}</b>`:''}</div>
     </div>
-    ${p.result ? `
-    <div class="trace-node ok">
-      <div class="trace-node-title" style="color:var(--primary);">Resolved Tone Output
-        <button class="audio-btn" style="margin-left:8px;width:24px;height:24px;font-size:.7rem;" onclick="speak('${raw}')">🔊</button>
+    <div class="trace-node success">
+      <div class="trace-title" style="color:var(--tone-low);">Resolved Tone
+        <button class="speak-btn" style="width:22px;height:22px;font-size:11px;margin-left:8px;" onclick="speakThaiText('${raw}')">🔊</button>
+        <button class="btn" style="font-size:0.7rem;padding:3px 8px;margin-left:6px;" onclick="srsLogWord('${raw}','${result.type}','','',true);showToast('📚 Logged!')">📚</button>
       </div>
-      <div class="trace-node-body" style="font-size:1.15rem;font-weight:900;color:${resultColor};margin-top:4px;">${p.result.tone}</div>
-      <div style="font-size:.82rem;margin-top:4px;opacity:.85;line-height:1.45;">${p.result.desc}</div>
-    </div>
-    ` : `<div class="trace-node" style="border-left-color:var(--t-fall);"><div class="trace-node-title">Result</div><div class="trace-node-body" style="color:var(--t-fall);">Complex cluster — beyond single-syllable parser scope.</div></div>`}
-  `;
+      <div class="trace-body" style="font-size:1.05rem;font-weight:800;color:var(--text);margin-top:4px;">${result.tone}</div>
+      <div style="font-size:0.8rem;color:var(--text2);margin-top:3px;">${result.desc}</div>
+    </div>`;
+  cw.style.display='block';
+  setTimeout(()=>drawPitchContour('pitch-canvas-analyzer', result.type), 60);
 }
 
-function clearAnalyzer() {
-  document.getElementById('analyzer-input').value = '';
-  document.getElementById('analyzer-output').innerHTML = '<p style="color:var(--text-muted);">Awaiting input…</p>';
-}
-
-function pasteExample() {
-  const examples = ['รัก','พูด','ห้า','มา','บ้าน','ม้า','ขา','กา'];
-  document.getElementById('analyzer-input').value = examples[Math.floor(Math.random()*examples.length)];
-  runAnalysis();
-}
-
-function speakInputText() {
-  const v = document.getElementById('analyzer-input').value.trim();
-  if (v) speak(v);
-}
-
-/* ─────────────────────────────────────────────────────────────
-   SPEECH SYNTHESIS
-───────────────────────────────────────────────────────────── */
-function speak(text, fallback = '') {
+/* ═══════════════════════════════════════════
+   SPEECH
+═══════════════════════════════════════════ */
+function speakThaiText(text) {
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'th-TH';
-  const isApple = /iPhone|iPad|iPod|Macintosh/i.test(navigator.userAgent);
-  u.rate = isApple ? 0.85 : 0.9;
-  u.pitch = 1;
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang='th-TH'; utt.rate=/iPhone|iPad|iPod|Mac/i.test(navigator.userAgent)?0.85:0.95; utt.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const voice=voices.find(v=>v.lang.includes('th-TH')&&(v.name.includes('Narisa')||v.name.includes('Siri')||v.name.includes('Google')||v.name.includes('Natural')))||voices.find(v=>v.lang.includes('th-TH'));
+  if (voice) utt.voice=voice;
+  window.speechSynthesis.speak(utt);
+}
+function speakInputText() { const v=document.getElementById("analyzer-input").value.trim(); if(v) speakThaiText(v); }
 
-  const voices = window.speechSynthesis.getVoices();
-  let v = null;
-  if (isApple) v = voices.find(x => x.lang.includes('th') && (x.name.includes('Narisa')||x.name.includes('Siri')));
-  else          v = voices.find(x => x.lang.includes('th') && (x.name.includes('Google')||x.name.includes('Natural')));
-  if (!v) v = voices.find(x => x.lang.includes('th'));
-  if (v) u.voice = v;
-  u.onerror = () => { if (fallback) { const f = new SpeechSynthesisUtterance(fallback); f.lang='en-US'; window.speechSynthesis.speak(f); } };
-  window.speechSynthesis.speak(u);
+/* ═══════════════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════════════ */
+function switchTab(key) {
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('t-'+key).classList.add('active');
+  document.getElementById('p-'+key).classList.add('active');
+  if (key==='game') { if(!currentGameWord) generateNewGameRound(); if(!currentConsonantItem) generateNewConsonantRound(); }
+  if (key==='srs') renderSrsTable();
+  if (key==='compare') renderAlphabetComparison();
 }
 
-/* ─────────────────────────────────────────────────────────────
-   GAME
-───────────────────────────────────────────────────────────── */
-async function fetchLiveWord() {
+function switchSub(id, btn) {
+  btn.closest('.subtabs').querySelectorAll('.subtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const section=btn.closest('section');
+  section.querySelectorAll('.subpanel').forEach(p=>p.classList.remove('active'));
+  section.querySelector('#'+id).classList.add('active');
+}
+
+function filterCons(mode, btn) {
+  btn.parentNode.querySelectorAll('.minitab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['mid','high','low'].forEach(cls => {
+    document.getElementById('cgroup-'+cls).style.display = (mode==='all'||mode===cls)?'block':'none';
+  });
+}
+function filterVowels(mode, btn) {
+  btn.parentNode.querySelectorAll('.minitab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['all','short','long'].forEach(m => {
+    document.getElementById('vgroup-'+m).style.display = m===mode?'block':'none';
+  });
+}
+
+function toggleTheme() {
+  const isLight = document.documentElement.getAttribute('data-theme')==='light';
+  if (isLight) { document.documentElement.removeAttribute('data-theme'); document.getElementById('themeBtn').textContent='🌙'; localStorage.setItem('thaiToneTheme','dark'); }
+  else          { document.documentElement.setAttribute('data-theme','light'); document.getElementById('themeBtn').textContent='☀️'; localStorage.setItem('thaiToneTheme','light'); }
+  setTimeout(()=>{
+    if (document.getElementById('output-screen').classList.contains('show')) drawPitchContour('pitch-canvas-calc',lastCalcTone);
+    if (document.getElementById('analyzer-canvas-wrap').style.display!=='none') drawPitchContour('pitch-canvas-analyzer','mid');
+  },50);
+}
+function changeFontStyle(val) {
+  document.documentElement.removeAttribute('data-font-style');
+  if (val!=='traditional') document.documentElement.setAttribute('data-font-style',val);
+  if (document.getElementById('p-compare').classList.contains('active')) renderAlphabetComparison();
+}
+function showToast(msg) {
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+/* ═══════════════════════════════════════════
+   REFERENCE GRID BUILDER
+═══════════════════════════════════════════ */
+function buildReferenceGrids() {
+  const makeConTile = c => `
+    <div class="char-tile tile-${c.class}">
+      <div class="tile-head">
+        <div style="display:flex;align-items:baseline;gap:6px;">
+          <span class="tile-glyph">${c.char}</span>
+          <span class="tile-name">${c.name}</span>
+        </div>
+        <button class="speak-btn" onclick="speakThaiText('${c.char}')">🔊</button>
+      </div>
+      <div class="tile-meta"><b>[${c.sound}]</b> · ${c.meaning}</div>
+    </div>`;
+  document.getElementById('con-mid-target').innerHTML  = consonantsData.filter(c=>c.class==='mid').map(makeConTile).join('');
+  document.getElementById('con-high-target').innerHTML = consonantsData.filter(c=>c.class==='high').map(makeConTile).join('');
+  document.getElementById('con-low-target').innerHTML  = consonantsData.filter(c=>c.class==='low').map(makeConTile).join('');
+
+  const makeVowelTile = v => `
+    <div class="char-tile tile-${v.length}">
+      <div class="tile-head">
+        <div style="display:flex;align-items:baseline;gap:6px;">
+          <span class="tile-glyph" style="font-size:1.4rem;">${v.char}</span>
+          <span class="tile-name">[${v.transcription}]</span>
+        </div>
+        <button class="speak-btn" onclick="speakThaiText('${v.char}')">🔊</button>
+      </div>
+      <div class="tile-meta">${v.matching}</div>
+    </div>`;
+  document.getElementById('vowel-short-target').innerHTML = vowelsData.filter(v=>v.length==='short').map(makeVowelTile).join('');
+  document.getElementById('vowel-long-target').innerHTML  = vowelsData.filter(v=>v.length==='long').map(makeVowelTile).join('');
+
+  const shortV=vowelsData.filter(v=>v.length==='short');
+  const longV=vowelsData.filter(v=>v.length==='long');
+  const makeRow = (v,color) => `<div class="vowel-row" style="border-left:3px solid ${color};">
+    <span class="vowel-glyph thai">${v.char}</span>
+    <span class="vowel-info">[${v.transcription}] · ${v.matching}</span>
+    <button class="speak-btn" onclick="speakThaiText('${v.char}')">🔊</button>
+  </div>`;
+  document.getElementById('vowel-side-short').innerHTML = shortV.map(v=>makeRow(v,'var(--tone-fall)')).join('');
+  document.getElementById('vowel-side-long').innerHTML  = longV.map(v=>makeRow(v,'var(--tone-low)')).join('');
+}
+
+/* ═══════════════════════════════════════════
+   ALPHABET COMPARE
+═══════════════════════════════════════════ */
+function renderAlphabetComparison() {
+  const q=(document.getElementById('compareSearch')?.value||'').trim();
+  const chars=[...consonantsData.map(x=>x.char),...vowelsData.map(x=>x.char)].filter(c=>!q||c.includes(q));
+  const el=document.getElementById('compare-grid'); if (!el) return;
+  el.innerHTML=chars.map(c=>`
+    <div class="compare-tile" onclick="speakThaiText('${c}')">
+      <span class="compare-char-traditional thai-trad">${c}</span>
+      <span class="compare-divider">Traditional</span>
+      <span class="compare-char-modern thai">${c}</span>
+      <span class="compare-divider">Modern</span>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════
+   GAME ENGINE
+═══════════════════════════════════════════ */
+let gameScore=0,gameTotal=0,currentGameWord=null,gameAnswered=false;
+let conGameScore=0,conGameTotal=0,currentConsonantItem=null,conGameAnswered=false;
+
+async function fetchRandomInternetThaiWord() {
   try {
-    const res = await fetch('https://raw.githubusercontent.com/aolmio/thaicore/main/thwords.txt');
-    if (!res.ok) throw new Error();
-    const data = await res.json();
-    const entries = Array.isArray(data) ? data : data.words || [];
-    if (!entries.length) throw new Error();
-    const sel = entries[Math.floor(Math.random()*entries.length)];
-    let thai = (sel.thai || sel.word || '').split(/[(),;]/)[0].trim();
-    if (!thai) throw new Error();
-    const meaning = (sel.english || sel.meaning || sel.translation || '').trim();
-    return { thai, tone: calculateTone(thai), meaning: meaning || '—', details: sel.transliteration || 'Phonetic breakdown ready' };
+    const res=await fetch('https://raw.githubusercontent.com/aolmio/thcore/main/tone.json');
+    if (!res.ok) throw new Error('Network error');
+    const data=await res.json();
+    const entries=Array.isArray(data)?data:data.words||[];
+    if (!entries.length) throw new Error('Empty');
+    const sel=entries[Math.floor(Math.random()*entries.length)];
+    let word=(sel.thai||sel.word||"").trim().split(/[(),;]/)[0].trim();
+    if (!word) throw new Error('No word');
+    return {thai:word, tone:calculateStringToneMetrics(word), meaning:sel.english||sel.meaning||"Contextual definition.", details:sel.transliteration||sel.romanization||"Phonetic ready."};
   } catch(e) { return null; }
 }
 
-async function newRound() {
-  gAnswered = false;
-  gWord = null;
-  document.getElementById('g-feedback').textContent = '';
-  document.getElementById('g-next').style.display = 'none';
-  document.querySelectorAll('.options-grid .game-btn').forEach(b => { b.classList.remove('correct','wrong'); b.disabled = false; });
-
-  document.getElementById('g-word').textContent = '…';
-  document.getElementById('g-meta').innerHTML = '<i>Loading…</i>';
-
-  const tag = document.getElementById('g-conn-tag');
-
-  let word = null;
+async function generateNewGameRound() {
+  gameAnswered=false;
+  document.getElementById("g-feedback-box").textContent='';
+  document.getElementById("g-next-btn").style.display='none';
+  document.getElementById("g-start-btn").style.display='none';
+  document.querySelectorAll('#tone-options .game-opt').forEach(b=>{b.classList.remove("correct","wrong");b.disabled=false;});
+  const connTag=document.getElementById("game-conn-status");
+  document.getElementById("g-word-target").textContent='…';
+  document.getElementById("g-word-meta").innerHTML='<i>Loading…</i>';
+  let word=null;
   if (navigator.onLine) {
-    tag.innerHTML = '<span class="conn-tag conn-online">🌐 Live Mode</span>';
-    word = await fetchLiveWord();
+    connTag.innerHTML=`<span class="conn-tag conn-online">🌐 Live Online</span>`;
+    word=await fetchRandomInternetThaiWord();
   } else {
-    tag.innerHTML = '<span class="conn-tag conn-offline">🔌 Offline Mode</span>';
+    connTag.innerHTML=`<span class="conn-tag conn-offline">📴 Offline Mode</span>`;
   }
-  if (!word) {
-    tag.innerHTML = '<span class="conn-tag conn-offline">📦 Offline Backup</span>';
-    word = OFFLINE_WORDS[Math.floor(Math.random()*OFFLINE_WORDS.length)];
-  }
-
-  gWord = word;
-  document.getElementById('g-word').textContent = word.thai;
-  document.getElementById('g-meta').innerHTML = `<b>Meaning:</b> ${word.meaning}<br><span style="font-family:var(--font-mono);font-size:.82rem;">${word.details}</span>`;
+  if (!word) word=offlineVocabularyBackup[Math.floor(Math.random()*offlineVocabularyBackup.length)];
+  currentGameWord=word;
+  document.getElementById("g-word-target").textContent=word.thai;
+  document.getElementById("g-word-meta").innerHTML=`<b>Meaning:</b> ${word.meaning}<br/><b>Hint:</b> ${word.details}`;
 }
 
-function guess(tone) {
-  if (gAnswered || !gWord) return;
-  gAnswered = true;
-  gTotal++;
-  const fb = document.getElementById('g-feedback');
-
-  document.querySelectorAll('.options-grid .game-btn').forEach(btn => {
-    btn.disabled = true;
-    if (btn.textContent.toLowerCase().includes(gWord.tone)) btn.classList.add('correct');
+function submitGameGuess(chosen) {
+  if (gameAnswered||!currentGameWord) return;
+  gameAnswered=true; gameTotal++;
+  const correct=currentGameWord.tone;
+  const feedbackBox=document.getElementById("g-feedback-box");
+  document.querySelectorAll('#tone-options .game-opt').forEach(btn=>{
+    btn.disabled=true;
+    if (btn.dataset.tone===correct) btn.classList.add("correct");
   });
-
-  if (tone === gWord.tone) {
-    gScore++; gStreak++;
-    if (gStreak > gBestStreak) gBestStreak = gStreak;
-    fb.textContent = '🎯 Correct! Well done!';
-    fb.style.color = 'var(--t-low)';
-    addXP(10);
-    dailyStreak = Math.max(dailyStreak, gStreak);
+  if (chosen===correct) {
+    gameScore++;
+    feedbackBox.textContent='🎯 Correct!'; feedbackBox.style.color='var(--tone-low)';
+    srsLogWord(currentGameWord.thai,correct,currentGameWord.meaning,currentGameWord.details,true);
   } else {
-    gStreak = 0;
-    fb.textContent = `❌ Wrong. Correct tone was: ${gWord.tone.toUpperCase()}`;
-    fb.style.color = 'var(--t-fall)';
-    document.querySelectorAll('.options-grid .game-btn').forEach(btn => {
-      if (btn.textContent.toLowerCase().includes(tone)) btn.classList.add('wrong');
-    });
+    feedbackBox.textContent=`✗ Correct: ${correct.toUpperCase()}`; feedbackBox.style.color='var(--tone-fall)';
+    document.querySelectorAll('#tone-options .game-opt').forEach(btn=>{ if(btn.dataset.tone===chosen) btn.classList.add("wrong"); });
+    srsLogWord(currentGameWord.thai,correct,currentGameWord.meaning,currentGameWord.details,false);
   }
-
-  updateGameUI();
-  saveStats();
-  document.getElementById('g-next').style.display = 'inline-block';
+  document.getElementById("game-score-val").textContent=gameScore;
+  document.getElementById("game-total-val").textContent=gameTotal;
+  document.getElementById("g-next-btn").style.display='block';
 }
 
-function speakGame() {
-  if (gWord) speak(gWord.thai);
+function speakGameWord() { if (currentGameWord) speakThaiText(currentGameWord.thai); }
+
+function generateNewConsonantRound() {
+  conGameAnswered=false;
+  document.getElementById("g-consonant-feedback").textContent='';
+  document.getElementById("g-con-next-btn").style.display='none';
+  document.getElementById("g-con-start-btn").style.display='none';
+  document.querySelectorAll('#p-game .game-arena > div:nth-child(2) .game-options .game-opt').forEach(b=>{b.classList.remove("correct","wrong");b.disabled=false;});
+  const clean=consonantsData.filter(c=>c.char!=='');
+  const rand=clean[Math.floor(Math.random()*clean.length)];
+  currentConsonantItem=rand;
+  document.getElementById("g-consonant-target").textContent=rand.char;
+  document.getElementById("g-consonant-meta").innerHTML=`<b>Name:</b> ${rand.name}<br/><b>Sound:</b> [${rand.sound}] · <i>${rand.meaning}</i>`;
 }
 
-function updateGameUI() {
-  document.getElementById('g-score').textContent  = gScore;
-  document.getElementById('g-total').textContent  = gTotal;
-  document.getElementById('g-streak').textContent = gStreak;
-  document.getElementById('g-best').textContent   = gBestStreak;
-  updateStreakBadge();
-}
-
-/* ─────────────────────────────────────────────────────────────
-   XP & STREAK
-───────────────────────────────────────────────────────────── */
-function addXP(pts) {
-  xp = Math.min(xp + pts, 100);
-  document.getElementById('xp-bar').style.width = xp + '%';
-  document.getElementById('xp-label').textContent = `XP ${xp}/100`;
-  if (xp >= 100) { xp = 0; /* level up effect */ }
-  saveStats();
-}
-
-function updateStreakBadge() {
-  const s = document.getElementById('streak-badge');
-  s.textContent = `🔥 ${dailyStreak} day streak`;
-}
-
-/* ─────────────────────────────────────────────────────────────
-   SETTINGS MODAL
-───────────────────────────────────────────────────────────── */
-function openSettings() { document.getElementById('settings-overlay').classList.add('open'); }
-function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
-function closeSettingsOutside(e) { if(e.target === document.getElementById('settings-overlay')) closeSettings(); }
-
-function resetProgress() {
-  if (!confirm('Reset all XP, streaks, and game history?')) return;
-  xp = 0; dailyStreak = 0; gBestStreak = 0; gScore = 0; gTotal = 0; gStreak = 0;
-  saveStats();
-  updateGameUI();
-  addXP(0); // refresh bar
-  closeSettings();
-}
-
-/* ─────────────────────────────────────────────────────────────
-   INSTALL / PWA
-───────────────────────────────────────────────────────────── */
-let deferredPrompt = null;
-
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const dismissed = localStorage.getItem('ttm-install-dismissed');
-  if (!dismissed) document.getElementById('install-banner').classList.add('show');
-});
-
-window.addEventListener('appinstalled', () => {
-  document.getElementById('install-banner').classList.remove('show');
-  deferredPrompt = null;
-});
-
-async function triggerInstall() {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') document.getElementById('install-banner').classList.remove('show');
-  deferredPrompt = null;
-}
-
-function dismissInstall() {
-  document.getElementById('install-banner').classList.remove('show');
-  localStorage.setItem('ttm-install-dismissed', '1');
-}
-
-/* ─────────────────────────────────────────────────────────────
-   OFFLINE DETECTION
-───────────────────────────────────────────────────────────── */
-function showOfflineToast() {
-  const t = document.getElementById('offline-toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
-}
-window.addEventListener('offline', showOfflineToast);
-window.addEventListener('online', () => {
-  const t = document.getElementById('offline-toast');
-  t.innerHTML = '✅ Back online!';
-  t.classList.add('show');
-  setTimeout(() => { t.classList.remove('show'); t.innerHTML = '🔌 You\'re offline — local data active'; }, 2500);
-});
-
-/* ─────────────────────────────────────────────────────────────
-   SERVICE WORKER
-───────────────────────────────────────────────────────────── */
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {
-      // Fallback: inline SW via blob
-      const code = `self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>new Response('offline'))));`;
-      const blob = new Blob([code], {type:'text/javascript'});
-      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
-    });
+function submitConsonantGuess(chosen) {
+  if (conGameAnswered||!currentConsonantItem) return;
+  conGameAnswered=true; conGameTotal++;
+  const correct=currentConsonantItem.class;
+  const fb=document.getElementById("g-consonant-feedback");
+  document.querySelectorAll('#p-game .game-arena > div:nth-child(2) .game-options .game-opt').forEach(btn=>{
+    btn.disabled=true;
+    // identify by onclick attribute more robustly
   });
-}
-
-/* ─────────────────────────────────────────────────────────────
-   KEYBOARD SHORTCUTS
-───────────────────────────────────────────────────────────── */
-document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
-  if (e.key === '1') switchTab('calc');
-  if (e.key === '2') switchTab('flow');
-  if (e.key === '3') switchTab('rules');
-  if (e.key === '4') switchTab('dict');
-  if (e.key === '5') switchTab('engine');
-  if (e.key === '6') switchTab('mnemo');
-  if (e.key === '7') switchTab('game');
-  if (e.key === 'd') toggleDark();
-  if (e.key === 'Escape') closeSettings();
-});
-
-/* ─────────────────────────────────────────────────────────────
-   RESIZE HANDLER
-───────────────────────────────────────────────────────────── */
-let resizeTimer;
-window.addEventListener('resize', () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {
-    if (document.getElementById('p-flow').classList.contains('active')) generateGraph();
-  }, 250);
-});
-
-/* ─────────────────────────────────────────────────────────────
-   MERMAID INIT (wait for script load)
-───────────────────────────────────────────────────────────── */
-function initMermaid() {
-  if (typeof mermaid !== 'undefined') {
-    mermaid.initialize({ startOnLoad: false, theme: 'base', securityLevel: 'loose' });
+  // Color correct/wrong by matching chosen/correct
+  document.querySelectorAll('#p-game .game-arena > div:nth-child(2) .game-options .game-opt').forEach(btn=>{
+    const oc=btn.getAttribute('onclick');
+    if (oc&&oc.includes(`'${correct}'`)) btn.classList.add('correct');
+    if (oc&&oc.includes(`'${chosen}'`)&&chosen!==correct) btn.classList.add('wrong');
+  });
+  if (chosen===correct) {
+    conGameScore++;
+    fb.textContent=`🎯 Correct! ${currentConsonantItem.char} is ${correct.toUpperCase()} class.`;
+    fb.style.color='var(--tone-low)';
   } else {
-    setTimeout(initMermaid, 200);
+    fb.textContent=`✗ It is ${correct.toUpperCase()} class.`;
+    fb.style.color='var(--tone-fall)';
   }
+  document.getElementById("g-con-score").textContent=conGameScore;
+  document.getElementById("g-con-total").textContent=conGameTotal;
+  document.getElementById("g-con-next-btn").style.display='block';
 }
 
-/* ─────────────────────────────────────────────────────────────
-   BOOT
-───────────────────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', () => {
-  loadSettings();
-  applyTheme(settings.dark);
-  buildGrids();
-  updateStreakBadge();
-  document.getElementById('xp-bar').style.width = xp + '%';
-  document.getElementById('xp-label').textContent = `XP ${xp}/100`;
+function speakGameConsonant() { if (currentConsonantItem) speakThaiText(currentConsonantItem.char); }
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', () => {
+  // Restore theme
+  const savedTheme=localStorage.getItem('thaiToneTheme');
+  if (savedTheme==='light') { document.documentElement.setAttribute('data-theme','light'); document.getElementById('themeBtn').textContent='☀️'; }
+
+  buildReferenceGrids();
+  renderSrsTable();
   if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
-  initMermaid();
-
-  // Restore font size setting UI
-  document.getElementById('font-size-select').value = settings.thaiFontSize;
-  document.getElementById('examples-toggle').checked = settings.showExamples;
-  document.getElementById('autospeak-toggle').checked = settings.autoSpeak;
+  document.addEventListener('keydown', e => {
+    if (e.key==='/'&&document.getElementById('compareSearch')) { switchTab('compare'); document.getElementById('compareSearch').focus(); e.preventDefault(); }
+  });
 });
+
+// PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', ()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  let deferredPrompt=null;
+  window.addEventListener('beforeinstallprompt', e=>{
+    e.preventDefault(); deferredPrompt=e;
+    const b=document.getElementById('installBtn');
+    if (b) { b.style.display='flex'; b.onclick=async()=>{ deferredPrompt.prompt(); await deferredPrompt.userChoice; b.style.display='none'; }; }
+  });
+}
 </script>
+<div id="toast"></div>
 </body>
 </html>
