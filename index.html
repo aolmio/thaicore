@@ -2,1308 +2,617 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Thai Tone Master — เสียงวรรณยุกต์</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Thai Tone Master Ultra</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0d1117">
 <link rel="manifest" href="./manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700;800&family=Kanit:wght@300;400;500;700;900&family=Prompt:wght@300;400;500;700&family=Mitr:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sarabun:wght@400;600;700;800&family=Kanit:wght@400;500;700&family=Prompt:wght@400;500;700&family=Mitr:wght@400;500;600&family=Itim&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════
-   TOKENS
-═══════════════════════════════════════════════ */
-:root {
-  --bg:          #0d1117;
-  --surface:     #161b22;
-  --surface2:    #21262d;
-  --surface3:    #30363d;
-  --border:      #30363d;
-  --border2:     #484f58;
-  --text:        #e6edf3;
-  --text2:       #8b949e;
-  --text3:       #6e7681;
-  --primary:     #58a6ff;
-  --primary-dim: rgba(88,166,255,0.12);
-  --primary-glow:rgba(88,166,255,0.3);
+:root{
+--bg:#0a0e14;--sf:#111820;--sf2:#1a2030;--sf3:#252d3a;--br:#2a3444;--br2:#3d4f6a;
+--tx:#eef2f8;--tx2:#9aafc4;--tx3:#6a82a0;
+--pr:#4da6ff;--pr-d:rgba(77,166,255,.14);--pr-g:rgba(77,166,255,.3);
+--tm:#4da6ff;--tl:#3dcc5c;--tf:#ff4f4a;--th:#c47dff;--tr:#ffaa44;
+--tm-b:rgba(77,166,255,.12);--tl-b:rgba(61,204,92,.12);--tf-b:rgba(255,79,74,.12);--th-b:rgba(196,125,255,.12);--tr-b:rgba(255,170,68,.12);
+--cm:#6dc8ff;--ch:#ffaa44;--cl:#ff7070;
+--ui:'Inter',sans-serif;--thai:'Sarabun',sans-serif;
+--r:8px;--r2:14px;--r3:20px;
+--nav:52px;--bot:env(safe-area-inset-bottom,12px);
+}
+[data-theme=light]{
+--bg:#e8ecf2;--sf:#fff;--sf2:#f0f4f8;--sf3:#e2e8f0;--br:#c8d4e0;--br2:#9aafc4;
+--tx:#0d1520;--tx2:#3d5470;--tx3:#7090b0;
+--pr:#0060cc;--pr-d:rgba(0,96,204,.1);--pr-g:rgba(0,96,204,.25);
+--tm:#0060cc;--tl:#0a7a2a;--tf:#c0001a;--th:#6020b0;--tr:#a05800;
+--tm-b:rgba(0,96,204,.1);--tl-b:rgba(10,122,42,.1);--tf-b:rgba(192,0,26,.1);--th-b:rgba(96,32,176,.1);--tr-b:rgba(160,88,0,.1);
+--cm:#0060cc;--ch:#a05800;--cl:#c0001a;
+}
+[data-font=kanit]{--thai:'Kanit',sans-serif}
+[data-font=prompt]{--thai:'Prompt',sans-serif}
+[data-font=mitr]{--thai:'Mitr',sans-serif}
+[data-font=itim]{--thai:'Itim',cursive}
 
-  --tone-mid:    #58a6ff;  --tone-mid-bg:  rgba(88,166,255,0.1);
-  --tone-low:    #3fb950;  --tone-low-bg:  rgba(63,185,80,0.1);
-  --tone-fall:   #f85149;  --tone-fall-bg: rgba(248,81,73,0.1);
-  --tone-high:   #bc8cff;  --tone-high-bg: rgba(188,140,255,0.1);
-  --tone-rise:   #ffa657;  --tone-rise-bg: rgba(255,166,87,0.1);
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--ui);background:var(--bg);color:var(--tx);min-height:100vh;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:var(--nav)}
+.thai{font-family:var(--thai)!important}
 
-  --cls-mid:     #79c0ff;  --cls-mid-bg:   rgba(121,192,255,0.12);
-  --cls-high:    #ffa657;  --cls-high-bg:  rgba(255,166,87,0.12);
-  --cls-low:     #ff7b72;  --cls-low-bg:   rgba(255,123,114,0.12);
+.nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav);background:var(--bg);border-bottom:1px solid var(--br);display:flex;align-items:center;padding:0 12px;gap:8px}
+[data-theme=light] .nav{background:rgba(232,236,242,.96);backdrop-filter:blur(16px)}
+.nav-logo{width:34px;height:34px;background:linear-gradient(135deg,var(--pr),var(--th));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--thai);font-size:18px;font-weight:800;color:#fff;flex-shrink:0;cursor:pointer}
+.nav-brand{display:flex;flex-direction:column;flex-shrink:0;margin-right:4px}
+.nav-brand b{font-size:.83rem;font-weight:800;letter-spacing:-.02em;line-height:1.1;color:var(--tx)}
+.nav-brand span{font-size:.65rem;color:var(--tx2);line-height:1}
+.nav-tabs-wrap{flex:1;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.nav-tabs-wrap::-webkit-scrollbar{display:none}
+.nav-tabs{display:flex;gap:2px;padding:2px 0;white-space:nowrap}
+.ntab{padding:6px 11px;border:none;background:transparent;color:var(--tx2);font-family:var(--ui);font-size:.77rem;font-weight:600;border-radius:6px;cursor:pointer;transition:.15s;white-space:nowrap;flex-shrink:0}
+.ntab:hover{color:var(--tx);background:var(--sf3)}
+.ntab.on{color:var(--pr);background:var(--pr-d)}
+.nav-r{display:flex;gap:5px;flex-shrink:0}
+.nav-sel{background:var(--sf2);border:1px solid var(--br);color:var(--tx);font-family:var(--ui);font-size:.74rem;font-weight:600;height:30px;padding:0 8px;border-radius:6px;cursor:pointer;outline:none;max-width:92px}
+.nav-sel option{background:var(--sf)}
+.iBtn{width:30px;height:30px;border:1px solid var(--br);border-radius:6px;background:var(--sf2);color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:.15s;flex-shrink:0}
+.iBtn:hover{color:var(--tx);border-color:var(--br2)}
 
-  --srs-new:     #58a6ff;
-  --srs-learn:   #ffa657;
-  --srs-review:  #3fb950;
-  --srs-mature:  #bc8cff;
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--bg);border-top:1px solid var(--br);padding:4px 0 var(--bot)}
+.mob-tabs{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:0 4px;gap:2px}
+.mob-tabs::-webkit-scrollbar{display:none}
+.mtab{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 10px;border:none;background:transparent;color:var(--tx3);font-family:var(--ui);font-size:.62rem;font-weight:600;cursor:pointer;border-radius:8px;transition:.15s;min-width:52px}
+.mtab .mico{font-size:19px;line-height:1}
+.mtab.on{color:var(--pr);background:var(--pr-d)}
+@media(max-width:767px){
+  .nav-tabs-wrap{display:none}
+  .mob-nav{display:block}
+  body{padding-bottom:calc(58px + var(--bot))}
+  .nav{padding:0 10px}
+}
+@media(min-width:768px){.mob-nav{display:none}}
 
-  --thai-font:   'Sarabun', sans-serif;
-  --ui-font:     'Space Grotesk', sans-serif;
-  --radius-sm:   6px;
-  --radius:      10px;
-  --radius-lg:   16px;
-  --radius-xl:   22px;
-  --nav-h:       54px;
-  --sidebar-w:   220px;
-  --transition:  0.18s ease;
-}
-[data-theme="light"] {
-  --bg:          #f0f2f5;
-  --surface:     #ffffff;
-  --surface2:    #f6f8fa;
-  --surface3:    #eaeef2;
-  --border:      #d0d7de;
-  --border2:     #afb8c1;
-  --text:        #1f2328;
-  --text2:       #656d76;
-  --text3:       #8c959f;
-  --primary:     #0969da;
-  --primary-dim: rgba(9,105,218,0.1);
-  --primary-glow:rgba(9,105,218,0.25);
-  --tone-mid-bg: rgba(9,105,218,0.08);
-  --tone-low-bg: rgba(26,127,55,0.08);
-  --tone-fall-bg:rgba(207,34,46,0.08);
-  --tone-high-bg:rgba(130,80,223,0.08);
-  --tone-rise-bg:rgba(185,114,0,0.08);
-  --cls-mid-bg:  rgba(9,105,218,0.08);
-  --cls-high-bg: rgba(185,114,0,0.08);
-  --cls-low-bg:  rgba(207,34,46,0.08);
-}
-[data-font-style="kanit"]  { --thai-font: 'Kanit', sans-serif; }
-[data-font-style="prompt"] { --thai-font: 'Prompt', sans-serif; }
-[data-font-style="mitr"]   { --thai-font: 'Mitr', sans-serif; }
+.shell{max-width:1300px;margin:0 auto;padding:20px 16px}
+@media(min-width:1024px){.shell{padding:24px 28px}}
+.panel{display:none}
+.panel.on{display:block;animation:fu .18s ease}
+@keyframes fu{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 
-/* ═══════════════════════════════════════════════
-   RESET + BASE
-═══════════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--ui-font);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 14px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  padding-top: var(--nav-h);
-  padding-bottom: env(safe-area-inset-bottom, 16px);
-}
-.thai { font-family: var(--thai-font) !important; }
+.card{background:var(--sf);border:1px solid var(--br);border-radius:var(--r2);padding:18px}
+.card-s{background:var(--sf2);border:1px solid var(--br);border-radius:var(--r);padding:13px}
+.card-f{background:var(--sf2);border:1px solid var(--br);border-radius:var(--r);padding:11px}
+.lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tx3);margin-bottom:7px}
+.info{background:var(--pr-d);border:1px solid var(--pr-g);border-radius:var(--r);padding:11px 14px;font-size:.85rem;color:var(--tx2);margin-bottom:16px;line-height:1.6}
+.info b{color:var(--tx)}
 
-/* ═══════════════════════════════════════════════
-   TOP NAV
-═══════════════════════════════════════════════ */
-.topnav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  height: var(--nav-h);
-  background: rgba(13,17,23,0.88);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center;
-  padding: 0 16px;
-  gap: 12px;
-}
-[data-theme="light"] .topnav {
-  background: rgba(240,242,245,0.88);
-}
-.nav-brand {
-  display: flex; align-items: center; gap: 10px;
-  flex-shrink: 0;
-}
-.nav-logo {
-  width: 32px; height: 32px;
-  background: linear-gradient(135deg, var(--primary), var(--tone-high));
-  border-radius: var(--radius-sm);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 17px;
-  font-family: var(--thai-font);
-  font-weight: 800;
-  color: #fff;
-  flex-shrink: 0;
-}
-.nav-title { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.02em; }
-.nav-subtitle { font-size: 0.7rem; color: var(--text2); font-weight: 500; }
-.nav-tabs {
-  flex: 1;
-  display: flex; gap: 2px;
-  overflow-x: auto; scrollbar-width: none;
-}
-.nav-tabs::-webkit-scrollbar { display: none; }
-.nav-tab {
-  white-space: nowrap;
-  padding: 6px 12px;
-  border: none; background: transparent;
-  color: var(--text2); font-family: var(--ui-font);
-  font-weight: 600; font-size: 0.78rem;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all var(--transition);
-  letter-spacing: 0.01em;
-}
-.nav-tab:hover { color: var(--text); background: var(--surface3); }
-.nav-tab.active {
-  color: var(--primary);
-  background: var(--primary-dim);
-}
-.nav-tab .tab-emoji { margin-right: 4px; }
-.nav-actions { display: flex; gap: 6px; flex-shrink: 0; }
-.icon-btn {
-  width: 32px; height: 32px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface2);
-  color: var(--text2);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px;
-  transition: all var(--transition);
-}
-.icon-btn:hover { color: var(--text); border-color: var(--border2); }
-.font-select {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--ui-font);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0 10px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  outline: none;
-}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:9px 15px;border:1px solid var(--br);border-radius:var(--r);background:var(--sf2);color:var(--tx);font-family:var(--ui);font-weight:700;font-size:.82rem;cursor:pointer;transition:.14s;white-space:nowrap}
+.btn:hover{border-color:var(--br2);background:var(--sf3)}
+.btn:active{transform:scale(.97)}
+.btn-p{background:var(--pr);border-color:var(--pr);color:#fff}
+.btn-p:hover{filter:brightness(1.1)}
+.btn-d{background:var(--tf-b);border-color:var(--tf);color:var(--tf)}
+.btn-w{width:100%}
+.spk{width:28px;height:28px;border-radius:50%;border:1px solid var(--br);background:var(--pr-d);color:var(--pr);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;transition:.14s;flex-shrink:0;vertical-align:middle}
+.spk:hover{background:var(--pr);color:#fff}
+.spk:active{transform:scale(.85)}
 
-/* ═══════════════════════════════════════════════
-   MAIN LAYOUT
-═══════════════════════════════════════════════ */
-.app-shell {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px 16px;
-}
-.panel { display: none; animation: fadeUp 0.22s ease; }
-.panel.active { display: block; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+.cg{display:flex;flex-wrap:wrap;gap:7px}
+.cb{padding:10px 16px;border:1.5px solid var(--br);border-radius:var(--r);background:var(--sf2);color:var(--tx2);font-family:var(--ui);font-weight:700;font-size:.83rem;cursor:pointer;transition:.14s}
+.cb:hover{border-color:var(--pr);color:var(--tx)}
+.cb.sel{background:var(--pr-d);border-color:var(--pr);color:var(--pr)}
+.cb:disabled{opacity:.28;cursor:not-allowed;pointer-events:none}
+.step{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r2);padding:15px 15px 15px 18px;position:relative}
+.step[data-n]::after{content:attr(data-n);position:absolute;top:13px;right:13px;width:22px;height:22px;background:var(--pr-d);color:var(--pr);border-radius:50%;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+.stitle{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tx2);margin-bottom:11px}
 
-/* ═══════════════════════════════════════════════
-   SHARED COMPONENTS
-═══════════════════════════════════════════════ */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-}
-.card-sm {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px;
-}
-.card-flat {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px;
-}
-.badge {
-  display: inline-flex; align-items: center;
-  padding: 2px 8px;
-  border-radius: 20px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.chip {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 3px 10px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text2);
-}
-.label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text3);
-  margin-bottom: 8px;
-}
-.info-banner {
-  background: var(--primary-dim);
-  border: 1px solid var(--primary-glow);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  font-size: 0.82rem;
-  color: var(--text2);
-  margin-bottom: 16px;
-  line-height: 1.5;
-}
-.info-banner b { color: var(--text); }
-.divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 16px 0;
-}
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-@media (max-width: 640px) {
-  .grid-2 { grid-template-columns: 1fr; }
-  .grid-3 { grid-template-columns: 1fr 1fr; }
-}
+.res{display:none;border-radius:var(--r3);padding:20px;border:1.5px solid var(--br);position:relative;overflow:hidden}
+.res::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 0 0,var(--rc,var(--pr)) 0%,transparent 65%);opacity:.07;pointer-events:none}
+.res.on{display:block;animation:fu .2s ease}
+.res[data-t=mid]{--rc:var(--tm);border-color:rgba(77,166,255,.35);background:linear-gradient(135deg,rgba(77,166,255,.06),var(--sf))}
+.res[data-t=low]{--rc:var(--tl);border-color:rgba(61,204,92,.35);background:linear-gradient(135deg,rgba(61,204,92,.06),var(--sf))}
+.res[data-t=falling]{--rc:var(--tf);border-color:rgba(255,79,74,.35);background:linear-gradient(135deg,rgba(255,79,74,.06),var(--sf))}
+.res[data-t=high]{--rc:var(--th);border-color:rgba(196,125,255,.35);background:linear-gradient(135deg,rgba(196,125,255,.06),var(--sf))}
+.res[data-t=rising]{--rc:var(--tr);border-color:rgba(255,170,68,.35);background:linear-gradient(135deg,rgba(255,170,68,.06),var(--sf))}
+.res-name{font-size:1.5rem;font-weight:900;display:flex;align-items:center;gap:10px;color:var(--rc,var(--tx));margin-bottom:5px}
+.res-rule{font-size:.88rem;color:var(--tx2);margin-bottom:16px;line-height:1.6}
+.ex-w{background:var(--sf2);border:1px solid var(--br);border-radius:var(--r);padding:14px}
+.ex-thai{font-family:var(--thai);font-size:2.4rem;font-weight:800;display:flex;align-items:center;gap:12px;margin-bottom:4px;color:var(--tx)}
+.ex-det{font-size:.85rem;color:var(--tx2)}
+.pitch{margin-top:13px;background:var(--sf2);border:1px solid var(--br);border-radius:var(--r);padding:11px}
+.pitch-lbl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin-bottom:7px}
+canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
 
-/* ═══════════════════════════════════════════════
-   BUTTONS
-═══════════════════════════════════════════════ */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 8px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface2);
-  color: var(--text);
-  font-family: var(--ui-font);
-  font-weight: 600;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all var(--transition);
-  white-space: nowrap;
-}
-.btn:hover { border-color: var(--border2); background: var(--surface3); }
-.btn:active { transform: scale(0.97); }
-.btn-primary {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
-}
-.btn-primary:hover { filter: brightness(1.12); }
-.btn-danger {
-  background: var(--tone-fall-bg);
-  border-color: var(--tone-fall);
-  color: var(--tone-fall);
-}
-.btn-full { width: 100%; }
-.speak-btn {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--primary-dim);
-  color: var(--primary);
-  cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 13px;
-  transition: all var(--transition);
-  flex-shrink: 0;
-}
-.speak-btn:hover { background: var(--primary); color: #fff; }
-.speak-btn:active { transform: scale(0.88); }
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:640px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.calc-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}}
 
-/* ═══════════════════════════════════════════════
-   CHOICE BUTTONS (Calculator)
-═══════════════════════════════════════════════ */
-.choice-grid {
-  display: flex; flex-wrap: wrap; gap: 6px;
-}
-.choice-btn {
-  padding: 9px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface2);
-  color: var(--text2);
-  font-family: var(--ui-font);
-  font-weight: 600;
-  font-size: 0.82rem;
-  cursor: pointer;
-  transition: all var(--transition);
-}
-.choice-btn:hover { border-color: var(--primary); color: var(--text); }
-.choice-btn.selected {
-  background: var(--primary-dim);
-  border-color: var(--primary);
-  color: var(--primary);
-}
-.choice-btn:disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
-.step-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  transition: border-color var(--transition);
-}
-.step-card:focus-within { border-color: var(--border2); }
-.step-num {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 22px; height: 22px;
-  background: var(--primary-dim);
-  color: var(--primary);
-  border-radius: 50%;
-  font-size: 0.7rem;
-  font-weight: 800;
-  margin-right: 8px;
-  flex-shrink: 0;
-}
-.step-title {
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text2);
-  display: flex; align-items: center;
-  margin-bottom: 10px;
-}
+/* FLOWCHART */
+.fc-wrap{position:relative;overflow:hidden;border:1.5px solid var(--br);border-radius:var(--r2);background:var(--sf);margin-top:14px}
+.fc-toolbar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--br);flex-wrap:wrap}
+.fc-toolbar b{font-size:.82rem;font-weight:700;color:var(--tx);flex:1}
+.fc-zoom{display:flex;align-items:center;gap:4px}
+.fc-zoom button{width:28px;height:28px;border:1px solid var(--br);border-radius:6px;background:var(--sf2);color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:.13s}
+.fc-zoom button:hover{border-color:var(--br2);background:var(--sf3)}
+.fc-zoom span{font-size:.75rem;font-weight:700;color:var(--tx2);min-width:36px;text-align:center}
+.fc-body{overflow:auto;cursor:grab;user-select:none;max-height:480px;-webkit-overflow-scrolling:touch}
+.fc-body:active{cursor:grabbing}
+.fc-svg-wrap{padding:20px;transition:transform .1s ease;transform-origin:0 0}
+.fc-svg-wrap svg{display:block}
 
-/* ═══════════════════════════════════════════════
-   RESULT CARD
-═══════════════════════════════════════════════ */
-.result-card {
-  display: none;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: 20px;
-  animation: fadeUp 0.2s ease;
-  position: relative;
-  overflow: hidden;
-}
-.result-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.05;
-  background: radial-gradient(ellipse at top left, var(--accent-color, var(--primary)), transparent 60%);
-}
-.result-card.show { display: block; }
-.result-card[data-tone-type="mid"]     { --accent-color: var(--tone-mid);  border-color: rgba(88,166,255,0.3);  background: linear-gradient(135deg, rgba(88,166,255,0.05), var(--surface)); }
-.result-card[data-tone-type="low"]     { --accent-color: var(--tone-low);  border-color: rgba(63,185,80,0.3);   background: linear-gradient(135deg, rgba(63,185,80,0.05),  var(--surface)); }
-.result-card[data-tone-type="falling"] { --accent-color: var(--tone-fall); border-color: rgba(248,81,73,0.3);   background: linear-gradient(135deg, rgba(248,81,73,0.05),  var(--surface)); }
-.result-card[data-tone-type="high"]    { --accent-color: var(--tone-high); border-color: rgba(188,140,255,0.3); background: linear-gradient(135deg, rgba(188,140,255,0.05),var(--surface)); }
-.result-card[data-tone-type="rising"]  { --accent-color: var(--tone-rise); border-color: rgba(255,166,87,0.3);  background: linear-gradient(135deg, rgba(255,166,87,0.05), var(--surface)); }
-.result-tone-name {
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin-bottom: 4px;
-  display: flex; align-items: center; gap: 10px;
-  color: var(--accent-color, var(--text));
-}
-.result-rule { font-size: 0.85rem; color: var(--text2); margin-bottom: 14px; line-height: 1.5; }
-.example-word {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px 14px;
-}
-.example-thai {
-  font-family: var(--thai-font);
-  font-size: 2.2rem;
-  font-weight: 800;
-  display: flex; align-items: center; gap: 10px;
-  color: var(--text);
-  margin-bottom: 2px;
-}
-.example-details { font-size: 0.82rem; color: var(--text2); }
+.stabs{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1.5px solid var(--br);margin-bottom:15px}
+.stab{padding:9px 14px;border:none;border-bottom:2.5px solid transparent;background:transparent;color:var(--tx2);font-family:var(--ui);font-size:.8rem;font-weight:700;cursor:pointer;margin-bottom:-1px;transition:.14s}
+.stab:hover{color:var(--tx)}
+.stab.on{color:var(--pr);border-bottom-color:var(--pr)}
+.sp{display:none}.sp.on{display:block;animation:fu .16s ease}
+.mtabs2{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:13px}
+.mt2{padding:6px 11px;border:1.5px solid var(--br);border-radius:20px;background:transparent;color:var(--tx2);font-family:var(--ui);font-size:.76rem;font-weight:700;cursor:pointer;transition:.14s}
+.mt2.on{background:var(--pr-d);border-color:var(--pr);color:var(--pr)}
 
-/* ═══════════════════════════════════════════════
-   PITCH CANVAS
-═══════════════════════════════════════════════ */
-.pitch-wrap {
-  margin-top: 14px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px;
-}
-.pitch-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); margin-bottom: 8px; }
-canvas.pitch-canvas {
-  width: 100%; height: 80px;
-  display: block;
-  border-radius: var(--radius-sm);
-}
+.msec{font-size:.85rem;font-weight:800;margin:18px 0 11px;padding-bottom:8px;border-bottom:1.5px solid var(--br);display:flex;align-items:center;gap:8px;color:var(--tx)}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:9px}
+@media(min-width:1024px){.tgrid{grid-template-columns:repeat(auto-fill,minmax(198px,1fr))}}
+.tile{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r);padding:11px 11px 11px 15px;display:flex;flex-direction:column;gap:5px;position:relative;transition:.13s}
+.tile:hover{border-color:var(--br2);transform:translateY(-2px)}
+.tile::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3.5px;border-radius:var(--r) 0 0 var(--r)}
+.tile-mid::before{background:var(--cm)}.tile-high::before{background:var(--ch)}.tile-low::before{background:var(--cl)}
+.tile-short::before{background:var(--tf)}.tile-long::before{background:var(--tl)}
+.tile-h{display:flex;align-items:center;justify-content:space-between}
+.tg{font-family:var(--thai);font-size:1.8rem;font-weight:800;line-height:1;color:var(--tx)}
+.tn2{font-size:.76rem;font-weight:700;color:var(--tx2)}
+.tm3{font-size:.74rem;color:var(--tx3);line-height:1.45}
 
-/* ═══════════════════════════════════════════════
-   REFERENCE / TILES
-═══════════════════════════════════════════════ */
-.matrix-section-title {
-  font-size: 0.82rem; font-weight: 700;
-  margin: 18px 0 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
-}
-.tile-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
-  gap: 8px;
-  margin-bottom: 8px;
-}
-@media (min-width: 1024px) { .tile-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); } }
-.char-tile {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px 10px 10px 14px;
-  display: flex; flex-direction: column; gap: 4px;
-  position: relative;
-  transition: border-color var(--transition), transform var(--transition);
-  cursor: default;
-}
-.char-tile:hover { border-color: var(--border2); transform: translateY(-1px); }
-.char-tile::before {
-  content: '';
-  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  border-radius: 10px 0 0 10px;
-}
-.tile-mid::before  { background: var(--cls-mid); }
-.tile-high::before { background: var(--cls-high); }
-.tile-low::before  { background: var(--cls-low); }
-.tile-short::before { background: var(--tone-fall); }
-.tile-long::before  { background: var(--tone-low); }
-.tile-head { display: flex; align-items: center; justify-content: space-between; }
-.tile-glyph { font-family: var(--thai-font); font-size: 1.7rem; font-weight: 800; line-height: 1; }
-.tile-name { font-size: 0.75rem; font-weight: 600; color: var(--text2); }
-.tile-meta { font-size: 0.72rem; color: var(--text3); line-height: 1.4; }
+.vpair{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:600px){.vpair{grid-template-columns:1fr}}
+.vrow{display:flex;align-items:center;background:var(--sf);border:1.5px solid var(--br);border-radius:7px;padding:8px 11px;margin-bottom:6px;gap:11px}
+.vg{font-family:var(--thai);font-size:1.5rem;font-weight:800;min-width:50px;color:var(--tx)}
+.vi{flex:1;font-size:.76rem;color:var(--tx2)}
 
-/* ═══════════════════════════════════════════════
-   SUB TABS
-═══════════════════════════════════════════════ */
-.subtabs {
-  display: flex; gap: 4px; flex-wrap: wrap;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 16px; padding-bottom: 0;
-}
-.subtab {
-  padding: 8px 14px;
-  border: none; border-bottom: 2px solid transparent;
-  background: transparent;
-  color: var(--text2); font-family: var(--ui-font);
-  font-weight: 600; font-size: 0.8rem;
-  cursor: pointer;
-  transition: all var(--transition);
-  margin-bottom: -1px;
-}
-.subtab:hover { color: var(--text); }
-.subtab.active { color: var(--primary); border-bottom-color: var(--primary); }
-.subpanel { display: none; }
-.subpanel.active { display: block; animation: fadeUp 0.18s ease; }
-.minitabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px; }
-.minitab {
-  padding: 5px 10px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: transparent;
-  color: var(--text2); font-family: var(--ui-font);
-  font-weight: 600; font-size: 0.74rem;
-  cursor: pointer; transition: all var(--transition);
-}
-.minitab.active { background: var(--primary-dim); border-color: var(--primary); color: var(--primary); }
+.mc{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r2);padding:16px 16px 16px 20px;margin-bottom:11px;position:relative}
+.mc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4.5px;border-radius:var(--r2) 0 0 var(--r2)}
+.mc.am::before{background:var(--tm)}.mc.af::before{background:var(--tf)}.mc.ah::before{background:var(--th)}
+.mc.al::before{background:var(--tl)}.mc.ar::before{background:var(--tr)}.mc.ap::before{background:var(--pr)}
+.mc-t{font-size:.95rem;font-weight:800;margin-bottom:7px;display:flex;align-items:center;gap:9px;color:var(--tx)}
+.mc-b{font-size:.86rem;color:var(--tx2);line-height:1.65}
+.mc-b b{color:var(--tx);font-weight:700}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:.7rem;font-weight:800;text-transform:uppercase}
 
-/* ═══════════════════════════════════════════════
-   VOWEL ROWS
-═══════════════════════════════════════════════ */
-.vowel-pair-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-@media (max-width: 600px) { .vowel-pair-grid { grid-template-columns: 1fr; } }
-.vowel-row {
-  display: flex; align-items: center;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 8px 10px;
-  margin-bottom: 6px;
-  gap: 10px;
-}
-.vowel-glyph { font-family: var(--thai-font); font-size: 1.4rem; font-weight: 800; min-width: 48px; }
-.vowel-info { flex: 1; font-size: 0.74rem; color: var(--text2); }
+.stbl{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+.stbl th,.stbl td{border:1px solid var(--br);padding:9px 11px;text-align:left}
+.stbl th{background:var(--sf2);font-weight:800;color:var(--tx);font-size:.8rem}
+.stbl td{color:var(--tx2)}
+.stbl b{color:var(--tx);font-weight:700}
 
-/* ═══════════════════════════════════════════════
-   MNEMONIC CARDS
-═══════════════════════════════════════════════ */
-.mnemonic-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px 16px 16px 20px;
-  margin-bottom: 10px;
-  position: relative;
-  overflow: hidden;
-}
-.mnemonic-card::before {
-  content: '';
-  position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
-}
-.mnemonic-card.accent-mid::before   { background: var(--tone-mid); }
-.mnemonic-card.accent-fall::before  { background: var(--tone-fall); }
-.mnemonic-card.accent-high::before  { background: var(--tone-high); }
-.mnemonic-card.accent-low::before   { background: var(--tone-low); }
-.mnemonic-card.accent-rise::before  { background: var(--tone-rise); }
-.mnemonic-card.accent-primary::before { background: var(--primary); }
-.mnemonic-title {
-  font-size: 0.92rem; font-weight: 700;
-  margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
-}
-.mnemonic-body { font-size: 0.84rem; color: var(--text2); line-height: 1.6; }
-.mnemonic-body b { color: var(--text); }
-.mnemonic-body .thai-inline { font-family: var(--thai-font); font-weight: 700; }
+.garena{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+@media(max-width:860px){.garena{grid-template-columns:1fr}}
+.gpod{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r3);padding:24px 20px;display:flex;flex-direction:column;align-items:center;gap:15px;text-align:center;min-height:410px}
+.gph{width:100%;text-align:left}
+.gpt{font-size:.95rem;font-weight:800;margin-bottom:3px;color:var(--tx)}
+.gsc{font-size:.8rem;font-weight:700;color:var(--pr)}
+.gtarget{font-family:var(--thai);font-size:clamp(2.8rem,8vw,4.4rem);font-weight:900;display:flex;align-items:center;justify-content:center;gap:13px;min-height:84px;line-height:1;color:var(--tx)}
+.gmeta{background:var(--sf2);border:1px solid var(--br);border-radius:var(--r);padding:11px 13px;width:100%;font-size:.85rem;color:var(--tx2);text-align:left;line-height:1.55}
+.gopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;width:100%}
+@media(max-width:400px){.gopts{grid-template-columns:1fr 1fr}}
+.gopt{background:var(--sf2);border:2px solid var(--br);border-radius:var(--r);padding:13px 7px;font-family:var(--ui);font-size:.84rem;font-weight:800;color:var(--tx2);cursor:pointer;transition:.14s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.gopt:hover:not(:disabled){border-color:var(--pr);color:var(--pr);background:var(--pr-d)}
+.gopt:disabled{cursor:not-allowed}
+.gopt.ok{background:rgba(61,204,92,.13)!important;border-color:var(--tl)!important;color:var(--tl)!important}
+.gopt.ng{background:rgba(255,79,74,.13)!important;border-color:var(--tf)!important;color:var(--tf)!important}
+.gopt .gs{font-size:.68rem;color:var(--tx3);font-weight:500}
+.gfb{font-size:1rem;font-weight:900;min-height:24px;width:100%;text-align:center}
+.ctag{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-size:.7rem;font-weight:700}
+.con{background:rgba(61,204,92,.15);color:var(--tl)}.coff{background:rgba(255,170,68,.15);color:var(--tr)}
 
-/* ═══════════════════════════════════════════════
-   SOUND TABLE
-═══════════════════════════════════════════════ */
-.sound-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
-.sound-table th, .sound-table td {
-  border: 1px solid var(--border);
-  padding: 8px 10px;
-  text-align: left;
-}
-.sound-table th { background: var(--surface2); font-weight: 700; color: var(--text); }
-.sound-table td { color: var(--text2); }
-.sound-table b { color: var(--text); }
+.csrch{width:100%;padding:11px 13px;background:var(--sf2);border:1.5px solid var(--br);border-radius:var(--r);color:var(--tx);font-family:var(--ui);font-size:.9rem;outline:none;margin-bottom:13px;transition:.14s}
+.csrch:focus{border-color:var(--pr)}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:9px}
+.ctile{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r);padding:11px 7px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center;cursor:pointer;transition:.13s}
+.ctile:hover{border-color:var(--pr);transform:translateY(-2px)}
+.ctrad{font-family:'Sarabun',sans-serif;font-size:2rem;font-weight:800;color:var(--tx)}
+.cmod{font-family:var(--thai);font-size:2rem;font-weight:800;color:var(--pr)}
+.cdiv{font-size:.6rem;color:var(--tx3);font-weight:700;text-transform:uppercase}
 
-/* ═══════════════════════════════════════════════
-   GAME SECTION
-═══════════════════════════════════════════════ */
-.game-arena {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-}
-@media (max-width: 900px) { .game-arena { grid-template-columns: 1fr; } }
-.game-pod {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: 24px 20px;
-  display: flex; flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  text-align: center;
-  min-height: 420px;
-}
-.game-pod-header { width: 100%; text-align: left; }
-.game-pod-title { font-size: 0.92rem; font-weight: 700; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
-.game-score {
-  font-size: 0.78rem; font-weight: 700;
-  color: var(--primary); letter-spacing: 0.04em;
-}
-.game-target {
-  font-family: var(--thai-font);
-  font-size: clamp(2.8rem, 8vw, 4.5rem);
-  font-weight: 900;
-  color: var(--text);
-  display: flex; align-items: center; justify-content: center; gap: 14px;
-  min-height: 90px;
-  line-height: 1;
-}
-.game-meta {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  width: 100%;
-  font-size: 0.84rem; color: var(--text2); text-align: left; line-height: 1.5;
-}
-.game-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-  gap: 8px;
-  width: 100%;
-}
-@media (max-width: 480px) { .game-options { grid-template-columns: 1fr 1fr; } }
-.game-opt {
-  background: var(--surface2);
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 8px;
-  font-family: var(--ui-font);
-  font-size: 0.82rem; font-weight: 700;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all var(--transition);
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-}
-.game-opt:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); background: var(--primary-dim); }
-.game-opt:disabled { cursor: not-allowed; }
-.game-opt.correct { background: rgba(63,185,80,0.12) !important; border-color: var(--tone-low) !important; color: var(--tone-low) !important; }
-.game-opt.wrong   { background: rgba(248,81,73,0.12) !important; border-color: var(--tone-fall) !important; color: var(--tone-fall) !important; }
-.game-opt .lbl    { font-size: 0.68rem; color: var(--text3); font-weight: 500; }
-.game-feedback {
-  font-size: 1rem; font-weight: 800;
-  min-height: 24px;
-  width: 100%;
-  text-align: center;
-}
-.conn-tag {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  font-size: 0.68rem; font-weight: 700;
-}
-.conn-online  { background: rgba(63,185,80,0.15); color: var(--tone-low); }
-.conn-offline { background: rgba(255,166,87,0.15); color: var(--tone-rise); }
+.srs-stats{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:13px}
+.srs-st{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r);padding:11px 16px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:72px}
+.srs-n{font-size:1.5rem;font-weight:900}
+.srs-l{font-size:.7rem;color:var(--tx2);font-weight:700;text-transform:uppercase}
+.srsa{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}
+.stw{overflow-x:auto;border-radius:var(--r);border:1.5px solid var(--br)}
+.srt{width:100%;border-collapse:collapse;font-size:.83rem}
+.srt th{background:var(--sf2);border-bottom:1.5px solid var(--br);padding:10px 11px;text-align:left;font-weight:800;white-space:nowrap;position:sticky;top:0;z-index:1;color:var(--tx)}
+.srt td{border-bottom:1px solid var(--br);padding:9px 11px;color:var(--tx2)}
+.srt tr:last-child td{border-bottom:none}
+.srt tr:hover td{background:var(--sf2)}
+.bn{background:rgba(77,166,255,.15);color:var(--tm)}.bl{background:rgba(255,170,68,.15);color:var(--tr)}
+.br2{background:rgba(61,204,92,.15);color:var(--tl)}.bm{background:rgba(196,125,255,.15);color:var(--th)}
 
-/* ═══════════════════════════════════════════════
-   ALPHABET COMPARE
-═══════════════════════════════════════════════ */
-.compare-search {
-  width: 100%;
-  padding: 10px 14px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text); font-family: var(--ui-font); font-size: 0.9rem;
-  outline: none; margin-bottom: 14px;
-  transition: border-color var(--transition);
-}
-.compare-search:focus { border-color: var(--primary); }
-.compare-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 10px;
-}
-.compare-tile {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px 8px;
-  text-align: center;
-  display: flex; flex-direction: column; gap: 4px;
-  align-items: center;
-  cursor: pointer;
-  transition: all var(--transition);
-}
-.compare-tile:hover { border-color: var(--primary); transform: translateY(-2px); }
-.compare-char-traditional { font-family: 'Sarabun', sans-serif; font-size: 2rem; font-weight: 800; }
-.compare-char-modern      { font-family: var(--thai-font); font-size: 2rem; font-weight: 800; color: var(--primary); }
-.compare-divider { font-size: 0.6rem; color: var(--text3); font-weight: 600; text-transform: uppercase; }
+.alout{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+@media(max-width:680px){.alout{grid-template-columns:1fr}}
+.ainp{width:100%;padding:13px;background:var(--sf2);border:2px solid var(--br);border-radius:var(--r);color:var(--tx);font-family:var(--thai);font-size:1.5rem;resize:none;min-height:94px;outline:none;transition:.14s}
+.ainp:focus{border-color:var(--pr)}
+.tn{border-left:2.5px solid var(--br);padding-left:13px;margin-bottom:13px;position:relative}
+.tn::before{content:'';position:absolute;left:-5px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--tx3)}
+.tn.ok::before{background:var(--tl)}
+.tnl{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);margin-bottom:4px}
+.tnb{font-size:.86rem;line-height:1.55;color:var(--tx2)}
+.tnb b{color:var(--tx);font-weight:700}
 
-/* ═══════════════════════════════════════════════
-   SRS LOG
-═══════════════════════════════════════════════ */
-.srs-stats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-.srs-stat {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px 16px;
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  min-width: 75px;
-}
-.srs-stat-n { font-size: 1.5rem; font-weight: 900; }
-.srs-stat-l { font-size: 0.7rem; color: var(--text2); font-weight: 600; text-transform: uppercase; }
-.srs-table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
-.srs-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-.srs-table th {
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border);
-  padding: 10px;
-  text-align: left;
-  font-weight: 700;
-  white-space: nowrap;
-  position: sticky; top: 0;
-}
-.srs-table td { border-bottom: 1px solid var(--border); padding: 9px 10px; }
-.srs-table tr:last-child td { border-bottom: none; }
-.srs-table tr:hover td { background: var(--surface2); }
-.badge-new    { background: rgba(88,166,255,0.15);  color: var(--srs-new); }
-.badge-learn  { background: rgba(255,166,87,0.15);  color: var(--srs-learn); }
-.badge-review { background: rgba(63,185,80,0.15);   color: var(--srs-review); }
-.badge-mature { background: rgba(188,140,255,0.15); color: var(--srs-mature); }
-.srs-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.ivl{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+@media(max-width:680px){.ivl{grid-template-columns:1fr}}
+.ivr{background:var(--sf2);border:1.5px solid var(--br);border-radius:var(--r);padding:13px;min-height:94px;line-height:2.3}
+.ivb{display:inline-flex;flex-direction:column;align-items:center;margin:3px 5px;border:1px solid var(--br);border-radius:7px;padding:6px 9px;background:var(--sf);vertical-align:top}
+.ivt{font-family:var(--thai);font-size:1.4rem;font-weight:800;color:var(--tx)}
+.ivr2{font-size:.72rem;color:var(--tx2)}
+.ivtg{font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:4px;margin-top:3px;text-transform:uppercase}
+.ivi{background:rgba(255,170,68,.18);color:var(--tr)}.ive{background:rgba(61,204,92,.15);color:var(--tl)}
+.ivex{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
 
-/* ═══════════════════════════════════════════════
-   ANALYZER
-═══════════════════════════════════════════════ */
-.analyzer-layout {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-}
-@media (max-width: 700px) { .analyzer-layout { grid-template-columns: 1fr; } }
-.analyzer-input {
-  width: 100%;
-  padding: 12px;
-  background: var(--surface2);
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  font-family: var(--thai-font);
-  font-size: 1.5rem;
-  resize: none;
-  min-height: 100px;
-  outline: none;
-  transition: border-color var(--transition);
-}
-.analyzer-input:focus { border-color: var(--primary); }
-.trace-node {
-  border-left: 2px solid var(--border);
-  padding-left: 12px;
-  margin-bottom: 12px;
-  position: relative;
-}
-.trace-node::before {
-  content: '';
-  position: absolute; left: -5px; top: 5px;
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--text3);
-}
-.trace-node.success::before { background: var(--tone-low); }
-.trace-title {
-  font-size: 0.7rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--text3); margin-bottom: 3px;
-}
-.trace-body { font-size: 0.85rem; line-height: 1.5; color: var(--text2); }
-.trace-body b { color: var(--text); }
-
-/* ═══════════════════════════════════════════════
-   IMPLICIT VOWEL PARSER
-═══════════════════════════════════════════════ */
-.ivp-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-@media (max-width: 700px) { .ivp-layout { grid-template-columns: 1fr; } }
-.ivp-result {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px;
-  min-height: 100px;
-  line-height: 1.8;
-}
-.ivp-block {
-  display: inline-flex; flex-direction: column; align-items: center;
-  margin: 4px 6px; border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 6px 10px; background: var(--surface);
-  vertical-align: top;
-}
-.ivp-thai { font-family: var(--thai-font); font-size: 1.4rem; font-weight: 800; }
-.ivp-rom  { font-size: 0.72rem; color: var(--text2); }
-.ivp-tag  { font-size: 0.62rem; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-top: 3px; text-transform: uppercase; }
-.ivp-implicit { background: rgba(255,166,87,0.18); color: var(--tone-rise); }
-.ivp-explicit { background: rgba(63,185,80,0.15);  color: var(--tone-low); }
-.ivp-examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-
-/* ═══════════════════════════════════════════════
-   TOAST
-═══════════════════════════════════════════════ */
-#toast {
-  position: fixed; right: 20px; bottom: 24px; z-index: 9999;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 12px 18px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
-  font-size: 0.84rem; font-weight: 600;
-  opacity: 0; transform: translateY(12px);
-  pointer-events: none;
-  transition: all 0.22s ease;
-  max-width: 280px;
-}
-#toast.show { opacity: 1; transform: translateY(0); }
-
-/* ═══════════════════════════════════════════════
-   SCROLLBAR
-═══════════════════════════════════════════════ */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
-
-/* ═══════════════════════════════════════════════
-   FOCUS RING
-═══════════════════════════════════════════════ */
-:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+#toast{position:fixed;right:16px;bottom:calc(80px + var(--bot));z-index:9999;background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r2);padding:12px 18px;box-shadow:0 8px 32px rgba(0,0,0,.4);font-size:.85rem;font-weight:700;color:var(--tx);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;max-width:270px}
+#toast.on{opacity:1;transform:translateY(0)}
+@media(min-width:768px){#toast{bottom:20px}}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--sf3);border-radius:10px}
+:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
 </style>
 </head>
 <body>
 
-<!-- ════════════ TOP NAV ════════════ -->
-<nav class="topnav">
-  <div class="nav-brand">
-    <div class="nav-logo">ก</div>
-    <div>
-      <div class="nav-title">Tone</div>
-    </div>
-  </div>
-
-  <div class="nav-tabs">
-    <button class="nav-tab active" id="t-calc"      onclick="switchTab('calc')">      <span class="tab-emoji">🎯</span>Calculator</button>
-    <button class="nav-tab"        id="t-analyzer"  onclick="switchTab('analyzer')">  <span class="tab-emoji">🔬</span>Analyzer</button>
-    <button class="nav-tab"        id="t-ref"       onclick="switchTab('ref')">       <span class="tab-emoji">📖</span>Reference</button>
-    <button class="nav-tab"        id="t-ivp"       onclick="switchTab('ivp')">       <span class="tab-emoji">🔍</span>Implicit Vowels</button>
-    <button class="nav-tab"        id="t-mnemonics" onclick="switchTab('mnemonics')"> <span class="tab-emoji">💡</span>Mnemonics</button>
-    <button class="nav-tab"        id="t-game"      onclick="switchTab('game')">      <span class="tab-emoji">🎮</span>Practice</button>
-    <button class="nav-tab"        id="t-compare"   onclick="switchTab('compare')">   <span class="tab-emoji">🔤</span>Fonts</button>
-    <button class="nav-tab"        id="t-srs"       onclick="switchTab('srs')">       <span class="tab-emoji">📚</span>SRS Log</button>
-  </div>
-
-  <div class="nav-actions">
-    <select class="font-select" onchange="changeFontStyle(this.value)" title="Thai Font">
-      <option value="traditional">Sarabun</option>
+<nav class="nav">
+  <div class="nav-logo" onclick="switchTab('calc')">ก</div>
+  <div class="nav-brand"><b>Thai Tone Ultra</b><span>เสียงวรรณยุกต์</span></div>
+  <div class="nav-tabs-wrap"><div class="nav-tabs">
+    <button class="ntab on" id="nt-calc"      onclick="switchTab('calc')">🎯 Calculator</button>
+    <button class="ntab"    id="nt-analyzer"  onclick="switchTab('analyzer')">🔬 Analyzer</button>
+    <button class="ntab"    id="nt-ref"       onclick="switchTab('ref')">📖 Reference</button>
+    <button class="ntab"    id="nt-ivp"       onclick="switchTab('ivp')">🔍 Implicit Vowels</button>
+    <button class="ntab"    id="nt-mnemonics" onclick="switchTab('mnemonics')">💡 Mnemonics</button>
+    <button class="ntab"    id="nt-game"      onclick="switchTab('game')">🎮 Practice</button>
+    <button class="ntab"    id="nt-compare"   onclick="switchTab('compare')">🔤 Fonts</button>
+    <button class="ntab"    id="nt-srs"       onclick="switchTab('srs')">📚 SRS</button>
+  </div></div>
+  <div class="nav-r">
+    <select class="nav-sel" onchange="changeFont(this.value)">
+      <option value="sarabun">Sarabun</option>
       <option value="kanit">Kanit</option>
       <option value="prompt">Prompt</option>
       <option value="mitr">Mitr</option>
+      <option value="itim">Itim ✍</option>
     </select>
-    <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
-    <button class="icon-btn" id="installBtn" style="display:none;" title="Install App">⬇</button>
+    <button class="iBtn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    <button class="iBtn" id="installBtn" style="display:none" onclick="doInstall()">⬇</button>
   </div>
 </nav>
 
-<!-- ════════════ MAIN ════════════ -->
-<main class="app-shell">
+<div class="mob-nav"><div class="mob-tabs">
+  <button class="mtab on" id="mt-calc"      onclick="switchTab('calc')">      <span class="mico">🎯</span>Calc</button>
+  <button class="mtab"    id="mt-analyzer"  onclick="switchTab('analyzer')">  <span class="mico">🔬</span>Analyze</button>
+  <button class="mtab"    id="mt-ref"       onclick="switchTab('ref')">       <span class="mico">📖</span>Ref</button>
+  <button class="mtab"    id="mt-ivp"       onclick="switchTab('ivp')">       <span class="mico">🔍</span>Vowels</button>
+  <button class="mtab"    id="mt-mnemonics" onclick="switchTab('mnemonics')"> <span class="mico">💡</span>Tips</button>
+  <button class="mtab"    id="mt-game"      onclick="switchTab('game')">      <span class="mico">🎮</span>Game</button>
+  <button class="mtab"    id="mt-compare"   onclick="switchTab('compare')">   <span class="mico">🔤</span>Fonts</button>
+  <button class="mtab"    id="mt-srs"       onclick="switchTab('srs')">       <span class="mico">📚</span>SRS</button>
+</div></div>
 
-<!-- ─── CALCULATOR ─── -->
-<section id="p-calc" class="panel active">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-    <div style="display:flex;flex-direction:column;gap:10px;">
+<main class="shell">
 
-      <div class="step-card">
-        <div class="step-title"><span class="step-num">1</span>Initial Consonant Class</div>
-        <div class="choice-grid">
-          <button class="choice-btn" onclick="setParam('class','mid',this)">Mid <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">กลาง</span></button>
-          <button class="choice-btn" onclick="setParam('class','high',this)">High <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">สูง</span></button>
-          <button class="choice-btn" onclick="setParam('class','low',this)">Low <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">ต่ำ</span></button>
+<!-- CALCULATOR -->
+<section id="p-calc" class="panel on">
+  <div class="calc-layout">
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="step" data-n="1">
+        <div class="stitle">Initial Consonant Class</div>
+        <div class="cg">
+          <button class="cb" onclick="setP('class','mid',this)">Mid <span style="color:var(--tx3);font-size:.76rem;font-weight:500">กลาง</span></button>
+          <button class="cb" onclick="setP('class','high',this)">High <span style="color:var(--tx3);font-size:.76rem;font-weight:500">สูง</span></button>
+          <button class="cb" onclick="setP('class','low',this)">Low <span style="color:var(--tx3);font-size:.76rem;font-weight:500">ต่ำ</span></button>
         </div>
       </div>
-
-      <div class="step-card">
-        <div class="step-title"><span class="step-num">2</span>Tone Mark</div>
-        <div class="choice-grid" id="tone-row">
-          <button class="choice-btn" onclick="setParam('mark','none',this)">None</button>
-          <button class="choice-btn" onclick="setParam('mark','ek',this)">Mai Ek <span class="thai" style="font-size:1rem;">่</span></button>
-          <button class="choice-btn" onclick="setParam('mark','tho',this)">Mai Tho <span class="thai" style="font-size:1rem;">้</span></button>
-          <button class="choice-btn" id="m-tri"   onclick="setParam('mark','tri',this)">Mai Tri <span class="thai" style="font-size:1rem;">๊</span></button>
-          <button class="choice-btn" id="m-chatt" onclick="setParam('mark','chattawa',this)">Mai Chatt. <span class="thai" style="font-size:1rem;">๋</span></button>
+      <div class="step" data-n="2">
+        <div class="stitle">Tone Mark</div>
+        <div class="cg" id="tone-row">
+          <button class="cb" onclick="setP('mark','none',this)">None</button>
+          <button class="cb" onclick="setP('mark','ek',this)">Mai Ek <span class="thai" style="font-size:1rem">่</span></button>
+          <button class="cb" onclick="setP('mark','tho',this)">Mai Tho <span class="thai" style="font-size:1rem">้</span></button>
+          <button class="cb" id="m-tri"  onclick="setP('mark','tri',this)">Mai Tri <span class="thai" style="font-size:1rem">๊</span></button>
+          <button class="cb" id="m-chat" onclick="setP('mark','chattawa',this)">Mai Chat <span class="thai" style="font-size:1rem">๋</span></button>
         </div>
       </div>
-
-      <div class="step-card" id="box-type" style="display:none;">
-        <div class="step-title"><span class="step-num">3</span>Syllable Type</div>
-        <div class="choice-grid">
-          <button class="choice-btn" onclick="setParam('type','live',this)">Live <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">คำเป็น</span></button>
-          <button class="choice-btn" onclick="setParam('type','dead',this)">Dead <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">คำตาย</span></button>
+      <div class="step" data-n="3" id="box-type" style="display:none">
+        <div class="stitle">Syllable Type</div>
+        <div class="cg">
+          <button class="cb" onclick="setP('type','live',this)">Live <span style="color:var(--tx3);font-size:.76rem;font-weight:500">คำเป็น</span></button>
+          <button class="cb" onclick="setP('type','dead',this)">Dead <span style="color:var(--tx3);font-size:.76rem;font-weight:500">คำตาย</span></button>
         </div>
       </div>
-
-      <div class="step-card" id="box-vowel" style="display:none;">
-        <div class="step-title"><span class="step-num">4</span>Vowel Duration</div>
-        <div class="choice-grid">
-          <button class="choice-btn" onclick="setParam('vowel','short',this)">Short <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">สระสั้น</span></button>
-          <button class="choice-btn" onclick="setParam('vowel','long',this)">Long <span style="color:var(--text3);font-weight:500;font-size:0.75rem;">สระยาว</span></button>
+      <div class="step" data-n="4" id="box-vowel" style="display:none">
+        <div class="stitle">Vowel Duration</div>
+        <div class="cg">
+          <button class="cb" onclick="setP('vowel','short',this)">Short <span style="color:var(--tx3);font-size:.76rem;font-weight:500">สระสั้น</span></button>
+          <button class="cb" onclick="setP('vowel','long',this)">Long <span style="color:var(--tx3);font-size:.76rem;font-weight:500">สระยาว</span></button>
         </div>
       </div>
     </div>
 
     <div>
-      <div class="result-card" id="output-screen" data-tone-type="mid">
-        <div class="label">Calculated Tone</div>
-        <div class="result-tone-name">
-          <span id="res-tone-title">Mid Tone —</span>
-          <button class="speak-btn" id="speak-tone-btn" title="Speak tone name">🔊</button>
+      <!-- RESULT CARD -->
+      <div class="res" id="res-card" data-t="mid">
+        <div class="lbl">Calculated Tone</div>
+        <div class="res-name"><span id="res-tone"></span><button class="spk" id="spk-tone" onclick="spkCurrent()">🔊</button></div>
+        <div class="res-rule" id="res-rule"></div>
+        <div class="ex-w">
+          <div class="lbl">Example Word</div>
+          <div class="ex-thai"><span id="ex-thai" class="thai"></span><button class="spk" onclick="spkCurrent()">🔊</button></div>
+          <div class="ex-det" id="ex-det"></div>
         </div>
-        <div class="result-rule" id="res-rule-desc"></div>
-        <div class="example-word">
-          <div class="label">Example Word</div>
-          <div class="example-thai">
-            <span id="ctx-thai" class="thai">กา</span>
-            <button class="speak-btn" id="speak-word-btn">🔊</button>
+        <div class="pitch"><div class="pitch-lbl">Pitch Contour</div><canvas class="pc" id="pc-calc" width="600" height="76"></canvas></div>
+        <div style="margin-top:13px"><button class="btn btn-p btn-w" onclick="srsFromCalc()">📚 Log to SRS Deck</button></div>
+      </div>
+
+      <!-- TONE FLOWCHART -->
+      <div id="hint-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px">
+          <div style="font-size:.85rem;font-weight:800;color:var(--tx)">📊 Tone Decision Flowchart</div>
+          <button class="btn" style="font-size:.75rem;padding:6px 12px" onclick="toggleFC()" id="fc-toggle-btn">Hide Chart</button>
+        </div>
+        <div id="fc-container" class="fc-wrap">
+          <div class="fc-toolbar">
+            <b>Scroll/pinch to navigate · Drag to pan</b>
+            <div class="fc-zoom">
+              <button onclick="fcZoom(-0.15)">−</button>
+              <span id="fc-pct">100%</span>
+              <button onclick="fcZoom(0.15)">+</button>
+              <button onclick="fcReset()" style="font-size:.72rem;width:auto;padding:0 8px">Reset</button>
+            </div>
           </div>
-          <div class="example-details" id="ctx-details"></div>
+          <div class="fc-body" id="fc-body">
+            <div class="fc-svg-wrap" id="fc-svg-wrap">
+              <!-- SVG is injected by JS -->
+            </div>
+          </div>
         </div>
-        <div class="pitch-wrap">
-          <div class="pitch-label">Pitch Contour</div>
-          <canvas class="pitch-canvas" id="pitch-canvas-calc" width="600" height="80"></canvas>
-        </div>
-        <div style="margin-top:12px;">
-          <button class="btn btn-primary btn-full" onclick="srsLogFromCalculator()">📚 Log to SRS Deck</button>
-        </div>
-      </div>
-
-      <!-- Quick reference tone table -->
-      <div class="card" id="calc-hint-card">
-        <div class="label" style="margin-bottom:12px;">Thai Tone Rules — Quick Reference</div>
-        <table class="sound-table">
-          <thead><tr><th>Class</th><th>No Mark</th><th>Mai Ek ่</th><th>Mai Tho ้</th><th>Mai Tri ๊</th><th>Mai Chat ๋</th></tr></thead>
-          <tbody>
-            <tr><td style="color:var(--cls-mid);font-weight:700;">Mid</td><td>Mid/Low*</td><td>Low</td><td>Falling</td><td>High</td><td>Rising</td></tr>
-            <tr><td style="color:var(--cls-high);font-weight:700;">High</td><td>Rising/Low*</td><td>Low</td><td>Falling</td><td>—</td><td>—</td></tr>
-            <tr><td style="color:var(--cls-low);font-weight:700;">Low</td><td>Mid/High*/Fall*</td><td>Falling</td><td>High</td><td>—</td><td>—</td></tr>
-          </tbody>
-        </table>
-        <div style="font-size:0.72rem;color:var(--text3);margin-top:8px;">* depends on live/dead syllable and vowel length</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── ANALYZER ─── -->
+<!-- ANALYZER -->
 <section id="p-analyzer" class="panel">
-  <div class="info-banner"><b>Parsing Engine:</b> Enter any Thai word — the system reads consonant class, tone mark, and syllable structure to deduce the tone with step-by-step reasoning.</div>
-  <div class="analyzer-layout">
+  <div class="info"><b>Parsing Engine:</b> Enter a Thai word — the system deduces the tone from consonant class, tone marks, and syllable structure with a step-by-step trace.</div>
+  <div class="alout">
     <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <div class="label" style="margin:0;">Thai Input</div>
-        <div style="display:flex;gap:6px;">
-          <button class="speak-btn" onclick="speakInputText()" title="Speak">🔊</button>
-          <button class="btn" style="font-size:0.72rem;padding:4px 10px;" onclick="srsLogFromAnalyzer()">📚 Log SRS</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
+        <div class="lbl" style="margin:0">Thai Input</div>
+        <div style="display:flex;gap:7px">
+          <button class="spk" onclick="spkInput()">🔊</button>
+          <button class="btn" style="font-size:.74rem;padding:5px 11px" onclick="srsFromAnalyzer()">📚 Log SRS</button>
         </div>
       </div>
-      <textarea class="analyzer-input" id="analyzer-input" placeholder="Type Thai here… e.g. กบ, รัก, พูด, หมา, อยู่" oninput="runAcousticAnalysis()" rows="4"></textarea>
-      <div style="margin-top:10px;">
-        <div class="label">Quick Examples</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;">
-          <button class="btn" onclick="setAnalyzer('กบ')">กบ</button>
-          <button class="btn" onclick="setAnalyzer('รัก')">รัก</button>
-          <button class="btn" onclick="setAnalyzer('พูด')">พูด</button>
-          <button class="btn" onclick="setAnalyzer('หมา')">หมา</button>
-          <button class="btn" onclick="setAnalyzer('อยู่')">อยู่</button>
-          <button class="btn" onclick="setAnalyzer('ขา')">ขา</button>
-          <button class="btn" onclick="setAnalyzer('สี่')">สี่</button>
-          <button class="btn" onclick="setAnalyzer('ม้า')">ม้า</button>
+      <textarea class="ainp" id="a-inp" placeholder="Type Thai… e.g. กบ รัก หมา อยู่" oninput="runAnalyzer()" rows="4"></textarea>
+      <div style="margin-top:11px">
+        <div class="lbl">Quick Examples</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px">
+          <button class="btn" onclick="setA('กบ')">กบ</button>
+          <button class="btn" onclick="setA('รัก')">รัก</button>
+          <button class="btn" onclick="setA('พูด')">พูด</button>
+          <button class="btn" onclick="setA('หมา')">หมา</button>
+          <button class="btn" onclick="setA('อยู่')">อยู่</button>
+          <button class="btn" onclick="setA('ขา')">ขา</button>
+          <button class="btn" onclick="setA('สี่')">สี่</button>
+          <button class="btn" onclick="setA('ม้า')">ม้า</button>
         </div>
       </div>
     </div>
     <div>
-      <div class="label" style="margin-bottom:8px;">Analysis Trace</div>
-      <div class="card" id="analyzer-output" style="min-height:160px;font-size:0.85rem;">
-        <span style="color:var(--text3);">Enter a Thai word to begin parsing…</span>
-      </div>
-      <div class="pitch-wrap" id="analyzer-canvas-wrap" style="display:none;">
-        <div class="pitch-label">Pitch Contour</div>
-        <canvas class="pitch-canvas" id="pitch-canvas-analyzer" width="600" height="80"></canvas>
-      </div>
+      <div class="lbl" style="margin-bottom:9px">Analysis Trace</div>
+      <div class="card" id="a-out" style="min-height:155px;font-size:.85rem"><span style="color:var(--tx3)">Enter a Thai word above…</span></div>
+      <div class="pitch" id="a-pitch-wrap" style="display:none"><div class="pitch-lbl">Pitch Contour</div><canvas class="pc" id="pc-ana" width="600" height="76"></canvas></div>
     </div>
   </div>
 </section>
 
-<!-- ─── REFERENCE ─── -->
+<!-- REFERENCE -->
 <section id="p-ref" class="panel">
-  <div class="subtabs">
-    <button class="subtab active" onclick="switchSub('sub-consonants',this)">Consonants</button>
-    <button class="subtab" onclick="switchSub('sub-vowels',this)">Vowels</button>
-    <button class="subtab" onclick="switchSub('sub-syllables',this)">Live & Dead Syllables</button>
-    <button class="subtab" onclick="switchSub('sub-tones',this)">Tone Matrix</button>
+  <div class="stabs">
+    <button class="stab on" onclick="sswitch(this,'sc')">Consonants</button>
+    <button class="stab"    onclick="sswitch(this,'sv')">Vowels</button>
+    <button class="stab"    onclick="sswitch(this,'ss')">Live &amp; Dead</button>
+    <button class="stab"    onclick="sswitch(this,'stm')">Tone Matrix</button>
   </div>
-
-  <div id="sub-consonants" class="subpanel active">
-    <div class="info-banner">Thai has <b>44 consonants</b> grouped into <b>Mid (9)</b>, <b>High (11)</b>, and <b>Low (24)</b> classes — the class determines baseline tone behavior.</div>
-    <div class="minitabs">
-      <button class="minitab active" onclick="filterCons('all',this)">All</button>
-      <button class="minitab" onclick="filterCons('mid',this)">Mid Class</button>
-      <button class="minitab" onclick="filterCons('high',this)">High Class</button>
-      <button class="minitab" onclick="filterCons('low',this)">Low Class</button>
+  <div id="sc" class="sp on">
+    <div class="info">44 consonants in <b>Mid (9)</b>, <b>High (11)</b>, and <b>Low (24)</b> classes.</div>
+    <div class="mtabs2">
+      <button class="mt2 on" onclick="fCon('all',this)">All</button>
+      <button class="mt2" onclick="fCon('mid',this)">Mid</button>
+      <button class="mt2" onclick="fCon('high',this)">High</button>
+      <button class="mt2" onclick="fCon('low',this)">Low</button>
     </div>
-    <div id="cgroup-mid"><div class="matrix-section-title" style="color:var(--cls-mid);">● Mid Class — อักษรกลาง (9 consonants)</div><div class="tile-grid" id="con-mid-target"></div></div>
-    <div id="cgroup-high"><div class="matrix-section-title" style="color:var(--cls-high);">● High Class — อักษรสูง (11 consonants)</div><div class="tile-grid" id="con-high-target"></div></div>
-    <div id="cgroup-low"><div class="matrix-section-title" style="color:var(--cls-low);">● Low Class — อักษรต่ำ (24 consonants)</div><div class="tile-grid" id="con-low-target"></div></div>
+    <div id="cg-mid"><div class="msec" style="color:var(--cm)">● Mid Class — อักษรกลาง</div><div class="tgrid" id="ct-mid"></div></div>
+    <div id="cg-high"><div class="msec" style="color:var(--ch)">● High Class — อักษรสูง</div><div class="tgrid" id="ct-high"></div></div>
+    <div id="cg-low"><div class="msec" style="color:var(--cl)">● Low Class — อักษรต่ำ</div><div class="tgrid" id="ct-low"></div></div>
   </div>
-
-  <div id="sub-vowels" class="subpanel">
-    <div class="info-banner">Thai has <b>32 vowel forms</b>. Duration (short vs long) is fundamental — it can flip a syllable from live to dead, changing tone entirely.</div>
-    <div class="minitabs">
-      <button class="minitab active" onclick="filterVowels('all',this)">Side by Side</button>
-      <button class="minitab" onclick="filterVowels('short',this)">Short Only</button>
-      <button class="minitab" onclick="filterVowels('long',this)">Long Only</button>
+  <div id="sv" class="sp">
+    <div class="info">32 vowel forms — duration (short vs long) can flip syllable type and change tone.</div>
+    <div class="mtabs2">
+      <button class="mt2 on" onclick="fVow('all',this)">Side by Side</button>
+      <button class="mt2" onclick="fVow('short',this)">Short</button>
+      <button class="mt2" onclick="fVow('long',this)">Long</button>
     </div>
-    <div id="vgroup-all" class="minisubpanel" style="display:block;">
-      <div class="vowel-pair-grid">
-        <div><div class="matrix-section-title" style="color:var(--tone-fall);">● Short Vowels — สระสั้น</div><div id="vowel-side-short"></div></div>
-        <div><div class="matrix-section-title" style="color:var(--tone-low);">● Long Vowels — สระยาว</div><div id="vowel-side-long"></div></div>
-      </div>
-    </div>
-    <div id="vgroup-short" class="minisubpanel" style="display:none;"><div class="tile-grid" id="vowel-short-target"></div></div>
-    <div id="vgroup-long"  class="minisubpanel" style="display:none;"><div class="tile-grid" id="vowel-long-target"></div></div>
+    <div id="vg-all"><div class="vpair"><div><div class="msec" style="color:var(--tf)">● Short Vowels</div><div id="vs-short"></div></div><div><div class="msec" style="color:var(--tl)">● Long Vowels</div><div id="vs-long"></div></div></div></div>
+    <div id="vg-short" style="display:none"><div class="tgrid" id="vt-short"></div></div>
+    <div id="vg-long"  style="display:none"><div class="tgrid" id="vt-long"></div></div>
   </div>
-
-  <div id="sub-syllables" class="subpanel">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-      <div class="mnemonic-card accent-low">
-        <div class="mnemonic-title">🟢 Live Syllables — คำเป็น</div>
-        <div class="mnemonic-body">Ends with a long vowel (no stop), or a sonorant final: <b>-n, -m, -ng, -w, -y</b>. Baseline tone follows normal class rules.</div>
-      </div>
-      <div class="mnemonic-card accent-fall">
-        <div class="mnemonic-title">🔴 Dead Syllables — คำตาย</div>
-        <div class="mnemonic-body">Ends with a short vowel alone, or a plosive stop: <b>-k, -p, -t</b>. Tone is forced into altered paths — no tone mark needed for effect.</div>
-      </div>
+  <div id="ss" class="sp">
+    <div class="g2" style="margin-bottom:13px">
+      <div class="mc al"><div class="mc-t">🟢 Live Syllables — คำเป็น</div><div class="mc-b">Ends with long vowel (no stop) or sonorant finals: <b>-n, -m, -ng, -w, -y</b>.</div></div>
+      <div class="mc af"><div class="mc-t">🔴 Dead Syllables — คำตาย</div><div class="mc-b">Ends with short vowel alone, or plosive stop: <b>-k, -p, -t</b>.</div></div>
     </div>
-    <div class="mnemonic-card accent-primary" style="margin-top:12px;">
-      <div class="mnemonic-title">🎵 The ห Leading Rule</div>
-      <div class="mnemonic-body"><b>ห</b> directly before a low class sonorant (<b class="thai-inline">ม น ง ว ล ย ร</b>) elevates that consonant to <b>High Class</b> behavior. The ห is silent but acts as a class elevator. Examples: <b class="thai-inline">หมา</b> (rising ˇ), <b class="thai-inline">หนาว</b> (rising ˇ), <b class="thai-inline">หวาน</b> (rising ˇ).</div>
+    <div class="mc ap"><div class="mc-t">🎵 The ห Leading Rule</div><div class="mc-b"><b>ห</b> before low sonorant (<b class="thai">ม น ง ว ล ย ร</b>) elevates it to <b>High Class</b>. ห is silent. Examples: <b class="thai">หมา</b> (rising), <b class="thai">หนาว</b> (rising).</div></div>
+    <div class="mc" style="border-left:4.5px solid var(--cm);margin-top:11px"><div class="mc-t">🔵 The อ Leading Rule</div><div class="mc-b">Silent <b class="thai">อ</b> before <b class="thai">ย/ว</b> elevates them to <b>Mid Class</b>. Example: <b class="thai">อยู่</b> → Low Tone.</div></div>
+    <div class="card-s" style="margin-top:15px"><div class="lbl">Final Consonant Mutations</div>
+      <table class="stbl"><thead><tr><th>Consonants</th><th>Initial</th><th>Final Stop</th><th>Syllable</th></tr></thead>
+      <tbody>
+        <tr><td><b>ก ข ค ฆ</b></td><td>k/kh</td><td>-k</td><td>Dead</td></tr>
+        <tr><td><b>บ ป พ ฟ ภ</b></td><td>b/p/ph/f</td><td>-p</td><td>Dead</td></tr>
+        <tr><td><b>ด ต ถ ท ธ ศ ษ ส จ ช</b></td><td>d/t/th/s/j</td><td>-t</td><td>Dead</td></tr>
+        <tr><td><b>น ณ ญ ร ล ฬ</b></td><td>n/y/r/l</td><td>-n</td><td>Live</td></tr>
+        <tr><td><b>ม</b></td><td>m</td><td>-m</td><td>Live</td></tr>
+        <tr><td><b>ง</b></td><td>ng</td><td>-ng</td><td>Live</td></tr>
+        <tr><td><b>ว ย</b></td><td>w/y</td><td>-w/-y</td><td>Live</td></tr>
+      </tbody></table>
     </div>
-    <div class="mnemonic-card" style="border-left:4px solid var(--cls-mid);margin-top:10px;">
-      <div class="mnemonic-title">🔵 The อ Leading Rule — อ นำ</div>
-      <div class="mnemonic-body">Silent <b class="thai-inline">อ</b> before <b class="thai-inline">ย</b> or <b class="thai-inline">ว</b> elevates those low-class consonants to <b>Mid Class</b>. The อ disappears phonetically but controls the class. Examples: <b class="thai-inline">อยู่</b> (yuu) → Low Tone, <b class="thai-inline">อย่าง</b> (yaang) → Low Tone.</div>
-    </div>
-    <div class="card-sm" style="margin-top:16px;">
-      <div class="label">Final Consonant Sound Mutations</div>
-      <table class="sound-table">
-        <thead><tr><th>Consonants</th><th>Initial Sound</th><th>Final Stop</th><th>Syllable Type</th></tr></thead>
+  </div>
+  <div id="stm" class="sp">
+    <div class="info">Complete tone outcome matrix. <b>*</b> = depends on syllable type and vowel length.</div>
+    <div style="overflow-x:auto">
+      <table class="stbl" style="min-width:560px">
+        <thead><tr><th>Class</th><th>Live</th><th>Dead Short</th><th>Dead Long</th><th>Mai Ek ่</th><th>Mai Tho ้</th><th>Mai Tri ๊</th><th>Mai Chat ๋</th></tr></thead>
         <tbody>
-          <tr><td><b>ก ข ค ฆ</b></td><td>k/kh</td><td>-k</td><td>Dead</td></tr>
-          <tr><td><b>บ ป พ ฟ ภ</b></td><td>b/p/ph/f</td><td>-p</td><td>Dead</td></tr>
-          <tr><td><b>ด ต ถ ท ธ ศ ษ ส จ ช</b></td><td>d/t/th/s/j</td><td>-t</td><td>Dead</td></tr>
-          <tr><td><b>น ณ ญ ร ล ฬ</b></td><td>n/y/r/l</td><td>-n</td><td>Live</td></tr>
-          <tr><td><b>ม</b></td><td>m</td><td>-m</td><td>Live</td></tr>
-          <tr><td><b>ง</b></td><td>ng</td><td>-ng</td><td>Live</td></tr>
-          <tr><td><b>ว ย</b></td><td>w/y</td><td>-w/-y</td><td>Live</td></tr>
+          <tr><td style="color:var(--cm);font-weight:800">Mid</td><td style="color:var(--tm)">Mid —</td><td style="color:var(--tl)">Low ˋ</td><td style="color:var(--tl)">Low ˋ</td><td style="color:var(--tl)">Low ˋ</td><td style="color:var(--tf)">Falling ˆ</td><td style="color:var(--th)">High ˊ</td><td style="color:var(--tr)">Rising ˇ</td></tr>
+          <tr><td style="color:var(--ch);font-weight:800">High</td><td style="color:var(--tr)">Rising ˇ</td><td style="color:var(--tl)">Low ˋ</td><td style="color:var(--tl)">Low ˋ</td><td style="color:var(--tl)">Low ˋ</td><td style="color:var(--tf)">Falling ˆ</td><td>—</td><td>—</td></tr>
+          <tr><td style="color:var(--cl);font-weight:800">Low</td><td style="color:var(--tm)">Mid —</td><td style="color:var(--th)">High ˊ</td><td style="color:var(--tf)">Falling ˆ</td><td style="color:var(--tf)">Falling ˆ</td><td style="color:var(--th)">High ˊ</td><td>—</td><td>—</td></tr>
         </tbody>
       </table>
     </div>
-  </div>
-
-  <div id="sub-tones" class="subpanel">
-    <div class="info-banner">Complete tone outcome matrix. <b>*</b> = depends on live/dead syllable and vowel length.</div>
-    <div style="overflow-x:auto;">
-      <table class="sound-table" style="min-width:600px;">
-        <thead>
-          <tr>
-            <th>Class</th>
-            <th>No Mark (Live)</th>
-            <th>No Mark (Dead Short)</th>
-            <th>No Mark (Dead Long)</th>
-            <th>Mai Ek ่</th>
-            <th>Mai Tho ้</th>
-            <th>Mai Tri ๊</th>
-            <th>Mai Chatt ๋</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="color:var(--cls-mid);font-weight:700;">Mid</td>
-            <td style="color:var(--tone-mid);">Mid —</td>
-            <td style="color:var(--tone-low);">Low ˋ</td>
-            <td style="color:var(--tone-low);">Low ˋ</td>
-            <td style="color:var(--tone-low);">Low ˋ</td>
-            <td style="color:var(--tone-fall);">Falling ˆ</td>
-            <td style="color:var(--tone-high);">High ˊ</td>
-            <td style="color:var(--tone-rise);">Rising ˇ</td>
-          </tr>
-          <tr>
-            <td style="color:var(--cls-high);font-weight:700;">High</td>
-            <td style="color:var(--tone-rise);">Rising ˇ</td>
-            <td style="color:var(--tone-low);">Low ˋ</td>
-            <td style="color:var(--tone-low);">Low ˋ</td>
-            <td style="color:var(--tone-low);">Low ˋ</td>
-            <td style="color:var(--tone-fall);">Falling ˆ</td>
-            <td>—</td>
-            <td>—</td>
-          </tr>
-          <tr>
-            <td style="color:var(--cls-low);font-weight:700;">Low</td>
-            <td style="color:var(--tone-mid);">Mid —</td>
-            <td style="color:var(--tone-high);">High ˊ</td>
-            <td style="color:var(--tone-fall);">Falling ˆ</td>
-            <td style="color:var(--tone-fall);">Falling ˆ</td>
-            <td style="color:var(--tone-high);">High ˊ</td>
-            <td>—</td>
-            <td>—</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <!-- Tone pitch diagram cards -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:16px;">
-      <div class="card-sm" style="border-top:3px solid var(--tone-mid);">
-        <div style="font-weight:700;color:var(--tone-mid);margin-bottom:4px;">Mid — สามัญ</div>
-        <div style="font-size:0.78rem;color:var(--text2);">Flat, no movement. Voice stays level in the middle range.</div>
-      </div>
-      <div class="card-sm" style="border-top:3px solid var(--tone-low);">
-        <div style="font-weight:700;color:var(--tone-low);margin-bottom:4px;">Low ˋ เอก</div>
-        <div style="font-size:0.78rem;color:var(--text2);">Starts slightly below mid, gently descends and levels out low.</div>
-      </div>
-      <div class="card-sm" style="border-top:3px solid var(--tone-fall);">
-        <div style="font-weight:700;color:var(--tone-fall);margin-bottom:4px;">Falling ˆ โท</div>
-        <div style="font-size:0.78rem;color:var(--text2);">Peaks high early, then drops sharply to the bottom.</div>
-      </div>
-      <div class="card-sm" style="border-top:3px solid var(--tone-high);">
-        <div style="font-weight:700;color:var(--tone-high);margin-bottom:4px;">High ˊ ตรี</div>
-        <div style="font-size:0.78rem;color:var(--text2);">Starts mid-high, rises to peak, holds with slight tail drop.</div>
-      </div>
-      <div class="card-sm" style="border-top:3px solid var(--tone-rise);">
-        <div style="font-weight:700;color:var(--tone-rise);margin-bottom:4px;">Rising ˇ จัตวา</div>
-        <div style="font-size:0.78rem;color:var(--text2);">Dips low first, then climbs steeply all the way up.</div>
-      </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px;margin-top:15px">
+      <div class="card-f" style="border-top:3.5px solid var(--tm)"><div style="font-weight:800;color:var(--tm);margin-bottom:5px;font-size:.9rem">Mid — สามัญ</div><div style="font-size:.8rem;color:var(--tx2)">Flat. Voice stays level mid-range throughout.</div></div>
+      <div class="card-f" style="border-top:3.5px solid var(--tl)"><div style="font-weight:800;color:var(--tl);margin-bottom:5px;font-size:.9rem">Low ˋ เอก</div><div style="font-size:.8rem;color:var(--tx2)">Starts slightly below mid, gently descends and holds.</div></div>
+      <div class="card-f" style="border-top:3.5px solid var(--tf)"><div style="font-weight:800;color:var(--tf);margin-bottom:5px;font-size:.9rem">Falling ˆ โท</div><div style="font-size:.8rem;color:var(--tx2)">Peaks high early then drops sharply to the bottom.</div></div>
+      <div class="card-f" style="border-top:3.5px solid var(--th)"><div style="font-weight:800;color:var(--th);margin-bottom:5px;font-size:.9rem">High ˊ ตรี</div><div style="font-size:.8rem;color:var(--tx2)">Starts mid, rises high, holds with slight tail drop.</div></div>
+      <div class="card-f" style="border-top:3.5px solid var(--tr)"><div style="font-weight:800;color:var(--tr);margin-bottom:5px;font-size:.9rem">Rising ˇ จัตวา</div><div style="font-size:.8rem;color:var(--tx2)">Dips low first then climbs steeply all the way up.</div></div>
     </div>
   </div>
 </section>
 
-<!-- ─── IMPLICIT VOWEL PARSER ─── -->
+<!-- IMPLICIT VOWELS -->
 <section id="p-ivp" class="panel">
-  <div class="info-banner"><b>Invisible Vowel Parser:</b> Thai often omits the short inherent vowel between consonant clusters in written form. This tool reconstructs implied vowels and marks each syllable block.</div>
-  <div class="ivp-layout">
+  <div class="info"><b>Invisible Vowel Parser:</b> Thai omits the short inherent vowel between consonant clusters. This tool reconstructs implied vowels per syllable block.</div>
+  <div class="ivl">
     <div>
-      <div class="label">Thai Input</div>
-      <textarea class="analyzer-input" id="ivp-input" placeholder="e.g. คน สบาย กรุงเทพ ประเทศ" oninput="runImplicitVowelParser()" rows="4"></textarea>
-      <div class="ivp-examples">
+      <div class="lbl">Thai Input</div>
+      <textarea class="ainp" id="ivp-inp" placeholder="e.g. คน สบาย กรุงเทพ ประเทศ" oninput="runIVP()" rows="4"></textarea>
+      <div class="ivex">
         <button class="btn" onclick="setIVP('คน')">คน</button>
         <button class="btn" onclick="setIVP('สบาย')">สบาย</button>
         <button class="btn" onclick="setIVP('กรุงเทพ')">กรุงเทพ</button>
         <button class="btn" onclick="setIVP('ประเทศ')">ประเทศ</button>
         <button class="btn" onclick="setIVP('คน กิน ข้าว')">คน กิน ข้าว</button>
       </div>
-      <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;font-size:0.76rem;font-weight:700;">
-        <span><span class="ivp-tag ivp-implicit" style="font-size:0.68rem;">IMPLICIT</span> = vowel inferred</span>
-        <span><span class="ivp-tag ivp-explicit" style="font-size:0.68rem;">EXPLICIT</span> = vowel written</span>
+      <div style="margin-top:11px;display:flex;gap:13px;flex-wrap:wrap;font-size:.78rem;font-weight:700">
+        <span><span class="ivtg ivi">IMPLICIT</span> = vowel inferred</span>
+        <span><span class="ivtg ive">EXPLICIT</span> = vowel written</span>
       </div>
     </div>
     <div>
-      <div class="label">Syllable Analysis</div>
-      <div class="ivp-result" id="ivp-result"><span style="color:var(--text3);">Awaiting input…</span></div>
+      <div class="lbl" style="margin-bottom:9px">Syllable Analysis</div>
+      <div class="ivr" id="ivp-out"><span style="color:var(--tx3)">Enter Thai text above…</span></div>
     </div>
   </div>
-  <div class="mnemonic-card accent-primary" style="margin-top:16px;">
-    <div class="mnemonic-title">📖 Common Implicit Vowel Patterns</div>
-    <table class="sound-table">
-      <thead><tr><th>Written</th><th>Implied Vowel</th><th>Romanized</th><th>Example</th><th>Rule</th></tr></thead>
+  <div class="mc ap" style="margin-top:17px">
+    <div class="mc-t">📖 Common Implicit Vowel Patterns</div>
+    <table class="stbl">
+      <thead><tr><th>Written</th><th>Implied</th><th>Romanized</th><th>Example</th><th>Rule</th></tr></thead>
       <tbody>
-        <tr><td>C + C (no marker)</td><td>-o- or -a-</td><td>o / a</td><td class="thai">คน (khon)</td><td>Short inherent vowel between clusters</td></tr>
-        <tr><td>CC at word start</td><td>อะ (a) implied</td><td>a</td><td class="thai">กระ (gra)</td><td>Cluster onset + short a</td></tr>
-        <tr><td>สบ-</td><td>อะ → sa+b</td><td>sa</td><td class="thai">สบาย (sabaai)</td><td>Initial consonant cluster</td></tr>
-        <tr><td>กร-</td><td>อะ between ก+ร</td><td>ga</td><td class="thai">กระทะ (grata)</td><td>Cluster onset implied vowel</td></tr>
-        <tr><td>ทร-</td><td>Reads as /s/ sound</td><td>s</td><td class="thai">ทราย (saai)</td><td>ทร special cluster = /s/</td></tr>
+        <tr><td>C+C (no marker)</td><td>-o- or -a-</td><td>o/a</td><td class="thai">คน (khon)</td><td>Short inherent vowel between clusters</td></tr>
+        <tr><td>CC at start</td><td>อะ (a)</td><td>a</td><td class="thai">กระ (gra)</td><td>Cluster onset + short a</td></tr>
+        <tr><td>สบ-</td><td>อะ</td><td>sa</td><td class="thai">สบาย</td><td>Initial consonant cluster</td></tr>
+        <tr><td>ทร-</td><td>/s/ sound</td><td>s</td><td class="thai">ทราย (saai)</td><td>ทร cluster = /s/</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 
-<!-- ─── MNEMONICS ─── -->
+<!-- MNEMONICS -->
 <section id="p-mnemonics" class="panel">
-  <div class="mnemonic-card accent-mid">
-    <div class="mnemonic-title">🪞 The Mid Class Mirror <span class="badge" style="background:var(--tone-mid-bg);color:var(--tone-mid);">Anchor</span></div>
-    <div class="mnemonic-body">Mid class consonants are stable anchors. <b>Whatever tone mark appears, that exact tone sounds perfectly</b> — Ek→Low, Tho→Falling, Tri→High, Chattawa→Rising. No surprises.</div>
-  </div>
-  <div class="mnemonic-card accent-fall">
-    <div class="mnemonic-title">🏴‍☠️ The Low Class Rebel Shift <span class="badge" style="background:var(--tone-fall-bg);color:var(--tone-fall);">Frequency Jump</span></div>
-    <div class="mnemonic-body">Low class with tone marks defies expectations — they jump one level higher: <b>Mai Ek (่) → Falling</b>, <b>Mai Tho (้) → High</b>. Think of the rebel climbing above its station.</div>
-  </div>
-  <div class="mnemonic-card accent-high">
-    <div class="mnemonic-title">💥 Dead Syllable Choke-Spike <span class="badge" style="background:var(--tone-high-bg);color:var(--tone-high);">Pressure Rule</span></div>
-    <div class="mnemonic-body">Unmarked Low Class + <b>short</b> dead vowel → <b>High Tone ˊ</b> (air pressure spike). Long dead vowel → <b>Falling ˆ</b>. The abrupt stop "chokes" the pitch upward.</div>
-  </div>
-  <div class="mnemonic-card accent-low">
-    <div class="mnemonic-title">🍏 Baseline Syllable Checklist <span class="badge" style="background:var(--tone-low-bg);color:var(--tone-low);">Foundation</span></div>
-    <div class="mnemonic-body"><b>Live</b> (คำเป็น): long vowel or nasal ending → Mid Tone baseline.<br/><b>Dead</b> (คำตาย): stop consonant or short vowel → Low or High depending on class.</div>
-  </div>
-  <div class="mnemonic-card accent-primary">
-    <div class="mnemonic-title">🎵 ห Leading Elevator</div>
-    <div class="mnemonic-body"><b class="thai-inline">ห</b> before low class sonorant (ม น ง ว ล ย ร) → acts as <b>High Class</b>. <b class="thai-inline">หมา</b> = rising ˇ, <b class="thai-inline">หนาว</b> = rising ˇ, <b class="thai-inline">หวาน</b> = rising ˇ. ห is silent but it carries the class.</div>
-  </div>
-  <div class="mnemonic-card" style="border-left:4px solid var(--cls-mid);">
-    <div class="mnemonic-title">🔵 อ Leading Silencer — อ นำ</div>
-    <div class="mnemonic-body">Silent <b class="thai-inline">อ</b> (mid class) before <b class="thai-inline">ย</b> or <b class="thai-inline">ว</b> elevates them to <b>Mid Class</b> behavior. <b class="thai-inline">อยู่</b> (yuu) with Mai Ek → Low Tone. The อ is invisible in pronunciation but controls the rule engine.</div>
-  </div>
-  <div class="mnemonic-card accent-rise" style="margin-top:0;">
-    <div class="mnemonic-title">🕳️ The Invisible Vowel Rule</div>
-    <div class="mnemonic-body">Thai frequently omits the short inherent vowel /o/ or /a/ between consonants. <b class="thai-inline">คน</b> = kh+<b>o</b>+n. <b class="thai-inline">กระ</b> = g+r+<b>a</b>. When two consonants appear without a vowel marker, assume a short inherent vowel is hiding between them.</div>
-  </div>
-  <div class="mnemonic-card" style="border-left:4px solid #bc8cff;">
-    <div class="mnemonic-title">📈 Pitch Contour Memory Aid</div>
-    <div class="mnemonic-body">
-      <b>Mid —</b> Flat line, no movement.<br/>
-      <b>Low ˋ</b> Slightly below mid, gently descends and holds.<br/>
-      <b>Falling ˆ</b> Starts high, curves sharply all the way down.<br/>
-      <b>High ˊ</b> Starts mid, rises high, holds and slightly falls at end.<br/>
-      <b>Rising ˇ</b> Dips low first, then climbs steeply to the top.<br/>
-      Use the Rule Calculator to see each pitch contour animated visually.
-    </div>
-  </div>
+  <div class="mc am"><div class="mc-t">🪞 Mid Class Mirror <span class="badge" style="background:var(--tm-b);color:var(--tm)">Anchor</span></div><div class="mc-b">Mid class is stable — whatever mark appears, that exact tone sounds: <b>Ek→Low</b>, <b>Tho→Falling</b>, <b>Tri→High</b>, <b>Chattawa→Rising</b>. No surprises.</div></div>
+  <div class="mc af"><div class="mc-t">🏴‍☠️ Low Class Rebel Shift <span class="badge" style="background:var(--tf-b);color:var(--tf)">Jump</span></div><div class="mc-b">Low class + marks jump one level higher: <b>Mai Ek → Falling</b>, <b>Mai Tho → High</b>. The rebel climbs above its station.</div></div>
+  <div class="mc ah"><div class="mc-t">💥 Dead Syllable Choke-Spike <span class="badge" style="background:var(--th-b);color:var(--th)">Pressure</span></div><div class="mc-b">Low class + <b>short</b> dead vowel → <b>High ˊ</b>. Long dead → <b>Falling ˆ</b>. The abrupt stop chokes pitch upward.</div></div>
+  <div class="mc al"><div class="mc-t">🍏 Baseline Checklist</div><div class="mc-b"><b>Live</b>: long vowel or nasal ending → Mid baseline.<br><b>Dead</b>: stop or short vowel → Low or High depending on class.</div></div>
+  <div class="mc ap"><div class="mc-t">🎵 ห Leading Elevator</div><div class="mc-b"><b class="thai">ห</b> before sonorant (<b class="thai">ม น ง ว ล ย ร</b>) → elevates to High class silently. <b class="thai">หมา / หนาว / หวาน</b> → all Rising ˇ.</div></div>
+  <div class="mc" style="border-left:4.5px solid var(--cm)"><div class="mc-t">🔵 อ Leading Silencer</div><div class="mc-b">Silent <b class="thai">อ</b> before <b class="thai">ย/ว</b> → Mid class. <b class="thai">อยู่</b> with Mai Ek → Low Tone. อ vanishes in sound but drives the rule.</div></div>
+  <div class="mc ar"><div class="mc-t">🕳️ Invisible Vowel</div><div class="mc-b">Thai skips the short /o/ or /a/ between clusters. <b class="thai">คน</b> = kh+<b>o</b>+n. <b class="thai">กระ</b> = g+r+<b>a</b>. Two consonants with no marker → hidden vowel between them.</div></div>
+  <div class="mc" style="border-left:4.5px solid var(--th)"><div class="mc-t">📈 Pitch Shape Guide</div><div class="mc-b"><b>Mid —</b> flat · <b>Low ˋ</b> gentle descent · <b>Falling ˆ</b> peak then sharp drop · <b>High ˊ</b> rises and holds · <b>Rising ˇ</b> dips then climbs steeply.</div></div>
 </section>
 
-<!-- ─── PRACTICE GAME ─── -->
+<!-- GAME -->
 <section id="p-game" class="panel">
-  <div class="info-banner"><b>Interactive Practice:</b> Tap 🔊 to verify audio. Correct answers are auto-logged to your SRS deck.</div>
-  <div class="game-arena">
-    <!-- Tone Game -->
-    <div class="game-pod">
-      <div class="game-pod-header">
-        <div class="game-pod-title">💬 Word Tone Practice</div>
-        <div class="game-score">Score: <span id="game-score-val">0</span> / <span id="game-total-val">0</span></div>
-        <div id="game-conn-status" style="margin-top:4px;"></div>
+  <div class="info"><b>Practice:</b> Tap 🔊 to hear pronunciation. Words are filtered to single syllable only. Correct answers auto-log to your SRS deck.</div>
+  <div class="garena">
+    <div class="gpod">
+      <div class="gph">
+        <div class="gpt">💬 Word Tone Practice</div>
+        <div class="gsc">Score: <span id="g-sc">0</span> / <span id="g-tot">0</span></div>
+        <div id="g-conn" style="margin-top:4px"></div>
       </div>
-      <div class="game-target">
-        <span id="g-word-target" class="thai">---</span>
-        <button class="speak-btn" style="width:38px;height:38px;font-size:1.1rem;" onclick="speakGameWord()">🔊</button>
+      <div class="gtarget">
+        <span id="g-word" class="thai">---</span>
+        <button class="spk" style="width:38px;height:38px;font-size:17px" onclick="spkGW()">🔊</button>
       </div>
-      <div class="game-meta" id="g-word-meta">Tap "New Round" to start…</div>
-      <div class="game-options" id="tone-options">
-        <button class="game-opt" data-tone="mid"     onclick="submitGameGuess('mid')">Mid Tone<span class="lbl">—</span></button>
-        <button class="game-opt" data-tone="low"     onclick="submitGameGuess('low')">Low Tone<span class="lbl">ˋ</span></button>
-        <button class="game-opt" data-tone="falling" onclick="submitGameGuess('falling')">Falling<span class="lbl">ˆ</span></button>
-        <button class="game-opt" data-tone="high"    onclick="submitGameGuess('high')">High Tone<span class="lbl">ˊ</span></button>
-        <button class="game-opt" data-tone="rising"  onclick="submitGameGuess('rising')">Rising<span class="lbl">ˇ</span></button>
+      <div class="gmeta" id="g-meta">Tap New Round to start…</div>
+      <div class="gopts" id="tone-opts">
+        <button class="gopt" data-t="mid"     onclick="gGuess('mid')">Mid<span class="gs">—</span></button>
+        <button class="gopt" data-t="low"     onclick="gGuess('low')">Low<span class="gs">ˋ</span></button>
+        <button class="gopt" data-t="falling" onclick="gGuess('falling')">Falling<span class="gs">ˆ</span></button>
+        <button class="gopt" data-t="high"    onclick="gGuess('high')">High<span class="gs">ˊ</span></button>
+        <button class="gopt" data-t="rising"  onclick="gGuess('rising')">Rising<span class="gs">ˇ</span></button>
       </div>
-      <div class="game-feedback" id="g-feedback-box"></div>
-      <button class="btn btn-primary btn-full" id="g-next-btn" style="display:none;" onclick="generateNewGameRound()">Next Word →</button>
-      <button class="btn btn-full" id="g-start-btn" onclick="generateNewGameRound()">New Round</button>
+      <div class="gfb" id="g-fb"></div>
+      <button class="btn btn-p btn-w" id="g-next" style="display:none" onclick="genWordRound()">Next Word →</button>
+      <button class="btn btn-w" id="g-start" onclick="genWordRound()">New Round</button>
     </div>
-
-    <!-- Consonant Class Game -->
-    <div class="game-pod">
-      <div class="game-pod-header">
-        <div class="game-pod-title">🛡️ Consonant Class Quiz</div>
-        <div class="game-score">Score: <span id="g-con-score">0</span> / <span id="g-con-total">0</span></div>
+    <div class="gpod">
+      <div class="gph">
+        <div class="gpt">🛡️ Consonant Class Quiz</div>
+        <div class="gsc">Score: <span id="c-sc">0</span> / <span id="c-tot">0</span></div>
       </div>
-      <div class="game-target">
-        <span id="g-consonant-target" class="thai">---</span>
-        <button class="speak-btn" style="width:38px;height:38px;font-size:1.1rem;" onclick="speakGameConsonant()">🔊</button>
+      <div class="gtarget">
+        <span id="c-char" class="thai">---</span>
+        <button class="spk" style="width:38px;height:38px;font-size:17px" onclick="spkGC()">🔊</button>
       </div>
-      <div class="game-meta" id="g-consonant-meta">Tap "New Round" to start…</div>
-      <div class="game-options">
-        <button class="game-opt" style="border-color:var(--cls-mid);"  onclick="submitConsonantGuess('mid')">Mid Class<span class="lbl">กลาง</span></button>
-        <button class="game-opt" style="border-color:var(--cls-high);" onclick="submitConsonantGuess('high')">High Class<span class="lbl">สูง</span></button>
-        <button class="game-opt" style="border-color:var(--cls-low);"  onclick="submitConsonantGuess('low')">Low Class<span class="lbl">ต่ำ</span></button>
+      <div class="gmeta" id="c-meta">Tap New Round to start…</div>
+      <div class="gopts">
+        <button class="gopt" style="border-color:var(--cm)" onclick="cGuess('mid')">Mid<span class="gs">กลาง</span></button>
+        <button class="gopt" style="border-color:var(--ch)" onclick="cGuess('high')">High<span class="gs">สูง</span></button>
+        <button class="gopt" style="border-color:var(--cl)" onclick="cGuess('low')">Low<span class="gs">ต่ำ</span></button>
       </div>
-      <div class="game-feedback" id="g-consonant-feedback"></div>
-      <button class="btn btn-primary btn-full" id="g-con-next-btn" style="display:none;" onclick="generateNewConsonantRound()">Next Character →</button>
-      <button class="btn btn-full" id="g-con-start-btn" onclick="generateNewConsonantRound()">New Round</button>
+      <div class="gfb" id="c-fb"></div>
+      <button class="btn btn-p btn-w" id="c-next" style="display:none" onclick="genConRound()">Next Character →</button>
+      <button class="btn btn-w" id="c-start" onclick="genConRound()">New Round</button>
     </div>
   </div>
 </section>
 
-<!-- ─── ALPHABET COMPARE ─── -->
+<!-- FONT COMPARE -->
 <section id="p-compare" class="panel">
-  <div class="info-banner"><b>Font Comparison:</b> Side-by-side view of Thai characters in the traditional Sarabun looped style vs your selected modern font. Switch fonts in the nav bar.</div>
-  <input class="compare-search" id="compareSearch" placeholder="Search Thai character…" oninput="renderAlphabetComparison()">
-  <div class="compare-grid" id="compare-grid"></div>
+  <div class="info"><b>Font Comparison:</b> Traditional Sarabun vs your selected font. Switch font in the nav bar. Tap any tile to hear pronunciation.</div>
+  <input class="csrch" id="c-search" placeholder="Search Thai character…" oninput="renderCompare()">
+  <div class="cgrid" id="c-grid"></div>
 </section>
 
-<!-- ─── SRS ─── -->
+<!-- SRS -->
 <section id="p-srs" class="panel">
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
-    <div>
-      <div style="font-size:1rem;font-weight:800;margin-bottom:2px;">📚 Spaced Repetition Log</div>
-      <div style="font-size:0.8rem;color:var(--text2);">Words auto-log when you answer the practice game or use the calculator.</div>
-    </div>
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:11px;margin-bottom:13px">
+    <div><div style="font-size:1.05rem;font-weight:900;margin-bottom:3px;color:var(--tx)">📚 Spaced Repetition Log</div><div style="font-size:.82rem;color:var(--tx2)">Words auto-log when you answer in Practice or use the Calculator.</div></div>
     <div class="srs-stats">
-      <div class="srs-stat"><span class="srs-stat-n" id="srs-count-new" style="color:var(--srs-new);">0</span><span class="srs-stat-l">New</span></div>
-      <div class="srs-stat"><span class="srs-stat-n" id="srs-count-learn" style="color:var(--srs-learn);">0</span><span class="srs-stat-l">Learning</span></div>
-      <div class="srs-stat"><span class="srs-stat-n" id="srs-count-review" style="color:var(--srs-review);">0</span><span class="srs-stat-l">Review</span></div>
-      <div class="srs-stat"><span class="srs-stat-n" id="srs-count-mature" style="color:var(--srs-mature);">0</span><span class="srs-stat-l">Mature</span></div>
+      <div class="srs-st"><span class="srs-n" id="s-new"  style="color:var(--tm)">0</span><span class="srs-l">New</span></div>
+      <div class="srs-st"><span class="srs-n" id="s-lrn"  style="color:var(--tr)">0</span><span class="srs-l">Learn</span></div>
+      <div class="srs-st"><span class="srs-n" id="s-rev"  style="color:var(--tl)">0</span><span class="srs-l">Review</span></div>
+      <div class="srs-st"><span class="srs-n" id="s-mat"  style="color:var(--th)">0</span><span class="srs-l">Mature</span></div>
     </div>
   </div>
-  <div class="srs-actions">
-    <button class="btn" onclick="renderSrsTable()">🔄 Refresh</button>
-    <button class="btn" onclick="exportSrsData()">⬇ Export JSON</button>
-    <button class="btn" onclick="document.getElementById('srs-import').click()">⬆ Import JSON</button>
-    <input id="srs-import" type="file" accept=".json" style="display:none" onchange="importSrsData(event)">
-    <button class="btn btn-danger" onclick="clearSrsData()">🗑 Clear All</button>
+  <div class="srsa">
+    <button class="btn" onclick="renderSRS()">🔄 Refresh</button>
+    <button class="btn" onclick="exportSRS()">⬇ Export JSON</button>
+    <button class="btn" onclick="document.getElementById('srs-file').click()">⬆ Import &amp; Merge</button>
+    <input id="srs-file" type="file" accept=".json" style="display:none" onchange="importSRS(event)">
+    <button class="btn btn-d" onclick="clearSRS()">🗑 Clear All</button>
   </div>
-  <div class="srs-table-wrap">
-    <table class="srs-table">
-      <thead>
-        <tr>
-          <th>Word</th><th>Tone</th><th>Meaning</th><th>Stage</th>
-          <th>✓</th><th>✗</th><th>Streak</th><th>Interval</th><th>Next Review</th><th></th>
-        </tr>
-      </thead>
-      <tbody id="srs-table-body">
-        <tr><td colspan="10" style="text-align:center;color:var(--text3);padding:32px;">No entries yet — answer words in the Practice tab to build your deck.</td></tr>
-      </tbody>
+  <div class="stw">
+    <table class="srt">
+      <thead><tr><th>Word</th><th>Tone</th><th>Meaning</th><th>Stage</th><th>✓</th><th>✗</th><th>🔥</th><th>Interval</th><th>Next Review</th><th></th></tr></thead>
+      <tbody id="srs-tbody"><tr><td colspan="10" style="text-align:center;color:var(--tx3);padding:30px">No entries yet.</td></tr></tbody>
     </table>
   </div>
 </section>
@@ -1311,775 +620,562 @@ canvas.pitch-canvas {
 </main>
 <div id="toast"></div>
 
-<!-- ════════════ SCRIPT ════════════ -->
 <script>
-/* ═══════════════════════════════════════════
-   DATA
-═══════════════════════════════════════════ */
-const database = {
-  "mid-none-live":        { type:"mid",     tone:"Mid Tone —",     desc:"Mid class + live ending → flat baseline pitch, no movement.", word:"กา",  details:"kaa • 'crow'" },
-  "mid-none-dead":        { type:"low",     tone:"Low Tone ˋ",     desc:"Mid class + dead ending → pitch drops below baseline.",         word:"กบ",  details:"gop • 'frog'" },
-  "mid-ek":               { type:"low",     tone:"Low Tone ˋ",     desc:"Mid + Mai Ek → standard low tone.",                            word:"ไก่", details:"gai • 'chicken'" },
-  "mid-tho":              { type:"falling", tone:"Falling Tone ˆ", desc:"Mid + Mai Tho → peak early, then drops sharply.",              word:"เก้า",details:"gao • 'nine'" },
-  "mid-tri":              { type:"high",    tone:"High Tone ˊ",    desc:"Mid + Mai Tri → crisp high zone, rises and holds.",            word:"โต๊ะ",details:"toh • 'table'" },
-  "mid-chattawa":         { type:"rising",  tone:"Rising Tone ˇ",  desc:"Mid + Mai Chattawa → dips low first, then swoops up.",         word:"ตั๋ว",details:"tua • 'ticket'" },
-  "high-none-live":       { type:"rising",  tone:"Rising Tone ˇ",  desc:"High class + live → deep rising contour.",                     word:"ขา",  details:"khaa • 'leg'" },
-  "high-none-dead":       { type:"low",     tone:"Low Tone ˋ",     desc:"High class + dead stop → drops to low zone.",                  word:"ไข่", details:"khai • 'egg'" },
-  "high-ek":              { type:"low",     tone:"Low Tone ˋ",     desc:"High + Mai Ek → locks into low frequency.",                    word:"สี่", details:"see • 'four'" },
-  "high-tho":             { type:"falling", tone:"Falling Tone ˆ", desc:"High + Mai Tho → crest then slides sharply off.",              word:"ห้า", details:"haa • 'five'" },
-  "low-none-live":        { type:"mid",     tone:"Mid Tone —",     desc:"Low class + live ending → flat mid baseline.",                  word:"มา",  details:"maa • 'to come'" },
-  "low-none-dead-short":  { type:"high",    tone:"High Tone ˊ",    desc:"Low + short dead → air compression spikes pitch instantly.",    word:"รัก", details:"rak • 'to love'" },
-  "low-none-dead-long":   { type:"falling", tone:"Falling Tone ˆ", desc:"Low + long dead → extended stop forces peak then drop.",        word:"พูด", details:"poot • 'to speak'" },
-  "low-ek":               { type:"falling", tone:"Falling Tone ˆ", desc:"Rebel Jump: Low + Mai Ek → Falling (one step above normal).",   word:"พี่", details:"phee • 'older sibling'" },
-  "low-tho":              { type:"high",    tone:"High Tone ˊ",    desc:"Rebel Jump: Low + Mai Tho → High (one step above normal).",     word:"ม้า", details:"maa • 'horse'" }
+const DB={
+  "mid-none-live":       {t:"mid",     n:"Mid Tone —",     d:"Mid class consonant, live syllable → flat baseline pitch.",                   w:"กา",  x:"kaa · crow (Mid class + Live)"},
+  "mid-none-dead":       {t:"low",     n:"Low Tone ˋ",     d:"Mid class consonant, dead syllable → pitch drops below baseline.",            w:"กบ",  x:"gop · frog (Mid class + Dead)"},
+  "mid-ek":              {t:"low",     n:"Low Tone ˋ",     d:"Mid class + Mai Ek (่) → standard low tone.",                                w:"ไก่", x:"gai · chicken (Mid + Mai Ek)"},
+  "mid-tho":             {t:"falling", n:"Falling Tone ˆ", d:"Mid class + Mai Tho (้) → peaks early, drops sharply.",                     w:"เก้า",x:"gao · nine (Mid + Mai Tho)"},
+  "mid-tri":             {t:"high",    n:"High Tone ˊ",    d:"Mid class + Mai Tri (๊) → crisp high zone, rises and holds.",                w:"โต๊ะ",x:"toh · table (Mid + Mai Tri)"},
+  "mid-chattawa":        {t:"rising",  n:"Rising Tone ˇ",  d:"Mid class + Mai Chattawa (๋) → dips low first, then swoops up.",            w:"ตั๋ว",x:"tua · ticket (Mid + Mai Chattawa)"},
+  "high-none-live":      {t:"rising",  n:"Rising Tone ˇ",  d:"High class consonant, live syllable → deep rising contour.",                 w:"ขา",  x:"khaa · leg (High class + Live)"},
+  "high-none-dead":      {t:"low",     n:"Low Tone ˋ",     d:"High class consonant, dead syllable → drops to low zone.",                   w:"ไข่", x:"khai · egg (High class + Dead)"},
+  "high-ek":             {t:"low",     n:"Low Tone ˋ",     d:"High class + Mai Ek (่) → locked into low frequency.",                      w:"สี่", x:"see · four (High + Mai Ek)"},
+  "high-tho":            {t:"falling", n:"Falling Tone ˆ", d:"High class + Mai Tho (้) → crests then slides sharply off.",                w:"ห้า", x:"haa · five (High + Mai Tho)"},
+  "low-none-live":       {t:"mid",     n:"Mid Tone —",     d:"Low class consonant, live syllable → flat mid baseline.",                    w:"มา",  x:"maa · to come (Low class + Live)"},
+  "low-none-dead-short": {t:"high",    n:"High Tone ˊ",    d:"Low class + short dead → air compression spikes pitch instantly.",           w:"รัก", x:"rak · to love (Low class + Short dead)"},
+  "low-none-dead-long":  {t:"falling", n:"Falling Tone ˆ", d:"Low class + long dead → extended stop forces peak then drop.",              w:"พูด", x:"poot · to speak (Low class + Long dead)"},
+  "low-ek":              {t:"falling", n:"Falling Tone ˆ", d:"Rebel Jump: Low class + Mai Ek → Falling (one step above normal).",         w:"พี่", x:"phee · older sibling (Low + Mai Ek)"},
+  "low-tho":             {t:"high",    n:"High Tone ˊ",    d:"Rebel Jump: Low class + Mai Tho → High (one step above normal).",           w:"ม้า", x:"maa · horse (Low + Mai Tho)"}
 };
 
-const consonantsData = [
-  {char:"ก",name:"Kor Kai",   class:"mid", sound:"k/k",   meaning:"Chicken"},
-  {char:"จ",name:"Jor Jan",   class:"mid", sound:"j/t",   meaning:"Plate"},
-  {char:"ด",name:"Dor Dek",   class:"mid", sound:"d/t",   meaning:"Child"},
-  {char:"ต",name:"Tor Tao",   class:"mid", sound:"t/t",   meaning:"Turtle"},
-  {char:"บ",name:"Bor Baimai",class:"mid", sound:"b/p",   meaning:"Leaf"},
-  {char:"ป",name:"Por Pla",   class:"mid", sound:"p/p",   meaning:"Fish"},
-  {char:"อ",name:"Or Ang",    class:"mid", sound:"vowel/-",meaning:"Basin"},
-  {char:"ฎ",name:"Dor Chada", class:"mid", sound:"d/t",   meaning:"Headdress"},
-  {char:"ฏ",name:"Tor Patak", class:"mid", sound:"t/t",   meaning:"Goad"},
-  {char:"ข",name:"Khor Khai", class:"high",sound:"kh/k",  meaning:"Egg"},
-  {char:"ฃ",name:"Khor Khuat",class:"high",sound:"kh/k",  meaning:"Bottle (Obsolete)"},
-  {char:"ฉ",name:"Chor Ching",class:"high",sound:"ch/-",  meaning:"Cymbals"},
-  {char:"ถ",name:"Thor Thung",class:"high",sound:"th/t",  meaning:"Sack"},
-  {char:"ฐ",name:"Thor Than", class:"high",sound:"th/t",  meaning:"Pedestal"},
-  {char:"ผ",name:"Phor Pheung",class:"high",sound:"ph/-", meaning:"Bee"},
-  {char:"ฝ",name:"For Fa",    class:"high",sound:"f/-",   meaning:"Lid"},
-  {char:"ศ",name:"Sor Sala",  class:"high",sound:"s/t",   meaning:"Pavilion"},
-  {char:"ษ",name:"Sor Ruesi", class:"high",sound:"s/t",   meaning:"Hermit"},
-  {char:"ส",name:"Sor Suea",  class:"high",sound:"s/t",   meaning:"Tiger"},
-  {char:"ห",name:"Hor Hip",   class:"high",sound:"h/-",   meaning:"Chest"},
-  {char:"ค",name:"Khor Khwai",class:"low", sound:"kh/k",  meaning:"Buffalo"},
-  {char:"ฅ",name:"Khor Khon", class:"low", sound:"kh/k",  meaning:"Person (Obsolete)"},
-  {char:"ฆ",name:"Khor Rakang",class:"low",sound:"kh/k",  meaning:"Bell"},
-  {char:"ง",name:"Ngor Ngu",  class:"low", sound:"ng/ng", meaning:"Snake"},
-  {char:"ช",name:"Chor Chang",class:"low", sound:"ch/t",  meaning:"Elephant"},
-  {char:"ซ",name:"Sor So",    class:"low", sound:"s/t",   meaning:"Chain"},
-  {char:"ฌ",name:"Chor Chee", class:"low", sound:"ch/-",  meaning:"Tree"},
-  {char:"ญ",name:"Yor Ying",  class:"low", sound:"y/n",   meaning:"Woman"},
-  {char:"ฑ",name:"Thor Montho",class:"low",sound:"th/t",  meaning:"Montho"},
-  {char:"ฒ",name:"Thor Phuthao",class:"low",sound:"th/t", meaning:"Elderly Person"},
-  {char:"ณ",name:"Nor Nen",   class:"low", sound:"n/n",   meaning:"Novice Monk"},
-  {char:"ท",name:"Thor Thahan",class:"low",sound:"th/t",  meaning:"Soldier"},
-  {char:"ธ",name:"Thor Thong",class:"low", sound:"th/t",  meaning:"Flag"},
-  {char:"น",name:"Nor Nu",    class:"low", sound:"n/n",   meaning:"Mouse"},
-  {char:"พ",name:"Phor Phan", class:"low", sound:"ph/p",  meaning:"Tray"},
-  {char:"ฟ",name:"For Fan",   class:"low", sound:"f/p",   meaning:"Teeth"},
-  {char:"ภ",name:"Phor Samphao",class:"low",sound:"ph/p", meaning:"Sailboat"},
-  {char:"ม",name:"Mor Ma",    class:"low", sound:"m/m",   meaning:"Horse"},
-  {char:"ย",name:"Yor Yak",   class:"low", sound:"y/y",   meaning:"Giant"},
-  {char:"ร",name:"Ror Ruea",  class:"low", sound:"r/n",   meaning:"Boat"},
-  {char:"ล",name:"Lor Ling",  class:"low", sound:"l/n",   meaning:"Monkey"},
-  {char:"ว",name:"Wor Waen",  class:"low", sound:"w/w",   meaning:"Ring"},
-  {char:"ฬ",name:"Lor Chula", class:"low", sound:"l/n",   meaning:"Kite"},
-  {char:"ฮ",name:"Hor Nokhuak",class:"low",sound:"h/-",   meaning:"Owl"}
+const CONS=[
+  {c:"ก",n:"Kor Kai",    cl:"mid", s:"k/k",   m:"Chicken"},  {c:"จ",n:"Jor Jan",    cl:"mid", s:"j/t",   m:"Plate"},
+  {c:"ด",n:"Dor Dek",    cl:"mid", s:"d/t",   m:"Child"},    {c:"ต",n:"Tor Tao",    cl:"mid", s:"t/t",   m:"Turtle"},
+  {c:"บ",n:"Bor Baimai", cl:"mid", s:"b/p",   m:"Leaf"},     {c:"ป",n:"Por Pla",    cl:"mid", s:"p/p",   m:"Fish"},
+  {c:"อ",n:"Or Ang",     cl:"mid", s:"-/-",   m:"Basin"},    {c:"ฎ",n:"Dor Chada",  cl:"mid", s:"d/t",   m:"Headdress"},
+  {c:"ฏ",n:"Tor Patak",  cl:"mid", s:"t/t",   m:"Goad"},
+  {c:"ข",n:"Khor Khai",  cl:"high",s:"kh/k",  m:"Egg"},      {c:"ฉ",n:"Chor Ching", cl:"high",s:"ch/-",  m:"Cymbals"},
+  {c:"ถ",n:"Thor Thung", cl:"high",s:"th/t",  m:"Sack"},     {c:"ฐ",n:"Thor Than",  cl:"high",s:"th/t",  m:"Pedestal"},
+  {c:"ผ",n:"Phor Pheung",cl:"high",s:"ph/-",  m:"Bee"},      {c:"ฝ",n:"For Fa",     cl:"high",s:"f/-",   m:"Lid"},
+  {c:"ศ",n:"Sor Sala",   cl:"high",s:"s/t",   m:"Pavilion"}, {c:"ษ",n:"Sor Ruesi",  cl:"high",s:"s/t",   m:"Hermit"},
+  {c:"ส",n:"Sor Suea",   cl:"high",s:"s/t",   m:"Tiger"},    {c:"ห",n:"Hor Hip",    cl:"high",s:"h/-",   m:"Chest"},
+  {c:"ค",n:"Khor Khwai", cl:"low", s:"kh/k",  m:"Buffalo"},  {c:"ฆ",n:"Khor Rakang",cl:"low", s:"kh/k",  m:"Bell"},
+  {c:"ง",n:"Ngor Ngu",   cl:"low", s:"ng/ng", m:"Snake"},    {c:"ช",n:"Chor Chang", cl:"low", s:"ch/t",  m:"Elephant"},
+  {c:"ซ",n:"Sor So",     cl:"low", s:"s/t",   m:"Chain"},    {c:"ฌ",n:"Chor Chee",  cl:"low", s:"ch/-",  m:"Tree"},
+  {c:"ญ",n:"Yor Ying",   cl:"low", s:"y/n",   m:"Woman"},    {c:"ฑ",n:"Thor Montho",cl:"low", s:"th/t",  m:"Montho"},
+  {c:"ฒ",n:"Thor Phuthao",cl:"low",s:"th/t",  m:"Elder"},    {c:"ณ",n:"Nor Nen",    cl:"low", s:"n/n",   m:"Novice"},
+  {c:"ท",n:"Thor Thahan",cl:"low", s:"th/t",  m:"Soldier"},  {c:"ธ",n:"Thor Thong", cl:"low", s:"th/t",  m:"Flag"},
+  {c:"น",n:"Nor Nu",     cl:"low", s:"n/n",   m:"Mouse"},    {c:"พ",n:"Phor Phan",  cl:"low", s:"ph/p",  m:"Tray"},
+  {c:"ฟ",n:"For Fan",    cl:"low", s:"f/p",   m:"Teeth"},    {c:"ภ",n:"Phor Samphao",cl:"low",s:"ph/p",  m:"Sailboat"},
+  {c:"ม",n:"Mor Ma",     cl:"low", s:"m/m",   m:"Horse"},    {c:"ย",n:"Yor Yak",    cl:"low", s:"y/y",   m:"Giant"},
+  {c:"ร",n:"Ror Ruea",   cl:"low", s:"r/n",   m:"Boat"},     {c:"ล",n:"Lor Ling",   cl:"low", s:"l/n",   m:"Monkey"},
+  {c:"ว",n:"Wor Waen",   cl:"low", s:"w/w",   m:"Ring"},     {c:"ฬ",n:"Lor Chula",  cl:"low", s:"l/n",   m:"Kite"},
+  {c:"ฮ",n:"Hor Nok",    cl:"low", s:"h/-",   m:"Owl"}
 ];
 
-const vowelsData = [
-  {char:"ะ",  length:"short",transcription:"a",   matching:"กะ (ga)"},
-  {char:"า",  length:"long", transcription:"aa",  matching:"กา (gaa)"},
-  {char:"ิ",  length:"short",transcription:"i",   matching:"กิ (gi)"},
-  {char:"ี",  length:"long", transcription:"ii",  matching:"กี (gii)"},
-  {char:"ึ",  length:"short",transcription:"ue",  matching:"กึ (gue)"},
-  {char:"ื",  length:"long", transcription:"uee", matching:"กือ (guee)"},
-  {char:"ุ",  length:"short",transcription:"u",   matching:"กุ (gu)"},
-  {char:"ู",  length:"long", transcription:"uu",  matching:"กู (guu)"},
-  {char:"เะ", length:"short",transcription:"e",   matching:"เกะ (ge)"},
-  {char:"เ",  length:"long", transcription:"ee",  matching:"เก (gee)"},
-  {char:"แะ", length:"short",transcription:"ae",  matching:"แกะ (gae)"},
-  {char:"แ",  length:"long", transcription:"aee", matching:"แก (gaee)"},
-  {char:"โะ", length:"short",transcription:"o",   matching:"โกะ (go)"},
-  {char:"โ",  length:"long", transcription:"oo",  matching:"โก (goo)"},
-  {char:"เาะ",length:"short",transcription:"or",  matching:"เกาะ (gor)"},
-  {char:"อ",  length:"long", transcription:"orr", matching:"กอ (gorr)"},
-  {char:"เอียะ",length:"short",transcription:"ia",matching:"เกียะ (gia)"},
-  {char:"เอีย",length:"long",transcription:"iia", matching:"เกีย (giia)"},
-  {char:"เอือะ",length:"short",transcription:"uea",matching:"เกือะ (guea)"},
-  {char:"เอือ",length:"long",transcription:"uuea",matching:"เสือ (suuea)"},
-  {char:"อัวะ",length:"short",transcription:"ua", matching:"กัวะ (gua)"},
-  {char:"อัว",length:"long",transcription:"uua",  matching:"ตัว (tuua)"},
-  {char:"ำ",  length:"short",transcription:"am",  matching:"รำ (ram)"},
-  {char:"ไ",  length:"short",transcription:"ai",  matching:"ไม (mai)"},
-  {char:"ใ",  length:"short",transcription:"ai",  matching:"ใจ (jai)"},
-  {char:"เา", length:"short",transcription:"ao",  matching:"เภา (pao)"},
-  {char:"ฤ",  length:"short",transcription:"ri/rue",matching:"ฤทธิ์ (rit)"},
-  {char:"ฤา", length:"long", transcription:"ruee",matching:"ฤา (ruee)"},
-  {char:"ฦ",  length:"short",transcription:"lue", matching:"ฦ (lue)"},
-  {char:"ฦา", length:"long", transcription:"luee",matching:"ฦา (luee)"}
+const VOWS=[
+  {c:"ะ",l:"short",t:"a",   x:"กะ (ga)"},   {c:"า",  l:"long", t:"aa",  x:"กา (gaa)"},
+  {c:"ิ", l:"short",t:"i",   x:"กิ (gi)"},   {c:"ี",  l:"long", t:"ii",  x:"กี (gii)"},
+  {c:"ึ", l:"short",t:"ue",  x:"กึ (gue)"},  {c:"ื",  l:"long", t:"uee", x:"กือ (guee)"},
+  {c:"ุ", l:"short",t:"u",   x:"กุ (gu)"},   {c:"ู",  l:"long", t:"uu",  x:"กู (guu)"},
+  {c:"เะ",l:"short",t:"e",   x:"เกะ (ge)"},  {c:"เ",  l:"long", t:"ee",  x:"เก (gee)"},
+  {c:"แะ",l:"short",t:"ae",  x:"แกะ (gae)"}, {c:"แ",  l:"long", t:"aee", x:"แก (gaee)"},
+  {c:"โะ",l:"short",t:"o",   x:"โกะ (go)"},  {c:"โ",  l:"long", t:"oo",  x:"โก (goo)"},
+  {c:"เาะ",l:"short",t:"or", x:"เกาะ (gor)"},{c:"อ",  l:"long", t:"orr", x:"กอ (gorr)"},
+  {c:"ำ", l:"short",t:"am",  x:"รำ (ram)"},  {c:"ไ",  l:"short",t:"ai",  x:"ไม (mai)"},
+  {c:"ใ", l:"short",t:"ai",  x:"ใจ (jai)"},  {c:"เา", l:"short",t:"ao",  x:"เภา (pao)"},
+  {c:"เอีย",l:"long",t:"iia",x:"เสีย"},      {c:"เอือ",l:"long",t:"uuea",x:"เสือ"},
+  {c:"อัว",l:"long",t:"uua", x:"ตัว"},       {c:"ฤ",  l:"short",t:"ri",  x:"ฤทธิ์"}
 ];
 
-const offlineVocabularyBackup = [
-  {thai:"คน", tone:"mid",     meaning:"Person",         details:"khon • Low class + Live"},
-  {thai:"กิน",tone:"mid",     meaning:"To eat",         details:"gin • Mid class + Live"},
-  {thai:"เด็ก",tone:"low",    meaning:"Child",          details:"dek • Mid class + Dead"},
-  {thai:"พูด",tone:"falling", meaning:"To speak",       details:"poot • Low class + Long dead"},
-  {thai:"รัก",tone:"high",    meaning:"To love",        details:"rak • Low class + Short dead"},
-  {thai:"มา", tone:"mid",     meaning:"To come",        details:"maa • Low class + Live"},
-  {thai:"ไป", tone:"mid",     meaning:"To go",          details:"pai • Mid class + Live"},
-  {thai:"บ้าน",tone:"falling",meaning:"House",          details:"baan • Mid class + Mai Tho"},
-  {thai:"ไก่",tone:"low",     meaning:"Chicken",        details:"gai • Mid class + Mai Ek"},
-  {thai:"ม้า",tone:"high",    meaning:"Horse",          details:"maa • Low class + Mai Tho"},
-  {thai:"พี่",tone:"falling", meaning:"Older sibling",  details:"phee • Low class + Mai Ek"},
-  {thai:"สี่",tone:"low",     meaning:"Four",           details:"see • High class + Mai Ek"},
-  {thai:"ห้า",tone:"falling", meaning:"Five",           details:"haa • High class + Mai Tho"},
-  {thai:"โต๊ะ",tone:"high",  meaning:"Table",          details:"toh • Mid class + Mai Tri"},
-  {thai:"ตั๋ว",tone:"rising", meaning:"Ticket",         details:"tua • Mid class + Mai Chattawa"},
-  {thai:"อยู่",tone:"low",   meaning:"To stay/live",    details:"yuu • อ Leading → Mid class + Mai Ek"},
-  {thai:"หนาว",tone:"rising", meaning:"Cold",           details:"naao • ห Leading น → High class + Live"},
-  {thai:"หวาน",tone:"rising", meaning:"Sweet",          details:"waan • ห Leading ว → High class + Live"},
-  {thai:"หลาย",tone:"rising", meaning:"Many",           details:"laai • ห Leading ล → High class + Live"},
-  {thai:"สบาย",tone:"mid",    meaning:"Comfortable",    details:"sabaai • Low class + Live"},
-  {thai:"ใจ", tone:"mid",     meaning:"Heart/mind",     details:"jai • Mid class + Live"},
-  {thai:"ขา", tone:"rising",  meaning:"Leg",            details:"khaa • High class + Live"},
-  {thai:"กา", tone:"mid",     meaning:"Crow",           details:"kaa • Mid class + Live"},
-  {thai:"กบ", tone:"low",     meaning:"Frog",           details:"gop • Mid class + Dead"},
+const OFFLINE=[
+  {w:"คน", t:"mid",    m:"Person",       x:"khon"},  {w:"กิน",t:"mid",    m:"To eat",    x:"gin"},
+  {w:"มา", t:"mid",    m:"To come",      x:"maa"},   {w:"ไป", t:"mid",    m:"To go",     x:"pai"},
+  {w:"ใจ", t:"mid",    m:"Heart",        x:"jai"},   {w:"กา", t:"mid",    m:"Crow",      x:"kaa"},
+  {w:"กบ", t:"low",    m:"Frog",         x:"gop"},   {w:"ไก่",t:"low",    m:"Chicken",   x:"gai"},
+  {w:"สี่",t:"low",    m:"Four",         x:"see"},   {w:"เด็ก",t:"low",   m:"Child",     x:"dek"},
+  {w:"พูด",t:"falling",m:"To speak",     x:"poot"},  {w:"บ้าน",t:"falling",m:"House",    x:"baan"},
+  {w:"พี่",t:"falling",m:"Older sibling",x:"phee"},  {w:"ห้า",t:"falling",m:"Five",      x:"haa"},
+  {w:"รัก",t:"high",   m:"To love",      x:"rak"},   {w:"ม้า",t:"high",   m:"Horse",     x:"maa"},
+  {w:"โต๊ะ",t:"high",  m:"Table",        x:"toh"},
+  {w:"ขา", t:"rising", m:"Leg",          x:"khaa"},  {w:"หมา",t:"rising", m:"Dog",       x:"maa"},
+  {w:"หวาน",t:"rising",m:"Sweet",        x:"waan"},  {w:"ตั๋ว",t:"rising",m:"Ticket",    x:"tua"},
 ];
 
-/* ═══════════════════════════════════════════
-   PITCH CONTOUR
-═══════════════════════════════════════════ */
-const PITCH_CONTOURS = {
-  mid:     { points:[0.45,0.48,0.52,0.55,0.58], color:"#58a6ff", label:"Mid (สามัญ) — flat, slight drift" },
-  low:     { points:[0.65,0.72,0.78,0.82,0.82], color:"#3fb950", label:"Low (เอก) — starts low, drops and levels" },
-  falling: { points:[0.25,0.18,0.38,0.72,0.92], color:"#f85149", label:"Falling (โท) — peaks early, drops sharply" },
-  high:    { points:[0.38,0.32,0.22,0.14,0.20], color:"#bc8cff", label:"High (ตรี) — rises high, holds" },
-  rising:  { points:[0.58,0.76,0.86,0.50,0.12], color:"#ffa657", label:"Rising (จัตวา) — dips then climbs steeply" }
+const PITCH={
+  mid:    {pts:[.45,.48,.52,.55,.58],col:"#4da6ff",lb:"Mid (สามัญ) — flat"},
+  low:    {pts:[.65,.72,.78,.82,.82],col:"#3dcc5c",lb:"Low (เอก) — descent"},
+  falling:{pts:[.22,.16,.36,.70,.92],col:"#ff4f4a",lb:"Falling (โท) — peak then drop"},
+  high:   {pts:[.38,.30,.20,.13,.18],col:"#c47dff",lb:"High (ตรี) — rise and hold"},
+  rising: {pts:[.60,.78,.88,.52,.10],col:"#ffaa44",lb:"Rising (จัตวา) — dip then climb"}
 };
 
-function drawPitchContour(canvasId, toneType) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.offsetWidth || canvas.width;
-  canvas.width = W; canvas.height = 80;
-  const H = 80;
+function drawPitch(id,tone){
+  const cv=document.getElementById(id);if(!cv)return;
+  const W=cv.offsetWidth||600;cv.width=W;cv.height=76;
+  const H=76,ctx=cv.getContext('2d');
   ctx.clearRect(0,0,W,H);
-  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-  ctx.fillStyle = isDark ? '#161b22' : '#f6f8fa';
-  ctx.fillRect(0,0,W,H);
-  const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
-  const labelColor = isDark ? '#6e7681' : '#8c959f';
-  ctx.strokeStyle = gridColor; ctx.lineWidth = 1;
-  [0.2, 0.5, 0.8].forEach(y => {
-    ctx.beginPath(); ctx.moveTo(30, y*H); ctx.lineTo(W-10, y*H); ctx.stroke();
-  });
-  ctx.fillStyle = labelColor; ctx.font = '10px monospace'; ctx.textAlign = 'right';
-  ctx.fillText('H', 24, 0.2*H+4);
-  ctx.fillText('M', 24, 0.5*H+4);
-  ctx.fillText('L', 24, 0.8*H+4);
-  const contour = PITCH_CONTOURS[toneType] || PITCH_CONTOURS.mid;
-  const pts = contour.points;
-  const xStep = (W - 40) / (pts.length - 1);
-  ctx.beginPath();
-  ctx.strokeStyle = contour.color; ctx.lineWidth = 2.5;
-  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-  pts.forEach((pt,i) => {
-    const x = 30 + i * xStep, y = pt * H;
-    if (i === 0) ctx.moveTo(x, y);
-    else {
-      const px = 30 + (i-1)*xStep, py = pts[i-1]*H, cpx = (px+x)/2;
-      ctx.bezierCurveTo(cpx, py, cpx, y, x, y);
-    }
-  });
+  const lm=document.documentElement.getAttribute('data-theme')==='light';
+  ctx.fillStyle=lm?'#f0f4f8':'#1a2030';ctx.fillRect(0,0,W,H);
+  const gc=lm?'rgba(0,0,0,.07)':'rgba(255,255,255,.06)';
+  ctx.strokeStyle=gc;ctx.lineWidth=1;
+  [.2,.5,.8].forEach(y=>{ctx.beginPath();ctx.moveTo(28,y*H);ctx.lineTo(W-6,y*H);ctx.stroke()});
+  ctx.fillStyle=lm?'#7090b0':'#6a82a0';ctx.font='9px monospace';ctx.textAlign='right';
+  ctx.fillText('H',22,.2*H+3);ctx.fillText('M',22,.5*H+3);ctx.fillText('L',22,.8*H+3);
+  const p=PITCH[tone]||PITCH.mid,pts=p.pts,xs=(W-34)/(pts.length-1);
+  ctx.beginPath();ctx.strokeStyle=p.col;ctx.lineWidth=2.8;ctx.lineJoin='round';ctx.lineCap='round';
+  pts.forEach((v,i)=>{const x=28+i*xs,y=v*H;i===0?ctx.moveTo(x,y):ctx.bezierCurveTo(28+(i-.5)*xs,pts[i-1]*H,28+(i-.5)*xs,y,x,y)});
   ctx.stroke();
-  // Glow
-  ctx.shadowBlur = 8; ctx.shadowColor = contour.color;
-  ctx.beginPath();
-  ctx.strokeStyle = contour.color; ctx.lineWidth = 1.5; ctx.globalAlpha = 0.4;
-  pts.forEach((pt,i) => {
-    const x = 30 + i*xStep, y = pt*H;
-    if (i===0) ctx.moveTo(x,y);
-    else { const px=30+(i-1)*xStep,py=pts[i-1]*H,cpx=(px+x)/2; ctx.bezierCurveTo(cpx,py,cpx,y,x,y); }
-  });
-  ctx.stroke();
-  ctx.shadowBlur = 0; ctx.globalAlpha = 1;
-  // Dots
-  ctx.fillStyle = contour.color;
-  pts.forEach((pt,i) => {
-    const x=30+i*xStep, y=pt*H;
-    ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2); ctx.fill();
-  });
-  ctx.fillStyle = contour.color; ctx.font = 'bold 10px monospace'; ctx.textAlign = 'left';
-  ctx.fillText(contour.label, 32, H-5);
+  ctx.globalAlpha=.3;ctx.lineWidth=1.2;ctx.beginPath();
+  pts.forEach((v,i)=>{const x=28+i*xs,y=v*H;i===0?ctx.moveTo(x,y):ctx.bezierCurveTo(28+(i-.5)*xs,pts[i-1]*H,28+(i-.5)*xs,y,x,y)});
+  ctx.stroke();ctx.globalAlpha=1;
+  ctx.fillStyle=p.col;
+  pts.forEach((v,i)=>{ctx.beginPath();ctx.arc(28+i*xs,v*H,4,0,Math.PI*2);ctx.fill()});
+  ctx.font='bold 9px monospace';ctx.textAlign='left';ctx.fillText(p.lb,30,H-5);
 }
 
-/* ═══════════════════════════════════════════
-   SRS ENGINE
-═══════════════════════════════════════════ */
-const SRS_INTERVALS = [1,3,7,14,30,90];
-function srsLoad() { try { return JSON.parse(localStorage.getItem('thaiSrsData')||'{}'); } catch(e) { return {}; } }
-function srsSave(d) { try { localStorage.setItem('thaiSrsData', JSON.stringify(d)); } catch(e) {} }
-function srsGetStage(card) {
-  if (card.interval >= 30) return 'mature';
-  if (card.interval >= 7)  return 'review';
-  if (card.correct > 0 || card.wrong > 0) return 'learn';
-  return 'new';
-}
-function srsLogWord(thai, tone, meaning, details, correct) {
-  const data = srsLoad(); const key = thai; const now = Date.now();
-  const todayStr = new Date().toLocaleDateString();
-  if (!data[key]) data[key] = { thai, tone, meaning, details, correct:0, wrong:0, streak:0, interval:1, lastReview:todayStr, nextReview:todayStr, added:todayStr };
-  const card = data[key];
-  if (correct) { card.correct++; card.streak++; const lvl=Math.min(card.streak,SRS_INTERVALS.length-1); card.interval=SRS_INTERVALS[lvl]; }
-  else         { card.wrong++; card.streak=0; card.interval=1; }
-  card.lastReview = todayStr;
-  card.nextReview = new Date(now + card.interval*86400000).toLocaleDateString();
-  srsSave(data); renderSrsTable();
-}
-function renderSrsTable() {
-  const data = srsLoad(); const tbody = document.getElementById('srs-table-body');
-  const keys = Object.keys(data);
-  let nNew=0,nLearn=0,nReview=0,nMature=0;
-  if (!keys.length) {
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text3);padding:32px;">No entries yet.</td></tr>';
-  } else {
-    tbody.innerHTML = keys.map(k => {
-      const c = data[k]; const stage = srsGetStage(c);
-      if (stage==='new') nNew++; else if (stage==='learn') nLearn++; else if (stage==='review') nReview++; else nMature++;
-      const bc = {new:'badge-new',learn:'badge-learn',review:'badge-review',mature:'badge-mature'}[stage];
-      const sl = {new:'New',learn:'Learning',review:'Review',mature:'Mature'}[stage];
-      return `<tr>
-        <td><span class="thai" style="font-size:1.1rem;font-weight:800;">${c.thai}</span> <button class="speak-btn" style="width:22px;height:22px;font-size:11px;" onclick="speakThaiText('${c.thai}')">🔊</button></td>
-        <td>${c.tone||'—'}</td><td style="color:var(--text2);">${c.meaning||'—'}</td>
-        <td><span class="badge ${bc}">${sl}</span></td>
-        <td style="color:var(--tone-low);font-weight:700;">${c.correct}</td>
-        <td style="color:var(--tone-fall);font-weight:700;">${c.wrong}</td>
-        <td>${c.streak}🔥</td><td>${c.interval}d</td>
-        <td style="color:var(--text2);">${c.nextReview}</td>
-        <td><button class="btn" style="padding:4px 8px;font-size:0.72rem;" onclick="srsDeleteEntry('${k}')">✕</button></td>
-      </tr>`;
-    }).join('');
-  }
-  document.getElementById('srs-count-new').textContent    = nNew;
-  document.getElementById('srs-count-learn').textContent  = nLearn;
-  document.getElementById('srs-count-review').textContent = nReview;
-  document.getElementById('srs-count-mature').textContent = nMature;
-}
-function srsDeleteEntry(k) { const d=srsLoad(); delete d[k]; srsSave(d); renderSrsTable(); }
-function clearSrsData() { if (confirm('Clear all SRS data?')) { localStorage.removeItem('thaiSrsData'); renderSrsTable(); } }
-function exportSrsData() {
-  const blob = new Blob([JSON.stringify(srsLoad(),null,2)], {type:'application/json'});
-  const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download:'thai_srs_deck.json'});
-  a.click(); URL.revokeObjectURL(a.href);
-}
-function importSrsData(ev) {
-  const f = ev.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = e => { try { const d=JSON.parse(e.target.result); srsSave(d); renderSrsTable(); showToast('✅ SRS data imported!'); } catch(err) { showToast('❌ Invalid JSON file'); } };
-  r.readAsText(f); ev.target.value='';
-}
-function srsLogFromCalculator() {
-  const outEl = document.getElementById('output-screen');
-  if (!outEl.classList.contains('show')) return;
-  const tone = outEl.getAttribute('data-tone-type');
-  const word = document.getElementById('ctx-thai').textContent;
-  const details = document.getElementById('ctx-details').textContent;
-  srsLogWord(word, tone, details, details, true);
-  showToast(`📚 Logged "${word}" to SRS!`);
-}
-function srsLogFromAnalyzer() {
-  const input = document.getElementById('analyzer-input').value.trim();
-  if (!input) return;
-  const tone = calculateStringToneMetrics(input);
-  srsLogWord(input, tone, '', '', true);
-  showToast(`📚 Logged "${input}" to SRS!`);
+const CONS_SET=new Set(CONS.map(c=>c.c));
+const TONE_MK=new Set(['่','้','๊','๋']);
+const IVP_MAP={'คน':[{c:'ค',r:'kh',i:true},{c:'น',r:'n',i:false}],'สบาย':[{c:'ส',r:'sa',i:true},{c:'บาย',r:'baai',i:false}],'กรุง':[{c:'ก',r:'g',i:true},{c:'รุง',r:'rung',i:false}],'ประ':[{c:'ป',r:'pra',i:true},{c:'ระ',r:'ra',i:false}]};
+function roman(s){const m={'ก':'k','ข':'kh','ค':'kh','ง':'ng','จ':'j','ช':'ch','ซ':'s','ด':'d','ต':'t','ถ':'th','ท':'th','น':'n','บ':'b','ป':'p','พ':'ph','ฟ':'f','ภ':'ph','ม':'m','ย':'y','ร':'r','ล':'l','ว':'w','ส':'s','ห':'h','อ':'-','า':'aa','ิ':'i','ี':'ii','ุ':'u','ู':'uu','เ':'e','แ':'ae','โ':'oo','ไ':'ai','ใ':'ai','ำ':'am','ะ':'a','ั':'a','็':'','่':'','้':''};return[...s].map(c=>m[c]??c).join('')}
+function tokenize(text){
+  const res=[];
+  text.split(/\s+/).filter(Boolean).forEach(w=>{
+    const k=Object.keys(IVP_MAP).find(k=>w.startsWith(k));
+    if(k){IVP_MAP[k].forEach(s=>res.push({text:s.c,rom:s.r,impl:s.i}));return}
+    const chars=[...w];let bl='',he=false,pc=false,ii=false,i=0;
+    while(i<chars.length){const ch=chars[i],ic=CONS_SET.has(ch),it=TONE_MK.has(ch);
+      if(ic){if(pc&&!he&&bl.length>0){res.push({text:bl,rom:roman(bl),impl:true});bl=ch;ii=true}else bl+=ch;he=false;pc=true}
+      else{bl+=ch;if(!it)he=true;pc=false}i++}
+    if(bl)res.push({text:bl,rom:roman(bl),impl:ii&&!he});
+  });return res;
 }
 
-/* ═══════════════════════════════════════════
-   IMPLICIT VOWEL PARSER
-═══════════════════════════════════════════ */
-const THAI_CONSONANT_SET = new Set(consonantsData.map(c=>c.char));
-const TONE_MARKS = new Set(['่','้','๊','๋']);
-const IMPLICIT_VOWEL_MAP = {
-  'คน':[{thai:'ค',rom:'kh',vowel:'o',implicit:true},{thai:'น',rom:'n',vowel:'',implicit:false}],
-  'สบาย':[{thai:'ส',rom:'sa',vowel:'a',implicit:true},{thai:'บาย',rom:'baai',vowel:'aa',implicit:false}],
-  'กรุง':[{thai:'ก',rom:'g',vowel:'a',implicit:true},{thai:'รุง',rom:'rung',vowel:'u',implicit:false}],
-  'ประ':[{thai:'ป',rom:'pra',vowel:'a',implicit:true},{thai:'ระ',rom:'ra',vowel:'a',implicit:false}]
-};
-function setIVP(txt) { document.getElementById('ivp-input').value=txt; runImplicitVowelParser(); }
-function runImplicitVowelParser() {
-  const raw = document.getElementById('ivp-input').value.trim();
-  const out = document.getElementById('ivp-result');
-  if (!raw) { out.innerHTML='<span style="color:var(--text3)">Enter Thai text above…</span>'; return; }
-  const syllables = tokenizeThaiText(raw);
-  if (!syllables.length) { out.innerHTML='<span style="color:var(--tone-fall)">No Thai characters detected.</span>'; return; }
-  out.innerHTML = syllables.map(s => {
-    const tag = s.implicit
-      ? `<span class="ivp-tag ivp-implicit">IMPLICIT ${s.impliedVowel}</span>`
-      : `<span class="ivp-tag ivp-explicit">EXPLICIT</span>`;
-    return `<div class="ivp-block"><span class="ivp-thai thai">${s.text}</span><span class="ivp-rom">${s.romanized}</span>${tag}</div>`;
-  }).join('');
-}
-function tokenizeThaiText(text) {
-  const words = text.split(/\s+/).filter(Boolean); const results = [];
-  words.forEach(word => {
-    const knownKey = Object.keys(IMPLICIT_VOWEL_MAP).find(k=>word.startsWith(k));
-    if (knownKey) {
-      IMPLICIT_VOWEL_MAP[knownKey].forEach(seg => results.push({text:seg.thai,romanized:seg.rom,implicit:seg.implicit,impliedVowel:seg.implicit?`/${seg.vowel}/`:'' }));
-      return;
-    }
-    const chars=[...word]; let i=0,block='',hasExplicit=false,prevWasCon=false,implicitInserted=false;
-    while (i<chars.length) {
-      const ch=chars[i]; const isCon=THAI_CONSONANT_SET.has(ch); const isTone=TONE_MARKS.has(ch); const isVowel=!isCon&&!isTone;
-      if (isCon) {
-        if (prevWasCon&&!hasExplicit&&block.length>0) { results.push({text:block,romanized:approxRomanize(block),implicit:true,impliedVowel:'/o/'}); block=ch; implicitInserted=true; }
-        else block+=ch;
-        hasExplicit=false; prevWasCon=true;
-      } else { block+=ch; if (!isTone) hasExplicit=true; prevWasCon=false; }
-      i++;
-    }
-    if (block) results.push({text:block,romanized:approxRomanize(block),implicit:implicitInserted&&!hasExplicit,impliedVowel:'/o/'});
-  });
-  return results;
-}
-function approxRomanize(thai) {
-  const map={'ก':'k','ข':'kh','ค':'kh','ง':'ng','จ':'j','ช':'ch','ซ':'s','ด':'d','ต':'t','ถ':'th','ท':'th','น':'n','บ':'b','ป':'p','พ':'ph','ฟ':'f','ภ':'ph','ม':'m','ย':'y','ร':'r','ล':'l','ว':'w','ส':'s','ห':'h','อ':'(-)','า':'aa','ิ':'i','ี':'ii','ุ':'u','ู':'uu','เ':'e','แ':'ae','โ':'oo','ไ':'ai','ใ':'ai','ำ':'am','ะ':'a','ั':'a','็':'','่':'','้':''};
-  return [...thai].map(c=>map[c]??c).join('');
+function calcTone(s){
+  let ic=null,icl=null,tm='none',vl='long',fc=null,syl='live';
+  if(s.startsWith('ห')&&s.length>1){const sc=s[1];if('มนงวลยรณญฬ'.includes(sc)){icl='high';ic=CONS.find(c=>c.c===sc)||{c:sc,cl:'high'}}}
+  if(!ic&&s.startsWith('อ')&&s.length>1){const sc=s[1];if(sc==='ย'||sc==='ว'){icl='mid';const f=CONS.find(c=>c.c===sc);ic=f?{...f,cl:'mid'}:{c:sc,cl:'mid'}}}
+  for(const ch of s){const m=CONS.find(c=>c.c===ch);if(m&&!ic){ic=m;icl=m.cl;continue}if(m&&ic)fc=m;if(ch==='่')tm='ek';if(ch==='้')tm='tho';if(ch==='๊')tm='tri';if(ch==='๋')tm='chattawa'}
+  if('ะิึุ็'.split('').some(v=>s.includes(v)))vl='short';
+  if(fc){'กขคฆบปพฟภดตถทธศษสจชซฎฏฐฑฒ'.includes(fc.c)&&(syl='dead')}else if(vl==='short')syl='dead';
+  if(!ic)return'mid';
+  let k=`${icl}-${tm}`;if(tm==='none')k+=icl==='low'&&syl==='dead'?`-dead-${vl}`:`-${syl}`;
+  return(DB[k]||{t:'mid'}).t;
 }
 
-/* ═══════════════════════════════════════════
-   CORE TONE CALCULATOR
-═══════════════════════════════════════════ */
-let calcState = {class:'',mark:'',type:'',vowel:''};
-let lastCalcTone='mid', lastCalcWord='';
+let ST={class:'',mark:'',type:'',vowel:''};
+let lastTone='mid',lastWord='';
 
-function setParam(key, value, elem) {
-  elem.closest('.step-card').querySelectorAll('.choice-btn').forEach(b=>b.classList.remove('selected'));
-  elem.classList.add('selected');
-  calcState[key] = value;
-  if (key==='class') {
-    calcState.mark=''; calcState.type=''; calcState.vowel='';
-    document.querySelectorAll('#tone-row .choice-btn').forEach(b=>b.classList.remove('selected'));
-    document.getElementById('m-tri').disabled   = (value!=='mid');
-    document.getElementById('m-chatt').disabled = (value!=='mid');
-  }
-  evaluateState();
+function setP(key,val,el){
+  el.closest('.step').querySelectorAll('.cb').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');ST[key]=val;
+  if(key==='class'){ST.mark='';ST.type='';ST.vowel='';document.querySelectorAll('#tone-row .cb').forEach(b=>b.classList.remove('sel'));document.getElementById('m-tri').disabled=val!=='mid';document.getElementById('m-chat').disabled=val!=='mid'}
+  evalState();
 }
-function evaluateState() {
-  const outEl=document.getElementById('output-screen');
-  const boxType=document.getElementById('box-type');
-  const boxVowel=document.getElementById('box-vowel');
-  const hint=document.getElementById('calc-hint-card');
-  if (calcState.class && calcState.mark) {
-    if (calcState.mark!=='none') {
-      boxType.style.display='none'; boxVowel.style.display='none';
-      evaluateFinalKey(`${calcState.class}-${calcState.mark}`);
-    } else {
-      boxType.style.display='block';
-      if (calcState.type==='dead' && calcState.class==='low') {
-        boxVowel.style.display='block';
-        if (calcState.vowel) evaluateFinalKey(`low-none-dead-${calcState.vowel}`);
-        else outEl.classList.remove('show');
-      } else if (calcState.type) {
-        boxVowel.style.display='none';
-        evaluateFinalKey(`${calcState.class}-none-${calcState.type}`);
-      } else outEl.classList.remove('show');
-    }
-    if (outEl.classList.contains('show')) hint.style.display='none';
-  } else { outEl.classList.remove('show'); hint.style.display='block'; }
+function evalState(){
+  const rc=document.getElementById('res-card'),bt=document.getElementById('box-type'),bv=document.getElementById('box-vowel');
+  const hc=document.getElementById('hint-card');
+  if(ST.class&&ST.mark){
+    if(ST.mark!=='none'){bt.style.display='none';bv.style.display='none';evalKey(`${ST.class}-${ST.mark}`)}
+    else{bt.style.display='block';
+      if(ST.type==='dead'&&ST.class==='low'){bv.style.display='block';ST.vowel?evalKey(`low-none-dead-${ST.vowel}`):rc.classList.remove('on')}
+      else if(ST.type){bv.style.display='none';evalKey(`${ST.class}-none-${ST.type}`)}
+      else rc.classList.remove('on')}
+    if(rc.classList.contains('on'))hc.querySelector('#fc-container')&&(hc.style.display='block');
+  }else{rc.classList.remove('on')}
 }
-function evaluateFinalKey(lk) {
-  const outEl=document.getElementById('output-screen');
-  const match=database[lk];
-  if (match) {
-    outEl.setAttribute('data-tone-type', match.type);
-    document.getElementById('res-tone-title').textContent = match.tone;
-    document.getElementById('res-rule-desc').textContent  = match.desc;
-    document.getElementById('ctx-thai').textContent       = match.word;
-    document.getElementById('ctx-details').textContent    = match.details;
-    outEl.classList.add('show');
-    outEl.scrollIntoView({behavior:'smooth',block:'nearest'});
-    document.getElementById('speak-tone-btn').onclick = () => speakThaiText(match.word);
-    document.getElementById('speak-word-btn').onclick = () => speakThaiText(match.word);
-    lastCalcTone = match.type; lastCalcWord = match.word;
-    setTimeout(()=>drawPitchContour('pitch-canvas-calc', match.type), 60);
-  }
+function evalKey(k){
+  const rc=document.getElementById('res-card'),m=DB[k];
+  if(!m)return;
+  rc.setAttribute('data-t',m.t);
+  document.getElementById('res-tone').textContent=m.n;
+  document.getElementById('res-rule').textContent=m.d;
+  document.getElementById('ex-thai').textContent=m.w;
+  document.getElementById('ex-det').textContent=m.x;
+  rc.classList.add('on');
+  rc.scrollIntoView({behavior:'smooth',block:'nearest'});
+  lastTone=m.t;lastWord=m.w;
+  setTimeout(()=>drawPitch('pc-calc',m.t),60);
 }
+function spkCurrent(){if(lastWord)spk(lastWord)}
 
-/* ═══════════════════════════════════════════
-   ACOUSTIC ANALYZER ENGINE
-═══════════════════════════════════════════ */
-function calculateStringToneMetrics(targetString) {
-  let initialConsonant=null,initialClass=null,toneMark="none",vowelLength="long",finalConsonant=null,syllableType="live";
-  if (targetString.startsWith('ห')&&targetString.length>1) {
-    const sc=targetString.charAt(1);
-    if (['ม','น','ง','ว','ล','ย','ร','ณ','ญ','ฬ'].includes(sc)) {
-      initialClass="high"; initialConsonant=consonantsData.find(c=>c.char===sc)||{char:sc,class:"high"};
-    }
-  }
-  if (!initialConsonant&&targetString.startsWith('อ')&&targetString.length>1) {
-    const sc=targetString.charAt(1);
-    if (sc==='ย'||sc==='ว') {
-      initialClass="mid"; const fb=consonantsData.find(c=>c.char===sc);
-      initialConsonant=fb?{...fb,class:"mid"}:{char:sc,class:"mid"};
-    }
-  }
-  for (const char of targetString) {
-    const conMatch=consonantsData.find(c=>c.char===char);
-    if (conMatch&&!initialConsonant){initialConsonant=conMatch;initialClass=conMatch.class;continue;}
-    if (conMatch&&initialConsonant) finalConsonant=conMatch;
-    if (char==='่') toneMark="ek";
-    if (char==='้') toneMark="tho";
-    if (char==='๊') toneMark="tri";
-    if (char==='๋') toneMark="chattawa";
-  }
-  if (targetString.includes('ะ')||targetString.includes('ิ')||targetString.includes('ึ')||targetString.includes('ุ')||targetString.includes('็')) vowelLength="short";
-  if (finalConsonant) {
-    const stops=['ก','ข','ค','ฆ','บ','ป','พ','ฟ','ภ','ด','ต','ถ','ท','ธ','ศ','ษ','ส','จ','ช','ซ','ฎ','ฏ','ฐ','ฑ','ฒ'];
-    if (stops.includes(finalConsonant.char)) syllableType="dead";
-  } else if (vowelLength==="short") syllableType="dead";
-  if (!initialConsonant) return "mid";
-  let lk=`${initialClass}-${toneMark}`;
-  if (toneMark==="none") {
-    if (initialClass==="low"&&syllableType==="dead") lk+=`-dead-${vowelLength}`;
-    else lk+=`-${syllableType}`;
-  }
-  const match=database[lk]; return match?match.type:"mid";
-}
+function setA(t){document.getElementById('a-inp').value=t;runAnalyzer()}
+function spkInput(){const v=document.getElementById('a-inp').value.trim();if(v)spk(v)}
 
-function setAnalyzer(txt) { document.getElementById('analyzer-input').value=txt; runAcousticAnalysis(); }
-function runAcousticAnalysis() {
-  const raw=document.getElementById("analyzer-input").value.trim();
-  const out=document.getElementById("analyzer-output");
-  const cw=document.getElementById("analyzer-canvas-wrap");
-  if (!raw) { out.innerHTML='<span style="color:var(--text3)">Enter a Thai word to begin…</span>'; cw.style.display='none'; return; }
-  let initialConsonant=null,initialClass=null,toneMark="none",toneMarkThai="None (ไม่มี)";
-  let vowelLength="long",finalConsonant=null,syllableType="live",wasH=false,wasO=false;
-  if (raw.startsWith('ห')&&raw.length>1) {
-    const sc=raw.charAt(1);
-    if (['ม','น','ง','ว','ล','ย','ร','ณ','ญ','ฬ'].includes(sc)) {
-      initialClass="high"; initialConsonant=consonantsData.find(c=>c.char===sc)||{char:sc,class:"high",name:"Elevated Sonorant"}; wasH=true;
-    }
-  }
-  if (!initialConsonant&&raw.startsWith('อ')&&raw.length>1) {
-    const sc=raw.charAt(1);
-    if (sc==='ย'||sc==='ว') {
-      initialClass="mid"; const fb=consonantsData.find(c=>c.char===sc);
-      initialConsonant=fb?{...fb,class:"mid"}:{char:sc,class:"mid",name:"อ-Led"}; wasO=true;
-    }
-  }
-  for (const char of raw) {
-    const conMatch=consonantsData.find(c=>c.char===char);
-    if (conMatch&&!initialConsonant){initialConsonant=conMatch;initialClass=conMatch.class;continue;}
-    if (conMatch&&initialConsonant) finalConsonant=conMatch;
-    if (char==='่'){toneMark="ek";toneMarkThai="Mai Ek (่)";}
-    if (char==='้'){toneMark="tho";toneMarkThai="Mai Tho (้)";}
-    if (char==='๊'){toneMark="tri";toneMarkThai="Mai Tri (๊)";}
-    if (char==='๋'){toneMark="chattawa";toneMarkThai="Mai Chattawa (๋)";}
-  }
-  if (raw.includes('ะ')||raw.includes('ิ')||raw.includes('ึ')||raw.includes('ุ')||raw.includes('็')) vowelLength="short";
-  if (finalConsonant) {
-    const stops=['ก','ข','ค','ฆ','บ','ป','พ','ฟ','ภ','ด','ต','ถ','ท','ธ','ศ','ษ','ส','จ','ช','ซ','ฎ','ฏ','ฐ','ฑ','ฒ'];
-    if (stops.includes(finalConsonant.char)) syllableType="dead";
-  } else if (vowelLength==="short") syllableType="dead";
-  if (!initialConsonant) { out.innerHTML='<div style="color:var(--tone-fall);font-weight:700;">No Thai consonant found.</div>'; cw.style.display='none'; return; }
-  let lk=`${initialClass}-${toneMark}`;
-  if (toneMark==="none") {
-    if (initialClass==="low"&&syllableType==="dead") lk+=`-dead-${vowelLength}`;
-    else lk+=`-${syllableType}`;
-  }
-  const result=database[lk]||{tone:"Undefined variant —",desc:"Complex consonant cluster.",type:"mid"};
-  let leadNote='';
-  if (wasH) leadNote=`<span style="color:var(--cls-high);font-weight:700;"> [ห Leading → HIGH class]</span>`;
-  if (wasO) leadNote=`<span style="color:var(--cls-mid);font-weight:700;"> [อ Leading → MID class (silent อ)]</span>`;
+function runAnalyzer(){
+  const raw=document.getElementById('a-inp').value.trim();
+  const out=document.getElementById('a-out'),pw=document.getElementById('a-pitch-wrap');
+  if(!raw){out.innerHTML='<span style="color:var(--tx3)">Enter a Thai word above…</span>';pw.style.display='none';return}
+  let ic=null,icl=null,tm='none',tmn='None',vl='long',fc=null,syl='live',wH=false,wO=false;
+  if(raw.startsWith('ห')&&raw.length>1){const sc=raw[1];if('มนงวลยรณญฬ'.includes(sc)){icl='high';ic=CONS.find(c=>c.c===sc)||{c:sc,cl:'high',n:'Elevated Sonorant'};wH=true}}
+  if(!ic&&raw.startsWith('อ')&&raw.length>1){const sc=raw[1];if(sc==='ย'||sc==='ว'){icl='mid';const f=CONS.find(c=>c.c===sc);ic=f?{...f,cl:'mid'}:{c:sc,cl:'mid',n:'อ-Led'};wO=true}}
+  for(const ch of raw){const m=CONS.find(c=>c.c===ch);if(m&&!ic){ic=m;icl=m.cl;continue}if(m&&ic)fc=m;if(ch==='่'){tm='ek';tmn='Mai Ek (่)'}if(ch==='้'){tm='tho';tmn='Mai Tho (้)'}if(ch==='๊'){tm='tri';tmn='Mai Tri (๊)'}if(ch==='๋'){tm='chattawa';tmn='Mai Chattawa (๋)'}}
+  if('ะิึุ็'.split('').some(v=>raw.includes(v)))vl='short';
+  if(fc){'กขคฆบปพฟภดตถทธศษสจชซฎฏฐฑฒ'.includes(fc.c)&&(syl='dead')}else if(vl==='short')syl='dead';
+  if(!ic){out.innerHTML='<div style="color:var(--tf);font-weight:700">No Thai consonant found.</div>';pw.style.display='none';return}
+  let k=`${icl}-${tm}`;if(tm==='none')k+=icl==='low'&&syl==='dead'?`-dead-${vl}`:`-${syl}`;
+  const r=DB[k]||{n:'Undefined —',d:'Complex cluster.',t:'mid'};
+  let lead='';
+  if(wH)lead=` <span style="color:var(--ch);font-weight:700">[ห Leading → HIGH class]</span>`;
+  if(wO)lead=` <span style="color:var(--cm);font-weight:700">[อ Leading → MID class]</span>`;
+  const esc=raw.replace(/'/g,"\\'");
   out.innerHTML=`
-    <div class="trace-node">
-      <div class="trace-title">Parsed Initial Consonant</div>
-      <div class="trace-body"><b class="thai">${initialConsonant.char}</b> (${initialConsonant.name||''}) → Class <b>[${initialClass.toUpperCase()}]</b>${leadNote}</div>
+    <div class="tn"><div class="tnl">Initial Consonant</div><div class="tnb"><b class="thai">${ic.c}</b> (${ic.n||''}) → [${icl.toUpperCase()}]${lead}</div></div>
+    <div class="tn"><div class="tnl">Tone Mark</div><div class="tnb"><b>${tmn}</b></div></div>
+    <div class="tn"><div class="tnl">Syllable</div><div class="tnb">Type: <b>${syl.toUpperCase()}</b> · Vowel: <b>${vl.toUpperCase()}</b>${fc?` · Final: <b class="thai">${fc.c}</b>`:''}</div></div>
+    <div class="tn ok"><div class="tnl" style="color:var(--tl)">Result
+      <button class="spk" style="width:22px;height:22px;font-size:11px;margin-left:7px" onclick="spk('${esc}')">🔊</button>
+      <button class="btn" style="font-size:.72rem;padding:3px 9px;margin-left:5px" onclick="srsLog('${esc}','${r.t}','','',true);toast('📚 Logged!')">📚</button>
     </div>
-    <div class="trace-node">
-      <div class="trace-title">Tone Mark</div>
-      <div class="trace-body"><b>${toneMarkThai}</b></div>
-    </div>
-    <div class="trace-node">
-      <div class="trace-title">Syllable Environment</div>
-      <div class="trace-body">Type: <b>${syllableType.toUpperCase()}</b> · Vowel: <b>${vowelLength.toUpperCase()}</b>${finalConsonant?` · Final: <b class="thai">${finalConsonant.char}</b>`:''}</div>
-    </div>
-    <div class="trace-node success">
-      <div class="trace-title" style="color:var(--tone-low);">Resolved Tone
-        <button class="speak-btn" style="width:22px;height:22px;font-size:11px;margin-left:8px;" onclick="speakThaiText('${raw}')">🔊</button>
-        <button class="btn" style="font-size:0.7rem;padding:3px 8px;margin-left:6px;" onclick="srsLogWord('${raw}','${result.type}','','',true);showToast('📚 Logged!')">📚</button>
-      </div>
-      <div class="trace-body" style="font-size:1.05rem;font-weight:800;color:var(--text);margin-top:4px;">${result.tone}</div>
-      <div style="font-size:0.8rem;color:var(--text2);margin-top:3px;">${result.desc}</div>
-    </div>`;
-  cw.style.display='block';
-  setTimeout(()=>drawPitchContour('pitch-canvas-analyzer', result.type), 60);
+    <div class="tnb" style="font-size:1.05rem;font-weight:900;color:var(--tx);margin-top:4px">${r.n}</div>
+    <div style="font-size:.82rem;color:var(--tx2);margin-top:3px">${r.d}</div></div>`;
+  pw.style.display='block';setTimeout(()=>drawPitch('pc-ana',r.t),60);
 }
 
-/* ═══════════════════════════════════════════
-   SPEECH
-═══════════════════════════════════════════ */
-function speakThaiText(text) {
-  if (!('speechSynthesis' in window)) return;
+function setIVP(t){document.getElementById('ivp-inp').value=t;runIVP()}
+function runIVP(){
+  const raw=document.getElementById('ivp-inp').value.trim();
+  const out=document.getElementById('ivp-out');
+  if(!raw){out.innerHTML='<span style="color:var(--tx3)">Enter Thai text above…</span>';return}
+  const syls=tokenize(raw);
+  if(!syls.length){out.innerHTML='<span style="color:var(--tf)">No Thai characters found.</span>';return}
+  out.innerHTML=syls.map(s=>`<div class="ivb"><span class="ivt thai">${s.text}</span><span class="ivr2">${s.rom}</span><span class="ivtg ${s.impl?'ivi':'ive'}">${s.impl?'IMPLICIT':'EXPLICIT'}</span></div>`).join('');
+}
+
+const SRS_INT=[1,3,7,14,30,90];
+function srsLoad(){try{return JSON.parse(localStorage.getItem('thaiSRS')||'{}')}catch{return{}}}
+function srsSave(d){try{localStorage.setItem('thaiSRS',JSON.stringify(d))}catch{}}
+function srsStage(c){return c.interval>=30?'mature':c.interval>=7?'review':(c.correct>0||c.wrong>0)?'learn':'new'}
+function srsLog(thai,tone,meaning,details,ok){
+  const d=srsLoad(),k=thai,now=Date.now(),td=new Date().toLocaleDateString();
+  if(!d[k])d[k]={thai,tone,meaning,details,correct:0,wrong:0,streak:0,interval:1,lastReview:td,nextReview:td,added:td};
+  const c=d[k];
+  if(ok){c.correct++;c.streak++;c.interval=SRS_INT[Math.min(c.streak,SRS_INT.length-1)]}
+  else{c.wrong++;c.streak=0;c.interval=1}
+  c.lastReview=td;c.nextReview=new Date(now+c.interval*86400000).toLocaleDateString();
+  srsSave(d);renderSRS();
+}
+function renderSRS(){
+  const d=srsLoad(),tb=document.getElementById('srs-tbody'),ks=Object.keys(d);
+  let nn=0,nl=0,nr=0,nm=0;
+  if(!ks.length){tb.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--tx3);padding:28px">No entries yet.</td></tr>'}
+  else tb.innerHTML=ks.map(k=>{
+    const c=d[k],st=srsStage(c);
+    if(st==='new')nn++;else if(st==='learn')nl++;else if(st==='review')nr++;else nm++;
+    const bc={new:'bn',learn:'bl',review:'br2',mature:'bm'}[st];
+    const sl={new:'New',learn:'Learn',review:'Review',mature:'Mature'}[st];
+    const esc=c.thai.replace(/'/g,"\\'");
+    return`<tr><td><span class="thai" style="font-size:1.1rem;font-weight:800;color:var(--tx)">${c.thai}</span> <button class="spk" style="width:22px;height:22px;font-size:11px" onclick="spk('${esc}')">🔊</button></td><td>${c.tone||'—'}</td><td style="color:var(--tx2)">${c.meaning||'—'}</td><td><span class="badge ${bc}">${sl}</span></td><td style="color:var(--tl);font-weight:700">${c.correct}</td><td style="color:var(--tf);font-weight:700">${c.wrong}</td><td>${c.streak}</td><td>${c.interval}d</td><td style="color:var(--tx2)">${c.nextReview}</td><td><button class="btn" style="padding:3px 8px;font-size:.72rem" onclick="srsDel('${k}')">✕</button></td></tr>`;
+  }).join('');
+  document.getElementById('s-new').textContent=nn;document.getElementById('s-lrn').textContent=nl;
+  document.getElementById('s-rev').textContent=nr;document.getElementById('s-mat').textContent=nm;
+}
+function srsDel(k){const d=srsLoad();delete d[k];srsSave(d);renderSRS()}
+function clearSRS(){if(confirm('Clear ALL SRS data? This cannot be undone.')){localStorage.removeItem('thaiSRS');renderSRS();toast('🗑 SRS cleared.')}}
+function exportSRS(){
+  const b=new Blob([JSON.stringify(srsLoad(),null,2)],{type:'application/json'});
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(b),download:'thai_srs.json'});a.click();URL.revokeObjectURL(a.href);
+}
+function importSRS(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const incoming=JSON.parse(e.target.result);
+      const existing=srsLoad();
+      const merged={...existing};
+      Object.keys(incoming).forEach(k=>{
+        if(merged[k]){
+          merged[k].correct+=incoming[k].correct||0;
+          merged[k].wrong+=incoming[k].wrong||0;
+          merged[k].streak=Math.max(merged[k].streak,incoming[k].streak||0);
+          merged[k].interval=Math.max(merged[k].interval,incoming[k].interval||1);
+        }else merged[k]=incoming[k];
+      });
+      srsSave(merged);renderSRS();toast(`✅ Merged ${Object.keys(incoming).length} entries!`);
+    }catch{toast('❌ Invalid JSON file')}
+  };
+  r.readAsText(f);ev.target.value='';
+}
+function srsFromCalc(){
+  const rc=document.getElementById('res-card');if(!rc.classList.contains('on'))return;
+  const w=document.getElementById('ex-thai').textContent;
+  const t=rc.getAttribute('data-t');
+  const x=document.getElementById('ex-det').textContent;
+  srsLog(w,t,x,x,true);toast(`📚 Logged "${w}"!`);
+}
+function srsFromAnalyzer(){
+  const v=document.getElementById('a-inp').value.trim();if(!v)return;
+  srsLog(v,calcTone(v),'','',true);toast(`📚 Logged "${v}"!`);
+}
+
+function buildRef(){
+  const ct=c=>`<div class="tile tile-${c.cl}"><div class="tile-h"><div style="display:flex;align-items:baseline;gap:6px"><span class="tg thai">${c.c}</span><span class="tn2">${c.n}</span></div><button class="spk" onclick="spk('${c.c}')">🔊</button></div><div class="tm3"><b>[${c.s}]</b> · ${c.m}</div></div>`;
+  document.getElementById('ct-mid').innerHTML=CONS.filter(c=>c.cl==='mid').map(ct).join('');
+  document.getElementById('ct-high').innerHTML=CONS.filter(c=>c.cl==='high').map(ct).join('');
+  document.getElementById('ct-low').innerHTML=CONS.filter(c=>c.cl==='low').map(ct).join('');
+  const vt=v=>`<div class="tile tile-${v.l}"><div class="tile-h"><div style="display:flex;align-items:baseline;gap:6px"><span class="tg thai" style="font-size:1.45rem">${v.c}</span><span class="tn2">[${v.t}]</span></div><button class="spk" onclick="spk('${v.c}')">🔊</button></div><div class="tm3">${v.x}</div></div>`;
+  const sv=VOWS.filter(v=>v.l==='short'),lv=VOWS.filter(v=>v.l==='long');
+  document.getElementById('vt-short').innerHTML=sv.map(vt).join('');
+  document.getElementById('vt-long').innerHTML=lv.map(vt).join('');
+  const vr=(v,col)=>`<div class="vrow" style="border-left:3.5px solid ${col}"><span class="vg thai">${v.c}</span><span class="vi">[${v.t}] · ${v.x}</span><button class="spk" onclick="spk('${v.c}')">🔊</button></div>`;
+  document.getElementById('vs-short').innerHTML=sv.map(v=>vr(v,'var(--tf)')).join('');
+  document.getElementById('vs-long').innerHTML=lv.map(v=>vr(v,'var(--tl)')).join('');
+}
+
+function renderCompare(){
+  const q=(document.getElementById('c-search')?.value||'').trim();
+  const chars=[...CONS.map(x=>x.c),...VOWS.map(x=>x.c)].filter(c=>!q||c.includes(q));
+  document.getElementById('c-grid').innerHTML=chars.map(c=>`<div class="ctile" onclick="spk('${c}')"><span class="ctrad">${c}</span><span class="cdiv">Traditional</span><span class="cmod thai">${c}</span><span class="cdiv">Modern</span></div>`).join('');
+}
+
+let gW=null,gAns=false,gSc=0,gTot=0;
+let cC=null,cAns=false,cSc=0,cTot=0;
+
+function isSingleSyllable(w){
+  const vowels=['า','ิ','ี','ึ','ื','ุ','ู','เ','แ','โ','ไ','ใ','ำ','็','ะ','ั','็','็'];
+  let vc=0;const ch=[...w];
+  for(let i=0;i<ch.length;i++){if(vowels.includes(ch[i]))vc++;if(ch[i]==='า'||ch[i]==='ิ'||ch[i]==='ี'||ch[i]==='ึ'||ch[i]==='ื'||ch[i]==='ุ'||ch[i]==='ู')vc++}
+  const cons=[...w].filter(c=>CONS_SET.has(c)).length;
+  return cons<=3&&w.length<=5;
+}
+
+async function fetchWord(){
+  try{
+    const r=await fetch('https://raw.githubusercontent.com/aolmio/thcore/main/tone.json');
+    if(!r.ok)throw 0;
+    const d=await r.json();
+    const entries=(Array.isArray(d)?d:d.words||[]).filter(e=>{
+      const w=(e.thai||e.word||'').trim().split(/[(),;]/)[0].trim();
+      return w&&isSingleSyllable(w);
+    });
+    if(!entries.length)throw 0;
+    const s=entries[Math.floor(Math.random()*entries.length)];
+    const w=(s.thai||s.word||'').trim().split(/[(),;]/)[0].trim();
+    return{w,t:calcTone(w),m:s.english||s.meaning||'',x:s.transliteration||''};
+  }catch{return null}
+}
+
+async function genWordRound(){
+  gAns=false;
+  document.getElementById('g-fb').textContent='';
+  document.getElementById('g-next').style.display='none';
+  document.getElementById('g-start').style.display='none';
+  document.querySelectorAll('#tone-opts .gopt').forEach(b=>{b.classList.remove('ok','ng');b.disabled=false});
+  document.getElementById('g-word').textContent='…';
+  document.getElementById('g-meta').innerHTML='<i>Loading…</i>';
+  const conn=document.getElementById('g-conn');
+  let word=null;
+  if(navigator.onLine){conn.innerHTML='<span class="ctag con">🌐 Live</span>';word=await fetchWord()}
+  else conn.innerHTML='<span class="ctag coff">📴 Offline</span>';
+  if(!word){const o=OFFLINE[Math.floor(Math.random()*OFFLINE.length)];word={w:o.w,t:o.t,m:o.m,x:o.x}}
+  gW=word;
+  document.getElementById('g-word').textContent=word.w;
+  document.getElementById('g-meta').innerHTML=`<b>Meaning:</b> ${word.m||'—'}${word.x?`<br><b>Phonetic:</b> ${word.x}`:''}`;
+}
+function gGuess(chosen){
+  if(gAns||!gW)return;gAns=true;gTot++;
+  const ok=gW.t;
+  document.querySelectorAll('#tone-opts .gopt').forEach(b=>{b.disabled=true;if(b.dataset.t===ok)b.classList.add('ok')});
+  if(chosen===ok){gSc++;document.getElementById('g-fb').textContent='🎯 Correct!';document.getElementById('g-fb').style.color='var(--tl)';srsLog(gW.w,ok,gW.m,gW.x,true)}
+  else{document.getElementById('g-fb').textContent=`✗ Answer: ${ok}`;document.getElementById('g-fb').style.color='var(--tf)';document.querySelector(`#tone-opts .gopt[data-t="${chosen}"]`)?.classList.add('ng');srsLog(gW.w,ok,gW.m,gW.x,false)}
+  document.getElementById('g-sc').textContent=gSc;document.getElementById('g-tot').textContent=gTot;
+  document.getElementById('g-next').style.display='block';
+}
+function spkGW(){if(gW)spk(gW.w)}
+
+function genConRound(){
+  cAns=false;
+  document.getElementById('c-fb').textContent='';
+  document.getElementById('c-next').style.display='none';
+  document.getElementById('c-start').style.display='none';
+  document.querySelectorAll('.garena>div:nth-child(2) .gopt').forEach(b=>{b.classList.remove('ok','ng');b.disabled=false});
+  const r=CONS[Math.floor(Math.random()*CONS.length)];cC=r;
+  document.getElementById('c-char').textContent=r.c;
+  document.getElementById('c-meta').innerHTML=`<b>${r.n}</b> · [${r.s}] · <i>${r.m}</i>`;
+}
+function cGuess(chosen){
+  if(cAns||!cC)return;cAns=true;cTot++;const ok=cC.cl;
+  document.querySelectorAll('.garena>div:nth-child(2) .gopt').forEach(b=>{
+    b.disabled=true;const oc=b.getAttribute('onclick');
+    if(oc&&oc.includes(`'${ok}'`))b.classList.add('ok');
+    if(oc&&oc.includes(`'${chosen}'`)&&chosen!==ok)b.classList.add('ng');
+  });
+  if(chosen===ok){cSc++;document.getElementById('c-fb').textContent=`🎯 ${cC.c} is ${ok.toUpperCase()}!`;document.getElementById('c-fb').style.color='var(--tl)'}
+  else{document.getElementById('c-fb').textContent=`✗ It is ${ok.toUpperCase()} class.`;document.getElementById('c-fb').style.color='var(--tf)'}
+  document.getElementById('c-sc').textContent=cSc;document.getElementById('c-tot').textContent=cTot;
+  document.getElementById('c-next').style.display='block';
+}
+function spkGC(){if(cC)spk(cC.c)}
+
+function spk(text){
+  if(!text||!('speechSynthesis' in window))return;
   window.speechSynthesis.cancel();
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.lang='th-TH'; utt.rate=/iPhone|iPad|iPod|Mac/i.test(navigator.userAgent)?0.85:0.95; utt.pitch=1.0;
-  const voices=window.speechSynthesis.getVoices();
-  const voice=voices.find(v=>v.lang.includes('th-TH')&&(v.name.includes('Narisa')||v.name.includes('Siri')||v.name.includes('Google')||v.name.includes('Natural')))||voices.find(v=>v.lang.includes('th-TH'));
-  if (voice) utt.voice=voice;
-  window.speechSynthesis.speak(utt);
-}
-function speakInputText() { const v=document.getElementById("analyzer-input").value.trim(); if(v) speakThaiText(v); }
-
-/* ═══════════════════════════════════════════
-   UI HELPERS
-═══════════════════════════════════════════ */
-function switchTab(key) {
-  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('t-'+key).classList.add('active');
-  document.getElementById('p-'+key).classList.add('active');
-  if (key==='game') { if(!currentGameWord) generateNewGameRound(); if(!currentConsonantItem) generateNewConsonantRound(); }
-  if (key==='srs') renderSrsTable();
-  if (key==='compare') renderAlphabetComparison();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='th-TH';u.rate=/iPhone|iPad|iPod|Mac/i.test(navigator.userAgent)?0.82:0.92;u.pitch=1.0;
+  function go(){
+    const vs=window.speechSynthesis.getVoices();
+    const v=vs.find(v=>v.lang.includes('th')&&(v.name.includes('Narisa')||v.name.includes('Siri')||v.name.includes('Google')))||vs.find(v=>v.lang.includes('th'));
+    if(v)u.voice=v;window.speechSynthesis.speak(u);
+  }
+  if(window.speechSynthesis.getVoices().length)go();
+  else{window.speechSynthesis.addEventListener('voiceschanged',go,{once:true})}
 }
 
-function switchSub(id, btn) {
-  btn.closest('.subtabs').querySelectorAll('.subtab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const section=btn.closest('section');
-  section.querySelectorAll('.subpanel').forEach(p=>p.classList.remove('active'));
-  section.querySelector('#'+id).classList.add('active');
+function switchTab(k){
+  document.querySelectorAll('.ntab,.mtab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+k).classList.add('on');
+  document.getElementById('nt-'+k)?.classList.add('on');
+  document.getElementById('mt-'+k)?.classList.add('on');
+  if(k==='game'){if(!gW)genWordRound();if(!cC)genConRound()}
+  if(k==='srs')renderSRS();
+  if(k==='compare')renderCompare();
 }
-
-function filterCons(mode, btn) {
-  btn.parentNode.querySelectorAll('.minitab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  ['mid','high','low'].forEach(cls => {
-    document.getElementById('cgroup-'+cls).style.display = (mode==='all'||mode===cls)?'block':'none';
-  });
+function sswitch(btn,id){
+  btn.closest('.stabs').querySelectorAll('.stab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  btn.closest('section').querySelectorAll('.sp').forEach(p=>p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
 }
-function filterVowels(mode, btn) {
-  btn.parentNode.querySelectorAll('.minitab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  ['all','short','long'].forEach(m => {
-    document.getElementById('vgroup-'+m).style.display = m===mode?'block':'none';
-  });
+function fCon(m,btn){
+  btn.parentNode.querySelectorAll('.mt2').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  ['mid','high','low'].forEach(c=>document.getElementById('cg-'+c).style.display=(m==='all'||m===c)?'block':'none');
 }
-
-function toggleTheme() {
-  const isLight = document.documentElement.getAttribute('data-theme')==='light';
-  if (isLight) { document.documentElement.removeAttribute('data-theme'); document.getElementById('themeBtn').textContent='🌙'; localStorage.setItem('thaiToneTheme','dark'); }
-  else          { document.documentElement.setAttribute('data-theme','light'); document.getElementById('themeBtn').textContent='☀️'; localStorage.setItem('thaiToneTheme','light'); }
+function fVow(m,btn){
+  btn.parentNode.querySelectorAll('.mt2').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  ['all','short','long'].forEach(x=>document.getElementById('vg-'+x).style.display=m===x?'block':'none');
+}
+function toggleTheme(){
+  const lm=document.documentElement.getAttribute('data-theme')==='light';
+  if(lm){document.documentElement.removeAttribute('data-theme');document.getElementById('themeBtn').textContent='🌙';localStorage.setItem('ttu-theme','dark')}
+  else{document.documentElement.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='☀️';localStorage.setItem('ttu-theme','light')}
   setTimeout(()=>{
-    if (document.getElementById('output-screen').classList.contains('show')) drawPitchContour('pitch-canvas-calc',lastCalcTone);
-    if (document.getElementById('analyzer-canvas-wrap').style.display!=='none') drawPitchContour('pitch-canvas-analyzer','mid');
+    const rc=document.getElementById('res-card');if(rc.classList.contains('on'))drawPitch('pc-calc',lastTone);
+    if(document.getElementById('a-pitch-wrap').style.display!=='none')drawPitch('pc-ana','mid');
+    buildFC();
   },50);
 }
-function changeFontStyle(val) {
-  document.documentElement.removeAttribute('data-font-style');
-  if (val!=='traditional') document.documentElement.setAttribute('data-font-style',val);
-  if (document.getElementById('p-compare').classList.contains('active')) renderAlphabetComparison();
-}
-function showToast(msg) {
-  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2800);
+function changeFont(v){
+  document.documentElement.removeAttribute('data-font');
+  if(v!=='sarabun')document.documentElement.setAttribute('data-font',v);
+  if(document.getElementById('p-compare').classList.contains('on'))renderCompare();
 }
 
-/* ═══════════════════════════════════════════
-   REFERENCE GRID BUILDER
-═══════════════════════════════════════════ */
-function buildReferenceGrids() {
-  const makeConTile = c => `
-    <div class="char-tile tile-${c.class}">
-      <div class="tile-head">
-        <div style="display:flex;align-items:baseline;gap:6px;">
-          <span class="tile-glyph">${c.char}</span>
-          <span class="tile-name">${c.name}</span>
-        </div>
-        <button class="speak-btn" onclick="speakThaiText('${c.char}')">🔊</button>
-      </div>
-      <div class="tile-meta"><b>[${c.sound}]</b> · ${c.meaning}</div>
-    </div>`;
-  document.getElementById('con-mid-target').innerHTML  = consonantsData.filter(c=>c.class==='mid').map(makeConTile).join('');
-  document.getElementById('con-high-target').innerHTML = consonantsData.filter(c=>c.class==='high').map(makeConTile).join('');
-  document.getElementById('con-low-target').innerHTML  = consonantsData.filter(c=>c.class==='low').map(makeConTile).join('');
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('on'),2700)}
 
-  const makeVowelTile = v => `
-    <div class="char-tile tile-${v.length}">
-      <div class="tile-head">
-        <div style="display:flex;align-items:baseline;gap:6px;">
-          <span class="tile-glyph" style="font-size:1.4rem;">${v.char}</span>
-          <span class="tile-name">[${v.transcription}]</span>
-        </div>
-        <button class="speak-btn" onclick="speakThaiText('${v.char}')">🔊</button>
-      </div>
-      <div class="tile-meta">${v.matching}</div>
-    </div>`;
-  document.getElementById('vowel-short-target').innerHTML = vowelsData.filter(v=>v.length==='short').map(makeVowelTile).join('');
-  document.getElementById('vowel-long-target').innerHTML  = vowelsData.filter(v=>v.length==='long').map(makeVowelTile).join('');
+let dPr=null;
+function doInstall(){if(dPr){dPr.prompt();dPr.userChoice.then(()=>{document.getElementById('installBtn').style.display='none'})}}
 
-  const shortV=vowelsData.filter(v=>v.length==='short');
-  const longV=vowelsData.filter(v=>v.length==='long');
-  const makeRow = (v,color) => `<div class="vowel-row" style="border-left:3px solid ${color};">
-    <span class="vowel-glyph thai">${v.char}</span>
-    <span class="vowel-info">[${v.transcription}] · ${v.matching}</span>
-    <button class="speak-btn" onclick="speakThaiText('${v.char}')">🔊</button>
-  </div>`;
-  document.getElementById('vowel-side-short').innerHTML = shortV.map(v=>makeRow(v,'var(--tone-fall)')).join('');
-  document.getElementById('vowel-side-long').innerHTML  = longV.map(v=>makeRow(v,'var(--tone-low)')).join('');
+/* FLOWCHART */
+let fcScale=1,fcDragging=false,fcDX=0,fcDY=0,fcSX=0,fcSY=0,fcSL=0,fcST=0;
+let fcHidden=false;
+
+function fcZoom(delta){
+  fcScale=Math.min(3,Math.max(.3,fcScale+delta));
+  document.getElementById('fc-svg-wrap').style.transform=`scale(${fcScale})`;
+  document.getElementById('fc-pct').textContent=Math.round(fcScale*100)+'%';
+}
+function fcReset(){fcScale=1;const w=document.getElementById('fc-svg-wrap');w.style.transform='scale(1)';document.getElementById('fc-pct').textContent='100%';const b=document.getElementById('fc-body');b.scrollLeft=0;b.scrollTop=0}
+function toggleFC(){
+  const c=document.getElementById('fc-container'),b=document.getElementById('fc-toggle-btn');
+  fcHidden=!fcHidden;c.style.display=fcHidden?'none':'block';b.textContent=fcHidden?'Show Chart':'Hide Chart';
 }
 
-/* ═══════════════════════════════════════════
-   ALPHABET COMPARE
-═══════════════════════════════════════════ */
-function renderAlphabetComparison() {
-  const q=(document.getElementById('compareSearch')?.value||'').trim();
-  const chars=[...consonantsData.map(x=>x.char),...vowelsData.map(x=>x.char)].filter(c=>!q||c.includes(q));
-  const el=document.getElementById('compare-grid'); if (!el) return;
-  el.innerHTML=chars.map(c=>`
-    <div class="compare-tile" onclick="speakThaiText('${c}')">
-      <span class="compare-char-traditional thai-trad">${c}</span>
-      <span class="compare-divider">Traditional</span>
-      <span class="compare-char-modern thai">${c}</span>
-      <span class="compare-divider">Modern</span>
-    </div>`).join('');
-}
+function buildFC(){
+  const lm=document.documentElement.getAttribute('data-theme')==='light';
+  const bg=lm?'#fff':'#111820';
+  const sf=lm?'#f0f4f8':'#1a2030';
+  const br=lm?'#c8d4e0':'#2a3444';
+  const tx=lm?'#0d1520':'#eef2f8';
+  const tx2=lm?'#3d5470':'#9aafc4';
+  const pr=lm?'#0060cc':'#4da6ff';
+  const tones={mid:{c:lm?'#0060cc':'#4da6ff',l:'Mid —'},low:{c:lm?'#0a7a2a':'#3dcc5c',l:'Low ˋ'},falling:{c:lm?'#c0001a':'#ff4f4a',l:'Falling ˆ'},high:{c:lm?'#6020b0':'#c47dff',l:'High ˊ'},rising:{c:lm?'#a05800':'#ffaa44',l:'Rising ˇ'}};
 
-/* ═══════════════════════════════════════════
-   GAME ENGINE
-═══════════════════════════════════════════ */
-let gameScore=0,gameTotal=0,currentGameWord=null,gameAnswered=false;
-let conGameScore=0,conGameTotal=0,currentConsonantItem=null,conGameAnswered=false;
-
-async function fetchRandomInternetThaiWord() {
-  try {
-    const res=await fetch('https://raw.githubusercontent.com/aolmio/thcore/main/tone.json');
-    if (!res.ok) throw new Error('Network error');
-    const data=await res.json();
-    const entries=Array.isArray(data)?data:data.words||[];
-    if (!entries.length) throw new Error('Empty');
-    const sel=entries[Math.floor(Math.random()*entries.length)];
-    let word=(sel.thai||sel.word||"").trim().split(/[(),;]/)[0].trim();
-    if (!word) throw new Error('No word');
-    return {thai:word, tone:calculateStringToneMetrics(word), meaning:sel.english||sel.meaning||"Contextual definition.", details:sel.transliteration||sel.romanization||"Phonetic ready."};
-  } catch(e) { return null; }
-}
-
-async function generateNewGameRound() {
-  gameAnswered=false;
-  document.getElementById("g-feedback-box").textContent='';
-  document.getElementById("g-next-btn").style.display='none';
-  document.getElementById("g-start-btn").style.display='none';
-  document.querySelectorAll('#tone-options .game-opt').forEach(b=>{b.classList.remove("correct","wrong");b.disabled=false;});
-  const connTag=document.getElementById("game-conn-status");
-  document.getElementById("g-word-target").textContent='…';
-  document.getElementById("g-word-meta").innerHTML='<i>Loading…</i>';
-  let word=null;
-  if (navigator.onLine) {
-    connTag.innerHTML=`<span class="conn-tag conn-online">🌐 Live Online</span>`;
-    word=await fetchRandomInternetThaiWord();
-  } else {
-    connTag.innerHTML=`<span class="conn-tag conn-offline">📴 Offline Mode</span>`;
+  const W=1080,H=900;
+  function box(x,y,w,h,fill,stroke,r=10){return`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`}
+  function txt(x,y,t,col,sz=13,fw='600',anchor='middle'){return`<text x="${x}" y="${y}" text-anchor="${anchor}" font-family="Inter,sans-serif" font-size="${sz}" font-weight="${fw}" fill="${col}">${t}</text>`}
+  function arrow(x1,y1,x2,y2,col='#6a82a0'){
+    const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+    const ux=dx/len,uy=dy/len,ax=x2-ux*12,ay=y2-uy*12;
+    return`<line x1="${x1}" y1="${y1}" x2="${ax}" y2="${ay}" stroke="${col}" stroke-width="1.8" marker-end="url(#arr)"/>`;
   }
-  if (!word) word=offlineVocabularyBackup[Math.floor(Math.random()*offlineVocabularyBackup.length)];
-  currentGameWord=word;
-  document.getElementById("g-word-target").textContent=word.thai;
-  document.getElementById("g-word-meta").innerHTML=`<b>Meaning:</b> ${word.meaning}<br/><b>Hint:</b> ${word.details}`;
+  function tone(x,y,type){const to=tones[type];return`${box(x-55,y-17,110,34,to.c+'22',to.c,8)}${txt(x,y+5,to.l,to.c,12,'800')}${txt(x,y+17,'สามัญ/เอก/โท/ตรี/จัตวา'.split('/')[Object.keys(tones).indexOf(type)],to.c,9,'500')}`}
+
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background:${bg};border-radius:8px">`;
+  s+=`<defs><marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#6a82a0"/></marker></defs>`;
+
+  const CX=540,cy0=40;
+  s+=box(CX-70,cy0,140,38,sf,br);s+=txt(CX,cy0+14,'Initial Consonant',tx,12,'700');s+=txt(CX,cy0+28,'Class',tx2,10,'500');
+
+  const midX=180,highX=540,lowX=900,cy1=140;
+  [[midX,'Mid Class',lm?'#0060cc':'#4da6ff'],[highX,'High Class',lm?'#a05800':'#ffaa44'],[lowX,'Low Class',lm?'#c0001a':'#ff7070']].forEach(([x,l,c])=>{
+    s+=box(x-65,cy1-18,130,36,c+'22',c);s+=txt(x,cy1-2,l,c,12,'800');
+  });
+  s+=arrow(CX-30,cy0+38,midX+30,cy1-18,tx2);s+=arrow(CX,cy0+38,highX,cy1-18,tx2);s+=arrow(CX+30,cy0+38,lowX-30,cy1-18,tx2);
+
+  const cy2=230;
+  s+=txt(midX,cy2-14,'Tone Mark?',tx2,10,'600');s+=txt(highX,cy2-14,'Tone Mark?',tx2,10,'600');s+=txt(lowX,cy2-14,'Tone Mark?',tx2,10,'600');
+  s+=arrow(midX,cy1+18,midX,cy2-4,tx2);s+=arrow(highX,cy1+18,highX,cy2-4,tx2);s+=arrow(lowX,cy1+18,lowX,cy2-4,tx2);
+
+  const cy3=310;
+  [[midX-90,'ek/tho/tri\nchat'],[midX+90,'none']].forEach(([x,l])=>{s+=box(x-45,cy3-18,90,36,sf,br,8);s+=txt(x,cy3-3,l.split('\n')[0],tx,10,'600');if(l.includes('\n'))s+=txt(x,cy3+11,l.split('\n')[1],tx2,9,'500')});
+  s+=arrow(midX-60,cy2+2,midX-90,cy3-18,tx2);s+=arrow(midX+60,cy2+2,midX+90,cy3-18,tx2);
+
+  [[highX-90,'ek/tho'],[highX+90,'none']].forEach(([x,l])=>{s+=box(x-45,cy3-18,90,36,sf,br,8);s+=txt(x,cy3,l,tx,10,'600')});
+  s+=arrow(highX-60,cy2+2,highX-90,cy3-18,tx2);s+=arrow(highX+60,cy2+2,highX+90,cy3-18,tx2);
+
+  [[lowX-90,'ek/tho'],[lowX+90,'none']].forEach(([x,l])=>{s+=box(x-45,cy3-18,90,36,sf,br,8);s+=txt(x,cy3,l,tx,10,'600')});
+  s+=arrow(lowX-60,cy2+2,lowX-90,cy3-18,tx2);s+=arrow(lowX+60,cy2+2,lowX+90,cy3-18,tx2);
+
+  const cy4=420;
+  s+=tone(midX-90,cy4,'low');s+=arrow(midX-90,cy3+18,midX-90,cy4-17,tx2);
+  s+=txt(midX-90,cy3+32,'ek→Low',tx2,9,'500','middle');
+
+  const cy4b=480;
+  s+=tone(midX-90,cy4b,'falling');
+  s+=txt(midX-90,cy3+46,'tho→Fall',tx2,9,'500','middle');
+  s+=box(midX+50,cy4-30,80,24,sf,br,7);s+=txt(midX+90,cy4-14,'Live/Dead?',tx2,9,'600');
+  s+=arrow(midX+90,cy3+18,midX+90,cy4-30,tx2);
+
+  s+=tone(midX+25,cy4+50,'mid');s+=txt(midX+25,cy4+35,'Live→Mid',tx2,9,'500','middle');s+=arrow(midX+60,cy4-6,midX+25,cy4+33,tx2);
+  s+=tone(midX+155,cy4+50,'low');s+=txt(midX+155,cy4+35,'Dead→Low',tx2,9,'500','middle');s+=arrow(midX+120,cy4-6,midX+155,cy4+33,tx2);
+  s+=tone(midX-15,cy4+130,'high');s+=txt(midX-15,cy4+115,'Tri→High',tx2,9,'500','middle');
+  s+=tone(midX+155,cy4+130,'rising');s+=txt(midX+155,cy4+115,'Chat→Rise',tx2,9,'500','middle');
+
+  s+=tone(highX-90,cy4,'low');s+=txt(highX-80,cy3+32,'ek→Low',tx2,9,'500','middle');s+=arrow(highX-90,cy3+18,highX-90,cy4-17,tx2);
+  const cy4h=480;s+=tone(highX-90,cy4h,'falling');s+=txt(highX-90,cy3+46,'tho→Fall',tx2,9,'500','middle');
+  s+=box(highX+50,cy4-30,80,24,sf,br,7);s+=txt(highX+90,cy4-14,'Live/Dead?',tx2,9,'600');s+=arrow(highX+90,cy3+18,highX+90,cy4-30,tx2);
+  s+=tone(highX+20,cy4+50,'rising');s+=txt(highX+20,cy4+35,'Live→Rise',tx2,9,'500','middle');s+=arrow(highX+65,cy4-6,highX+20,cy4+33,tx2);
+  s+=tone(highX+155,cy4+50,'low');s+=txt(highX+155,cy4+35,'Dead→Low',tx2,9,'500','middle');s+=arrow(highX+115,cy4-6,highX+155,cy4+33,tx2);
+
+  s+=tone(lowX-90,cy4,'falling');s+=txt(lowX-80,cy3+32,'ek→Fall',tx2,9,'500','middle');s+=arrow(lowX-90,cy3+18,lowX-90,cy4-17,tx2);
+  s+=tone(lowX-90,cy4+80,'high');s+=txt(lowX-90,cy3+46,'tho→High',tx2,9,'500','middle');
+  s+=box(lowX+50,cy4-30,80,24,sf,br,7);s+=txt(lowX+90,cy4-14,'Live/Dead?',tx2,9,'600');s+=arrow(lowX+90,cy3+18,lowX+90,cy4-30,tx2);
+  s+=tone(lowX+20,cy4+50,'mid');s+=txt(lowX+20,cy4+35,'Live→Mid',tx2,9,'500','middle');s+=arrow(lowX+65,cy4-6,lowX+20,cy4+33,tx2);
+  s+=box(lowX+110,cy4+10,88,26,sf,br,7);s+=txt(lowX+154,cy4+27,'Short/Long?',tx2,9,'600');s+=arrow(lowX+115,cy4-6,lowX+154,cy4+10,tx2);
+  s+=tone(lowX+90,cy4+110,'high');s+=txt(lowX+90,cy4+95,'Short→High',tx2,9,'500','middle');s+=arrow(lowX+130,cy4+36,lowX+90,cy4+93,tx2);
+  s+=tone(lowX+218,cy4+110,'falling');s+=txt(lowX+218,cy4+95,'Long→Fall',tx2,9,'500','middle');s+=arrow(lowX+178,cy4+36,lowX+218,cy4+93,tx2);
+
+  const legendY=840,colors=[tones.mid,tones.low,tones.falling,tones.high,tones.rising];
+  const labels=['Mid —','Low ˋ','Falling ˆ','High ˊ','Rising ˇ'];
+  colors.forEach((to,i)=>{s+=`<rect x="${160+i*156}" y="${legendY}" width="14" height="14" rx="3" fill="${to.c}"/>`;s+=txt(180+i*156,legendY+11,labels[i],to.c,11,'700','start')});
+
+  s+='</svg>';
+  document.getElementById('fc-svg-wrap').innerHTML=s;
+
+  const body=document.getElementById('fc-body');
+  body.onwheel=e=>{e.preventDefault();fcZoom(e.deltaY<0?.1:-.1)};
+  body.onmousedown=e=>{fcDragging=true;fcDX=e.clientX;fcDY=e.clientY;fcSL=body.scrollLeft;fcST=body.scrollTop};
+  body.onmousemove=e=>{if(!fcDragging)return;body.scrollLeft=fcSL-(e.clientX-fcDX);body.scrollTop=fcST-(e.clientY-fcDY)};
+  body.onmouseup=()=>fcDragging=false;body.onmouseleave=()=>fcDragging=false;
+
+  let pinchDist=0;
+  body.addEventListener('touchstart',e=>{if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;pinchDist=Math.sqrt(dx*dx+dy*dy)}},{passive:true});
+  body.addEventListener('touchmove',e=>{if(e.touches.length===2){e.preventDefault();const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;const nd=Math.sqrt(dx*dx+dy*dy);fcZoom((nd-pinchDist)*.002);pinchDist=nd}},{passive:false});
 }
 
-function submitGameGuess(chosen) {
-  if (gameAnswered||!currentGameWord) return;
-  gameAnswered=true; gameTotal++;
-  const correct=currentGameWord.tone;
-  const feedbackBox=document.getElementById("g-feedback-box");
-  document.querySelectorAll('#tone-options .game-opt').forEach(btn=>{
-    btn.disabled=true;
-    if (btn.dataset.tone===correct) btn.classList.add("correct");
-  });
-  if (chosen===correct) {
-    gameScore++;
-    feedbackBox.textContent='🎯 Correct!'; feedbackBox.style.color='var(--tone-low)';
-    srsLogWord(currentGameWord.thai,correct,currentGameWord.meaning,currentGameWord.details,true);
-  } else {
-    feedbackBox.textContent=`✗ Correct: ${correct.toUpperCase()}`; feedbackBox.style.color='var(--tone-fall)';
-    document.querySelectorAll('#tone-options .game-opt').forEach(btn=>{ if(btn.dataset.tone===chosen) btn.classList.add("wrong"); });
-    srsLogWord(currentGameWord.thai,correct,currentGameWord.meaning,currentGameWord.details,false);
-  }
-  document.getElementById("game-score-val").textContent=gameScore;
-  document.getElementById("game-total-val").textContent=gameTotal;
-  document.getElementById("g-next-btn").style.display='block';
-}
-
-function speakGameWord() { if (currentGameWord) speakThaiText(currentGameWord.thai); }
-
-function generateNewConsonantRound() {
-  conGameAnswered=false;
-  document.getElementById("g-consonant-feedback").textContent='';
-  document.getElementById("g-con-next-btn").style.display='none';
-  document.getElementById("g-con-start-btn").style.display='none';
-  document.querySelectorAll('#p-game .game-arena > div:nth-child(2) .game-options .game-opt').forEach(b=>{b.classList.remove("correct","wrong");b.disabled=false;});
-  const clean=consonantsData.filter(c=>c.char!=='');
-  const rand=clean[Math.floor(Math.random()*clean.length)];
-  currentConsonantItem=rand;
-  document.getElementById("g-consonant-target").textContent=rand.char;
-  document.getElementById("g-consonant-meta").innerHTML=`<b>Name:</b> ${rand.name}<br/><b>Sound:</b> [${rand.sound}] · <i>${rand.meaning}</i>`;
-}
-
-function submitConsonantGuess(chosen) {
-  if (conGameAnswered||!currentConsonantItem) return;
-  conGameAnswered=true; conGameTotal++;
-  const correct=currentConsonantItem.class;
-  const fb=document.getElementById("g-consonant-feedback");
-  document.querySelectorAll('#p-game .game-arena > div:nth-child(2) .game-options .game-opt').forEach(btn=>{
-    btn.disabled=true;
-    // identify by onclick attribute more robustly
-  });
-  // Color correct/wrong by matching chosen/correct
-  document.querySelectorAll('#p-game .game-arena > div:nth-child(2) .game-options .game-opt').forEach(btn=>{
-    const oc=btn.getAttribute('onclick');
-    if (oc&&oc.includes(`'${correct}'`)) btn.classList.add('correct');
-    if (oc&&oc.includes(`'${chosen}'`)&&chosen!==correct) btn.classList.add('wrong');
-  });
-  if (chosen===correct) {
-    conGameScore++;
-    fb.textContent=`🎯 Correct! ${currentConsonantItem.char} is ${correct.toUpperCase()} class.`;
-    fb.style.color='var(--tone-low)';
-  } else {
-    fb.textContent=`✗ It is ${correct.toUpperCase()} class.`;
-    fb.style.color='var(--tone-fall)';
-  }
-  document.getElementById("g-con-score").textContent=conGameScore;
-  document.getElementById("g-con-total").textContent=conGameTotal;
-  document.getElementById("g-con-next-btn").style.display='block';
-}
-
-function speakGameConsonant() { if (currentConsonantItem) speakThaiText(currentConsonantItem.char); }
-
-/* ═══════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════ */
-window.addEventListener('DOMContentLoaded', () => {
-  // Restore theme
-  const savedTheme=localStorage.getItem('thaiToneTheme');
-  if (savedTheme==='light') { document.documentElement.setAttribute('data-theme','light'); document.getElementById('themeBtn').textContent='☀️'; }
-
-  buildReferenceGrids();
-  renderSrsTable();
-  if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
-  document.addEventListener('keydown', e => {
-    if (e.key==='/'&&document.getElementById('compareSearch')) { switchTab('compare'); document.getElementById('compareSearch').focus(); e.preventDefault(); }
-  });
+document.addEventListener('DOMContentLoaded',()=>{
+  const th=localStorage.getItem('ttu-theme');
+  if(th==='light'){document.documentElement.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='☀️'}
+  buildRef();renderSRS();buildFC();
+  if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.addEventListener('voiceschanged',()=>window.speechSynthesis.getVoices())}
 });
 
-// PWA
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', ()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
-  let deferredPrompt=null;
-  window.addEventListener('beforeinstallprompt', e=>{
-    e.preventDefault(); deferredPrompt=e;
-    const b=document.getElementById('installBtn');
-    if (b) { b.style.display='flex'; b.onclick=async()=>{ deferredPrompt.prompt(); await deferredPrompt.userChoice; b.style.display='none'; }; }
-  });
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dPr=e;document.getElementById('installBtn').style.display='flex'});
 }
 </script>
-<div id="toast"></div>
 </body>
 </html>
