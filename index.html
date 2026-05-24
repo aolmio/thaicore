@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,7 +5,7 @@
 <title>Thai Tone Master Ultra</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0d1117">
+<meta name="theme-color" content="#0a0e14">
 <link rel="manifest" href="./manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +20,11 @@
 --cm:#6dc8ff;--ch:#ffaa44;--cl:#ff7070;
 --ui:'Inter',sans-serif;--thai:'Sarabun',sans-serif;
 --r:8px;--r2:14px;--r3:20px;
---nav:52px;--bot:env(safe-area-inset-bottom,12px);
+--sat:env(safe-area-inset-top,0px);
+--sar:env(safe-area-inset-right,0px);
+--sal:env(safe-area-inset-left,0px);
+--sab:env(safe-area-inset-bottom,0px);
+--nav-h:52px;
 }
 [data-theme=light]{
 --bg:#e8ecf2;--sf:#fff;--sf2:#f0f4f8;--sf3:#e2e8f0;--br:#c8d4e0;--br2:#9aafc4;
@@ -31,18 +34,27 @@
 --tm-b:rgba(0,96,204,.1);--tl-b:rgba(10,122,42,.1);--tf-b:rgba(192,0,26,.1);--th-b:rgba(96,32,176,.1);--tr-b:rgba(160,88,0,.1);
 --cm:#0060cc;--ch:#a05800;--cl:#c0001a;
 }
-[data-font=kanit]{--thai:'Kanit',sans-serif}
-[data-font=prompt]{--thai:'Prompt',sans-serif}
-[data-font=mitr]{--thai:'Mitr',sans-serif}
-[data-font=itim]{--thai:'Itim',cursive}
+[data-font=kanit]{--thai:'Kanit',sans-serif}[data-font=prompt]{--thai:'Prompt',sans-serif}
+[data-font=mitr]{--thai:'Mitr',sans-serif}[data-font=itim]{--thai:'Itim',cursive}
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
-body{font-family:var(--ui);background:var(--bg);color:var(--tx);min-height:100vh;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:var(--nav)}
+body{font-family:var(--ui);background:var(--bg);color:var(--tx);min-height:100vh;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  padding-top:calc(var(--nav-h) + var(--sat));
+  padding-left:var(--sal);padding-right:var(--sar)}
 .thai{font-family:var(--thai)!important}
 
-.nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav);background:var(--bg);border-bottom:1px solid var(--br);display:flex;align-items:center;padding:0 12px;gap:8px}
-[data-theme=light] .nav{background:rgba(232,236,242,.96);backdrop-filter:blur(16px)}
+/* NAV — full safe area aware */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:var(--bg);border-bottom:1px solid var(--br);
+  padding-top:var(--sat);
+  padding-left:calc(12px + var(--sal));
+  padding-right:calc(12px + var(--sar));
+  padding-bottom:0;
+}
+[data-theme=light] .nav{background:rgba(232,236,242,.96);backdrop-filter:blur(20px)}
+.nav-inner{height:var(--nav-h);display:flex;align-items:center;gap:8px}
 .nav-logo{width:34px;height:34px;background:linear-gradient(135deg,var(--pr),var(--th));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--thai);font-size:18px;font-weight:800;color:#fff;flex-shrink:0;cursor:pointer}
 .nav-brand{display:flex;flex-direction:column;flex-shrink:0;margin-right:4px}
 .nav-brand b{font-size:.83rem;font-weight:800;letter-spacing:-.02em;line-height:1.1;color:var(--tx)}
@@ -59,24 +71,31 @@ body{font-family:var(--ui);background:var(--bg);color:var(--tx);min-height:100vh
 .iBtn{width:30px;height:30px;border:1px solid var(--br);border-radius:6px;background:var(--sf2);color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:.15s;flex-shrink:0}
 .iBtn:hover{color:var(--tx);border-color:var(--br2)}
 
-.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--bg);border-top:1px solid var(--br);padding:4px 0 var(--bot)}
+/* MOBILE BOTTOM NAV */
+.mob-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:var(--bg);border-top:1px solid var(--br);
+  padding-left:var(--sal);padding-right:var(--sar);
+  padding-bottom:var(--sab);padding-top:4px;
+}
 .mob-tabs{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:0 4px;gap:2px}
 .mob-tabs::-webkit-scrollbar{display:none}
 .mtab{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 10px;border:none;background:transparent;color:var(--tx3);font-family:var(--ui);font-size:.62rem;font-weight:600;cursor:pointer;border-radius:8px;transition:.15s;min-width:52px}
 .mtab .mico{font-size:19px;line-height:1}
 .mtab.on{color:var(--pr);background:var(--pr-d)}
+
 @media(max-width:767px){
   .nav-tabs-wrap{display:none}
   .mob-nav{display:block}
-  body{padding-bottom:calc(58px + var(--bot))}
-  .nav{padding:0 10px}
+  /* bottom padding = bottom nav bar height + safe area */
+  body{padding-bottom:calc(58px + var(--sab))}
+  .nav{padding-left:calc(10px + var(--sal));padding-right:calc(10px + var(--sar))}
 }
 @media(min-width:768px){.mob-nav{display:none}}
 
 .shell{max-width:1300px;margin:0 auto;padding:20px 16px}
 @media(min-width:1024px){.shell{padding:24px 28px}}
-.panel{display:none}
-.panel.on{display:block;animation:fu .18s ease}
+.panel{display:none}.panel.on{display:block;animation:fu .18s ease}
 @keyframes fu{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 
 .card{background:var(--sf);border:1px solid var(--br);border-radius:var(--r2);padding:18px}
@@ -124,8 +143,7 @@ body{font-family:var(--ui);background:var(--bg);color:var(--tx);min-height:100vh
 canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
 
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media(max-width:640px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.g2{grid-template-columns:1fr}}
 @media(min-width:900px){.calc-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}}
 
 /* FLOWCHART */
@@ -143,8 +161,7 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
 
 .stabs{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1.5px solid var(--br);margin-bottom:15px}
 .stab{padding:9px 14px;border:none;border-bottom:2.5px solid transparent;background:transparent;color:var(--tx2);font-family:var(--ui);font-size:.8rem;font-weight:700;cursor:pointer;margin-bottom:-1px;transition:.14s}
-.stab:hover{color:var(--tx)}
-.stab.on{color:var(--pr);border-bottom-color:var(--pr)}
+.stab:hover{color:var(--tx)}.stab.on{color:var(--pr);border-bottom-color:var(--pr)}
 .sp{display:none}.sp.on{display:block;animation:fu .16s ease}
 .mtabs2{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:13px}
 .mt2{padding:6px 11px;border:1.5px solid var(--br);border-radius:20px;background:transparent;color:var(--tx2);font-family:var(--ui);font-size:.76rem;font-weight:700;cursor:pointer;transition:.14s}
@@ -163,11 +180,17 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
 .tn2{font-size:.76rem;font-weight:700;color:var(--tx2)}
 .tm3{font-size:.74rem;color:var(--tx3);line-height:1.45}
 
-.vpair{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:600px){.vpair{grid-template-columns:1fr}}
-.vrow{display:flex;align-items:center;background:var(--sf);border:1.5px solid var(--br);border-radius:7px;padding:8px 11px;margin-bottom:6px;gap:11px}
-.vg{font-family:var(--thai);font-size:1.5rem;font-weight:800;min-width:50px;color:var(--tx)}
-.vi{flex:1;font-size:.76rem;color:var(--tx2)}
+/* VOWELS — 2-col on all screen sizes, compact on mobile */
+.vpair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vrow{display:flex;align-items:center;background:var(--sf);border:1.5px solid var(--br);border-radius:7px;padding:7px 9px;margin-bottom:5px;gap:8px}
+.vg{font-family:var(--thai);font-size:1.4rem;font-weight:800;min-width:42px;color:var(--tx)}
+.vi{flex:1;font-size:.72rem;color:var(--tx2);line-height:1.3}
+@media(max-width:480px){
+  .vpair{gap:6px}
+  .vrow{padding:5px 7px;gap:5px}
+  .vg{font-size:1.2rem;min-width:34px}
+  .vi{font-size:.66rem}
+}
 
 .mc{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r2);padding:16px 16px 16px 20px;margin-bottom:11px;position:relative}
 .mc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4.5px;border-radius:var(--r2) 0 0 var(--r2)}
@@ -181,9 +204,9 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
 .stbl{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
 .stbl th,.stbl td{border:1px solid var(--br);padding:9px 11px;text-align:left}
 .stbl th{background:var(--sf2);font-weight:800;color:var(--tx);font-size:.8rem}
-.stbl td{color:var(--tx2)}
-.stbl b{color:var(--tx);font-weight:700}
+.stbl td{color:var(--tx2)}.stbl b{color:var(--tx);font-weight:700}
 
+/* GAME */
 .garena{display:grid;grid-template-columns:1fr 1fr;gap:15px}
 @media(max-width:860px){.garena{grid-template-columns:1fr}}
 .gpod{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r3);padding:24px 20px;display:flex;flex-direction:column;align-items:center;gap:15px;text-align:center;min-height:410px}
@@ -248,7 +271,7 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
 .ivi{background:rgba(255,170,68,.18);color:var(--tr)}.ive{background:rgba(61,204,92,.15);color:var(--tl)}
 .ivex{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
 
-#toast{position:fixed;right:16px;bottom:calc(80px + var(--bot));z-index:9999;background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r2);padding:12px 18px;box-shadow:0 8px 32px rgba(0,0,0,.4);font-size:.85rem;font-weight:700;color:var(--tx);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;max-width:270px}
+#toast{position:fixed;right:16px;bottom:calc(80px + var(--sab));z-index:9999;background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r2);padding:12px 18px;box-shadow:0 8px 32px rgba(0,0,0,.4);font-size:.85rem;font-weight:700;color:var(--tx);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;max-width:270px}
 #toast.on{opacity:1;transform:translateY(0)}
 @media(min-width:768px){#toast{bottom:20px}}
 ::-webkit-scrollbar{width:5px;height:5px}
@@ -260,28 +283,30 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
 <body>
 
 <nav class="nav">
-  <div class="nav-logo" onclick="switchTab('calc')">ก</div>
-  <div class="nav-brand"><b>Thai Tone Ultra</b><span>เสียงวรรณยุกต์</span></div>
-  <div class="nav-tabs-wrap"><div class="nav-tabs">
-    <button class="ntab on" id="nt-calc"      onclick="switchTab('calc')">🎯 Calculator</button>
-    <button class="ntab"    id="nt-analyzer"  onclick="switchTab('analyzer')">🔬 Analyzer</button>
-    <button class="ntab"    id="nt-ref"       onclick="switchTab('ref')">📖 Reference</button>
-    <button class="ntab"    id="nt-ivp"       onclick="switchTab('ivp')">🔍 Implicit Vowels</button>
-    <button class="ntab"    id="nt-mnemonics" onclick="switchTab('mnemonics')">💡 Mnemonics</button>
-    <button class="ntab"    id="nt-game"      onclick="switchTab('game')">🎮 Practice</button>
-    <button class="ntab"    id="nt-compare"   onclick="switchTab('compare')">🔤 Fonts</button>
-    <button class="ntab"    id="nt-srs"       onclick="switchTab('srs')">📚 SRS</button>
-  </div></div>
-  <div class="nav-r">
-    <select class="nav-sel" onchange="changeFont(this.value)">
-      <option value="sarabun">Sarabun</option>
-      <option value="kanit">Kanit</option>
-      <option value="prompt">Prompt</option>
-      <option value="mitr">Mitr</option>
-      <option value="itim">Itim ✍</option>
-    </select>
-    <button class="iBtn" id="themeBtn" onclick="toggleTheme()">🌙</button>
-    <button class="iBtn" id="installBtn" style="display:none" onclick="doInstall()">⬇</button>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="switchTab('calc')">ก</div>
+    <div class="nav-brand"><b>Thai Tone Ultra</b><span>เสียงวรรณยุกต์</span></div>
+    <div class="nav-tabs-wrap"><div class="nav-tabs">
+      <button class="ntab on" id="nt-calc"      onclick="switchTab('calc')">🎯 Calculator</button>
+      <button class="ntab"    id="nt-analyzer"  onclick="switchTab('analyzer')">🔬 Analyzer</button>
+      <button class="ntab"    id="nt-ref"       onclick="switchTab('ref')">📖 Reference</button>
+      <button class="ntab"    id="nt-ivp"       onclick="switchTab('ivp')">🔍 Implicit Vowels</button>
+      <button class="ntab"    id="nt-mnemonics" onclick="switchTab('mnemonics')">💡 Mnemonics</button>
+      <button class="ntab"    id="nt-game"      onclick="switchTab('game')">🎮 Practice</button>
+      <button class="ntab"    id="nt-compare"   onclick="switchTab('compare')">🔤 Fonts</button>
+      <button class="ntab"    id="nt-srs"       onclick="switchTab('srs')">📚 SRS</button>
+    </div></div>
+    <div class="nav-r">
+      <select class="nav-sel" onchange="changeFont(this.value)">
+        <option value="sarabun">Sarabun</option>
+        <option value="kanit">Kanit</option>
+        <option value="prompt">Prompt</option>
+        <option value="mitr">Mitr</option>
+        <option value="itim">Itim ✍</option>
+      </select>
+      <button class="iBtn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+      <button class="iBtn" id="installBtn" style="display:none" onclick="doInstall()">⬇</button>
+    </div>
   </div>
 </nav>
 
@@ -335,12 +360,10 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
         </div>
       </div>
     </div>
-
     <div>
-      <!-- RESULT CARD -->
       <div class="res" id="res-card" data-t="mid">
         <div class="lbl">Calculated Tone</div>
-        <div class="res-name"><span id="res-tone"></span><button class="spk" id="spk-tone" onclick="spkCurrent()">🔊</button></div>
+        <div class="res-name"><span id="res-tone"></span><button class="spk" onclick="spkCurrent()">🔊</button></div>
         <div class="res-rule" id="res-rule"></div>
         <div class="ex-w">
           <div class="lbl">Example Word</div>
@@ -350,8 +373,6 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
         <div class="pitch"><div class="pitch-lbl">Pitch Contour</div><canvas class="pc" id="pc-calc" width="600" height="76"></canvas></div>
         <div style="margin-top:13px"><button class="btn btn-p btn-w" onclick="srsFromCalc()">📚 Log to SRS Deck</button></div>
       </div>
-
-      <!-- TONE FLOWCHART -->
       <div id="hint-card">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px">
           <div style="font-size:.85rem;font-weight:800;color:var(--tx)">📊 Tone Decision Flowchart</div>
@@ -359,19 +380,15 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
         </div>
         <div id="fc-container" class="fc-wrap">
           <div class="fc-toolbar">
-            <b>Scroll/pinch to navigate · Drag to pan</b>
+            <b>Scroll to navigate · Drag to pan · Pinch to zoom</b>
             <div class="fc-zoom">
-              <button onclick="fcZoom(-0.15)">−</button>
+              <button onclick="fcZoom(-.15)">−</button>
               <span id="fc-pct">100%</span>
-              <button onclick="fcZoom(0.15)">+</button>
+              <button onclick="fcZoom(.15)">+</button>
               <button onclick="fcReset()" style="font-size:.72rem;width:auto;padding:0 8px">Reset</button>
             </div>
           </div>
-          <div class="fc-body" id="fc-body">
-            <div class="fc-svg-wrap" id="fc-svg-wrap">
-              <!-- SVG is injected by JS -->
-            </div>
-          </div>
+          <div class="fc-body" id="fc-body"><div class="fc-svg-wrap" id="fc-svg-wrap"></div></div>
         </div>
       </div>
     </div>
@@ -437,10 +454,21 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
     <div class="info">32 vowel forms — duration (short vs long) can flip syllable type and change tone.</div>
     <div class="mtabs2">
       <button class="mt2 on" onclick="fVow('all',this)">Side by Side</button>
-      <button class="mt2" onclick="fVow('short',this)">Short</button>
-      <button class="mt2" onclick="fVow('long',this)">Long</button>
+      <button class="mt2" onclick="fVow('short',this)">Short Only</button>
+      <button class="mt2" onclick="fVow('long',this)">Long Only</button>
     </div>
-    <div id="vg-all"><div class="vpair"><div><div class="msec" style="color:var(--tf)">● Short Vowels</div><div id="vs-short"></div></div><div><div class="msec" style="color:var(--tl)">● Long Vowels</div><div id="vs-long"></div></div></div></div>
+    <div id="vg-all">
+      <div class="vpair">
+        <div>
+          <div class="msec" style="color:var(--tf);font-size:.78rem;margin-top:0">● Short Vowels</div>
+          <div id="vs-short"></div>
+        </div>
+        <div>
+          <div class="msec" style="color:var(--tl);font-size:.78rem;margin-top:0">● Long Vowels</div>
+          <div id="vs-long"></div>
+        </div>
+      </div>
+    </div>
     <div id="vg-short" style="display:none"><div class="tgrid" id="vt-short"></div></div>
     <div id="vg-long"  style="display:none"><div class="tgrid" id="vt-long"></div></div>
   </div>
@@ -465,7 +493,7 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
     </div>
   </div>
   <div id="stm" class="sp">
-    <div class="info">Complete tone outcome matrix. <b>*</b> = depends on syllable type and vowel length.</div>
+    <div class="info">Complete tone outcome matrix.</div>
     <div style="overflow-x:auto">
       <table class="stbl" style="min-width:560px">
         <thead><tr><th>Class</th><th>Live</th><th>Dead Short</th><th>Dead Long</th><th>Mai Ek ่</th><th>Mai Tho ้</th><th>Mai Tri ๊</th><th>Mai Chat ๋</th></tr></thead>
@@ -477,10 +505,10 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
       </table>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px;margin-top:15px">
-      <div class="card-f" style="border-top:3.5px solid var(--tm)"><div style="font-weight:800;color:var(--tm);margin-bottom:5px;font-size:.9rem">Mid — สามัญ</div><div style="font-size:.8rem;color:var(--tx2)">Flat. Voice stays level mid-range throughout.</div></div>
-      <div class="card-f" style="border-top:3.5px solid var(--tl)"><div style="font-weight:800;color:var(--tl);margin-bottom:5px;font-size:.9rem">Low ˋ เอก</div><div style="font-size:.8rem;color:var(--tx2)">Starts slightly below mid, gently descends and holds.</div></div>
-      <div class="card-f" style="border-top:3.5px solid var(--tf)"><div style="font-weight:800;color:var(--tf);margin-bottom:5px;font-size:.9rem">Falling ˆ โท</div><div style="font-size:.8rem;color:var(--tx2)">Peaks high early then drops sharply to the bottom.</div></div>
-      <div class="card-f" style="border-top:3.5px solid var(--th)"><div style="font-weight:800;color:var(--th);margin-bottom:5px;font-size:.9rem">High ˊ ตรี</div><div style="font-size:.8rem;color:var(--tx2)">Starts mid, rises high, holds with slight tail drop.</div></div>
+      <div class="card-f" style="border-top:3.5px solid var(--tm)"><div style="font-weight:800;color:var(--tm);margin-bottom:5px;font-size:.9rem">Mid — สามัญ</div><div style="font-size:.8rem;color:var(--tx2)">Flat. Voice stays level mid-range.</div></div>
+      <div class="card-f" style="border-top:3.5px solid var(--tl)"><div style="font-weight:800;color:var(--tl);margin-bottom:5px;font-size:.9rem">Low ˋ เอก</div><div style="font-size:.8rem;color:var(--tx2)">Starts below mid, gently descends and holds.</div></div>
+      <div class="card-f" style="border-top:3.5px solid var(--tf)"><div style="font-weight:800;color:var(--tf);margin-bottom:5px;font-size:.9rem">Falling ˆ โท</div><div style="font-size:.8rem;color:var(--tx2)">Peaks high early then drops sharply to bottom.</div></div>
+      <div class="card-f" style="border-top:3.5px solid var(--th)"><div style="font-weight:800;color:var(--th);margin-bottom:5px;font-size:.9rem">High ˊ ตรี</div><div style="font-size:.8rem;color:var(--tx2)">Starts mid, rises high, holds with slight drop.</div></div>
       <div class="card-f" style="border-top:3.5px solid var(--tr)"><div style="font-weight:800;color:var(--tr);margin-bottom:5px;font-size:.9rem">Rising ˇ จัตวา</div><div style="font-size:.8rem;color:var(--tx2)">Dips low first then climbs steeply all the way up.</div></div>
     </div>
   </div>
@@ -526,19 +554,19 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
 
 <!-- MNEMONICS -->
 <section id="p-mnemonics" class="panel">
-  <div class="mc am"><div class="mc-t">🪞 Mid Class Mirror <span class="badge" style="background:var(--tm-b);color:var(--tm)">Anchor</span></div><div class="mc-b">Mid class is stable — whatever mark appears, that exact tone sounds: <b>Ek→Low</b>, <b>Tho→Falling</b>, <b>Tri→High</b>, <b>Chattawa→Rising</b>. No surprises.</div></div>
-  <div class="mc af"><div class="mc-t">🏴‍☠️ Low Class Rebel Shift <span class="badge" style="background:var(--tf-b);color:var(--tf)">Jump</span></div><div class="mc-b">Low class + marks jump one level higher: <b>Mai Ek → Falling</b>, <b>Mai Tho → High</b>. The rebel climbs above its station.</div></div>
-  <div class="mc ah"><div class="mc-t">💥 Dead Syllable Choke-Spike <span class="badge" style="background:var(--th-b);color:var(--th)">Pressure</span></div><div class="mc-b">Low class + <b>short</b> dead vowel → <b>High ˊ</b>. Long dead → <b>Falling ˆ</b>. The abrupt stop chokes pitch upward.</div></div>
-  <div class="mc al"><div class="mc-t">🍏 Baseline Checklist</div><div class="mc-b"><b>Live</b>: long vowel or nasal ending → Mid baseline.<br><b>Dead</b>: stop or short vowel → Low or High depending on class.</div></div>
+  <div class="mc am"><div class="mc-t">🪞 Mid Class Mirror <span class="badge" style="background:var(--tm-b);color:var(--tm)">Anchor</span></div><div class="mc-b">Mid class is stable — whatever mark appears, that exact tone sounds: <b>Ek→Low</b>, <b>Tho→Falling</b>, <b>Tri→High</b>, <b>Chattawa→Rising</b>.</div></div>
+  <div class="mc af"><div class="mc-t">🏴‍☠️ Low Class Rebel Shift <span class="badge" style="background:var(--tf-b);color:var(--tf)">Jump</span></div><div class="mc-b">Low class + marks jump one level higher: <b>Mai Ek → Falling</b>, <b>Mai Tho → High</b>.</div></div>
+  <div class="mc ah"><div class="mc-t">💥 Dead Syllable Choke-Spike <span class="badge" style="background:var(--th-b);color:var(--th)">Pressure</span></div><div class="mc-b">Low class + <b>short</b> dead → <b>High ˊ</b>. Long dead → <b>Falling ˆ</b>. The stop chokes pitch upward.</div></div>
+  <div class="mc al"><div class="mc-t">🍏 Baseline Checklist</div><div class="mc-b"><b>Live</b>: long vowel or nasal ending → Mid baseline.<br><b>Dead</b>: stop or short vowel → Low or High by class.</div></div>
   <div class="mc ap"><div class="mc-t">🎵 ห Leading Elevator</div><div class="mc-b"><b class="thai">ห</b> before sonorant (<b class="thai">ม น ง ว ล ย ร</b>) → elevates to High class silently. <b class="thai">หมา / หนาว / หวาน</b> → all Rising ˇ.</div></div>
-  <div class="mc" style="border-left:4.5px solid var(--cm)"><div class="mc-t">🔵 อ Leading Silencer</div><div class="mc-b">Silent <b class="thai">อ</b> before <b class="thai">ย/ว</b> → Mid class. <b class="thai">อยู่</b> with Mai Ek → Low Tone. อ vanishes in sound but drives the rule.</div></div>
-  <div class="mc ar"><div class="mc-t">🕳️ Invisible Vowel</div><div class="mc-b">Thai skips the short /o/ or /a/ between clusters. <b class="thai">คน</b> = kh+<b>o</b>+n. <b class="thai">กระ</b> = g+r+<b>a</b>. Two consonants with no marker → hidden vowel between them.</div></div>
-  <div class="mc" style="border-left:4.5px solid var(--th)"><div class="mc-t">📈 Pitch Shape Guide</div><div class="mc-b"><b>Mid —</b> flat · <b>Low ˋ</b> gentle descent · <b>Falling ˆ</b> peak then sharp drop · <b>High ˊ</b> rises and holds · <b>Rising ˇ</b> dips then climbs steeply.</div></div>
+  <div class="mc" style="border-left:4.5px solid var(--cm)"><div class="mc-t">🔵 อ Leading Silencer</div><div class="mc-b">Silent <b class="thai">อ</b> before <b class="thai">ย/ว</b> → Mid class. <b class="thai">อยู่</b> with Mai Ek → Low Tone.</div></div>
+  <div class="mc ar"><div class="mc-t">🕳️ Invisible Vowel</div><div class="mc-b">Thai skips /o/ or /a/ between clusters. <b class="thai">คน</b> = kh+<b>o</b>+n. <b class="thai">กระ</b> = g+r+<b>a</b>.</div></div>
+  <div class="mc" style="border-left:4.5px solid var(--th)"><div class="mc-t">📈 Pitch Shape Guide</div><div class="mc-b"><b>Mid —</b> flat · <b>Low ˋ</b> gentle descent · <b>Falling ˆ</b> peak then sharp drop · <b>High ˊ</b> rises and holds · <b>Rising ˇ</b> dips then climbs.</div></div>
 </section>
 
 <!-- GAME -->
 <section id="p-game" class="panel">
-  <div class="info"><b>Practice:</b> Tap 🔊 to hear pronunciation. Words are filtered to single syllable only. Correct answers auto-log to your SRS deck.</div>
+  <div class="info"><b>Practice:</b> Single-syllable words only. Correct answer auto-advances to next word. Tap 🔊 to hear pronunciation.</div>
   <div class="garena">
     <div class="gpod">
       <div class="gph">
@@ -622,46 +650,46 @@ canvas.pc{width:100%;height:76px;display:block;border-radius:6px}
 
 <script>
 const DB={
-  "mid-none-live":       {t:"mid",     n:"Mid Tone —",     d:"Mid class consonant, live syllable → flat baseline pitch.",                   w:"กา",  x:"kaa · crow (Mid class + Live)"},
-  "mid-none-dead":       {t:"low",     n:"Low Tone ˋ",     d:"Mid class consonant, dead syllable → pitch drops below baseline.",            w:"กบ",  x:"gop · frog (Mid class + Dead)"},
-  "mid-ek":              {t:"low",     n:"Low Tone ˋ",     d:"Mid class + Mai Ek (่) → standard low tone.",                                w:"ไก่", x:"gai · chicken (Mid + Mai Ek)"},
-  "mid-tho":             {t:"falling", n:"Falling Tone ˆ", d:"Mid class + Mai Tho (้) → peaks early, drops sharply.",                     w:"เก้า",x:"gao · nine (Mid + Mai Tho)"},
-  "mid-tri":             {t:"high",    n:"High Tone ˊ",    d:"Mid class + Mai Tri (๊) → crisp high zone, rises and holds.",                w:"โต๊ะ",x:"toh · table (Mid + Mai Tri)"},
-  "mid-chattawa":        {t:"rising",  n:"Rising Tone ˇ",  d:"Mid class + Mai Chattawa (๋) → dips low first, then swoops up.",            w:"ตั๋ว",x:"tua · ticket (Mid + Mai Chattawa)"},
-  "high-none-live":      {t:"rising",  n:"Rising Tone ˇ",  d:"High class consonant, live syllable → deep rising contour.",                 w:"ขา",  x:"khaa · leg (High class + Live)"},
-  "high-none-dead":      {t:"low",     n:"Low Tone ˋ",     d:"High class consonant, dead syllable → drops to low zone.",                   w:"ไข่", x:"khai · egg (High class + Dead)"},
-  "high-ek":             {t:"low",     n:"Low Tone ˋ",     d:"High class + Mai Ek (่) → locked into low frequency.",                      w:"สี่", x:"see · four (High + Mai Ek)"},
-  "high-tho":            {t:"falling", n:"Falling Tone ˆ", d:"High class + Mai Tho (้) → crests then slides sharply off.",                w:"ห้า", x:"haa · five (High + Mai Tho)"},
-  "low-none-live":       {t:"mid",     n:"Mid Tone —",     d:"Low class consonant, live syllable → flat mid baseline.",                    w:"มา",  x:"maa · to come (Low class + Live)"},
-  "low-none-dead-short": {t:"high",    n:"High Tone ˊ",    d:"Low class + short dead → air compression spikes pitch instantly.",           w:"รัก", x:"rak · to love (Low class + Short dead)"},
-  "low-none-dead-long":  {t:"falling", n:"Falling Tone ˆ", d:"Low class + long dead → extended stop forces peak then drop.",              w:"พูด", x:"poot · to speak (Low class + Long dead)"},
-  "low-ek":              {t:"falling", n:"Falling Tone ˆ", d:"Rebel Jump: Low class + Mai Ek → Falling (one step above normal).",         w:"พี่", x:"phee · older sibling (Low + Mai Ek)"},
-  "low-tho":             {t:"high",    n:"High Tone ˊ",    d:"Rebel Jump: Low class + Mai Tho → High (one step above normal).",           w:"ม้า", x:"maa · horse (Low + Mai Tho)"}
+  "mid-none-live":       {t:"mid",     n:"Mid Tone —",     d:"Mid class consonant, live syllable → flat baseline pitch.",                w:"กา",  x:"kaa · crow (Mid class + Live)"},
+  "mid-none-dead":       {t:"low",     n:"Low Tone ˋ",     d:"Mid class consonant, dead syllable → pitch drops below baseline.",         w:"กบ",  x:"gop · frog (Mid class + Dead)"},
+  "mid-ek":              {t:"low",     n:"Low Tone ˋ",     d:"Mid class + Mai Ek (่) → standard low tone.",                             w:"ไก่", x:"gai · chicken (Mid + Mai Ek)"},
+  "mid-tho":             {t:"falling", n:"Falling Tone ˆ", d:"Mid class + Mai Tho (้) → peaks early, drops sharply.",                  w:"เก้า",x:"gao · nine (Mid + Mai Tho)"},
+  "mid-tri":             {t:"high",    n:"High Tone ˊ",    d:"Mid class + Mai Tri (๊) → crisp high zone, rises and holds.",             w:"โต๊ะ",x:"toh · table (Mid + Mai Tri)"},
+  "mid-chattawa":        {t:"rising",  n:"Rising Tone ˇ",  d:"Mid class + Mai Chattawa (๋) → dips low first, then swoops up.",         w:"ตั๋ว",x:"tua · ticket (Mid + Mai Chattawa)"},
+  "high-none-live":      {t:"rising",  n:"Rising Tone ˇ",  d:"High class consonant, live syllable → deep rising contour.",              w:"ขา",  x:"khaa · leg (High class + Live)"},
+  "high-none-dead":      {t:"low",     n:"Low Tone ˋ",     d:"High class consonant, dead syllable → drops to low zone.",                w:"ไข่", x:"khai · egg (High class + Dead)"},
+  "high-ek":             {t:"low",     n:"Low Tone ˋ",     d:"High class + Mai Ek (่) → locked into low frequency.",                   w:"สี่", x:"see · four (High + Mai Ek)"},
+  "high-tho":            {t:"falling", n:"Falling Tone ˆ", d:"High class + Mai Tho (้) → crests then slides sharply off.",             w:"ห้า", x:"haa · five (High + Mai Tho)"},
+  "low-none-live":       {t:"mid",     n:"Mid Tone —",     d:"Low class consonant, live syllable → flat mid baseline.",                 w:"มา",  x:"maa · to come (Low class + Live)"},
+  "low-none-dead-short": {t:"high",    n:"High Tone ˊ",    d:"Low class + short dead → air compression spikes pitch instantly.",        w:"รัก", x:"rak · to love (Low class + Short dead)"},
+  "low-none-dead-long":  {t:"falling", n:"Falling Tone ˆ", d:"Low class + long dead → extended stop forces peak then drop.",           w:"พูด", x:"poot · to speak (Low class + Long dead)"},
+  "low-ek":              {t:"falling", n:"Falling Tone ˆ", d:"Rebel Jump: Low class + Mai Ek → Falling (one step above normal).",      w:"พี่", x:"phee · older sibling (Low + Mai Ek)"},
+  "low-tho":             {t:"high",    n:"High Tone ˊ",    d:"Rebel Jump: Low class + Mai Tho → High (one step above normal).",        w:"ม้า", x:"maa · horse (Low + Mai Tho)"}
 };
 
 const CONS=[
-  {c:"ก",n:"Kor Kai",    cl:"mid", s:"k/k",   m:"Chicken"},  {c:"จ",n:"Jor Jan",    cl:"mid", s:"j/t",   m:"Plate"},
-  {c:"ด",n:"Dor Dek",    cl:"mid", s:"d/t",   m:"Child"},    {c:"ต",n:"Tor Tao",    cl:"mid", s:"t/t",   m:"Turtle"},
-  {c:"บ",n:"Bor Baimai", cl:"mid", s:"b/p",   m:"Leaf"},     {c:"ป",n:"Por Pla",    cl:"mid", s:"p/p",   m:"Fish"},
-  {c:"อ",n:"Or Ang",     cl:"mid", s:"-/-",   m:"Basin"},    {c:"ฎ",n:"Dor Chada",  cl:"mid", s:"d/t",   m:"Headdress"},
-  {c:"ฏ",n:"Tor Patak",  cl:"mid", s:"t/t",   m:"Goad"},
-  {c:"ข",n:"Khor Khai",  cl:"high",s:"kh/k",  m:"Egg"},      {c:"ฉ",n:"Chor Ching", cl:"high",s:"ch/-",  m:"Cymbals"},
-  {c:"ถ",n:"Thor Thung", cl:"high",s:"th/t",  m:"Sack"},     {c:"ฐ",n:"Thor Than",  cl:"high",s:"th/t",  m:"Pedestal"},
-  {c:"ผ",n:"Phor Pheung",cl:"high",s:"ph/-",  m:"Bee"},      {c:"ฝ",n:"For Fa",     cl:"high",s:"f/-",   m:"Lid"},
-  {c:"ศ",n:"Sor Sala",   cl:"high",s:"s/t",   m:"Pavilion"}, {c:"ษ",n:"Sor Ruesi",  cl:"high",s:"s/t",   m:"Hermit"},
-  {c:"ส",n:"Sor Suea",   cl:"high",s:"s/t",   m:"Tiger"},    {c:"ห",n:"Hor Hip",    cl:"high",s:"h/-",   m:"Chest"},
-  {c:"ค",n:"Khor Khwai", cl:"low", s:"kh/k",  m:"Buffalo"},  {c:"ฆ",n:"Khor Rakang",cl:"low", s:"kh/k",  m:"Bell"},
-  {c:"ง",n:"Ngor Ngu",   cl:"low", s:"ng/ng", m:"Snake"},    {c:"ช",n:"Chor Chang", cl:"low", s:"ch/t",  m:"Elephant"},
-  {c:"ซ",n:"Sor So",     cl:"low", s:"s/t",   m:"Chain"},    {c:"ฌ",n:"Chor Chee",  cl:"low", s:"ch/-",  m:"Tree"},
-  {c:"ญ",n:"Yor Ying",   cl:"low", s:"y/n",   m:"Woman"},    {c:"ฑ",n:"Thor Montho",cl:"low", s:"th/t",  m:"Montho"},
-  {c:"ฒ",n:"Thor Phuthao",cl:"low",s:"th/t",  m:"Elder"},    {c:"ณ",n:"Nor Nen",    cl:"low", s:"n/n",   m:"Novice"},
-  {c:"ท",n:"Thor Thahan",cl:"low", s:"th/t",  m:"Soldier"},  {c:"ธ",n:"Thor Thong", cl:"low", s:"th/t",  m:"Flag"},
-  {c:"น",n:"Nor Nu",     cl:"low", s:"n/n",   m:"Mouse"},    {c:"พ",n:"Phor Phan",  cl:"low", s:"ph/p",  m:"Tray"},
-  {c:"ฟ",n:"For Fan",    cl:"low", s:"f/p",   m:"Teeth"},    {c:"ภ",n:"Phor Samphao",cl:"low",s:"ph/p",  m:"Sailboat"},
-  {c:"ม",n:"Mor Ma",     cl:"low", s:"m/m",   m:"Horse"},    {c:"ย",n:"Yor Yak",    cl:"low", s:"y/y",   m:"Giant"},
-  {c:"ร",n:"Ror Ruea",   cl:"low", s:"r/n",   m:"Boat"},     {c:"ล",n:"Lor Ling",   cl:"low", s:"l/n",   m:"Monkey"},
-  {c:"ว",n:"Wor Waen",   cl:"low", s:"w/w",   m:"Ring"},     {c:"ฬ",n:"Lor Chula",  cl:"low", s:"l/n",   m:"Kite"},
-  {c:"ฮ",n:"Hor Nok",    cl:"low", s:"h/-",   m:"Owl"}
+  {c:"ก",n:"Kor Kai",    cl:"mid", s:"k/k",  m:"Chicken"}, {c:"จ",n:"Jor Jan",    cl:"mid", s:"j/t",   m:"Plate"},
+  {c:"ด",n:"Dor Dek",    cl:"mid", s:"d/t",  m:"Child"},   {c:"ต",n:"Tor Tao",    cl:"mid", s:"t/t",   m:"Turtle"},
+  {c:"บ",n:"Bor Baimai", cl:"mid", s:"b/p",  m:"Leaf"},    {c:"ป",n:"Por Pla",    cl:"mid", s:"p/p",   m:"Fish"},
+  {c:"อ",n:"Or Ang",     cl:"mid", s:"-/-",  m:"Basin"},   {c:"ฎ",n:"Dor Chada",  cl:"mid", s:"d/t",   m:"Headdress"},
+  {c:"ฏ",n:"Tor Patak",  cl:"mid", s:"t/t",  m:"Goad"},
+  {c:"ข",n:"Khor Khai",  cl:"high",s:"kh/k", m:"Egg"},     {c:"ฉ",n:"Chor Ching", cl:"high",s:"ch/-",  m:"Cymbals"},
+  {c:"ถ",n:"Thor Thung", cl:"high",s:"th/t", m:"Sack"},    {c:"ฐ",n:"Thor Than",  cl:"high",s:"th/t",  m:"Pedestal"},
+  {c:"ผ",n:"Phor Pheung",cl:"high",s:"ph/-", m:"Bee"},     {c:"ฝ",n:"For Fa",     cl:"high",s:"f/-",   m:"Lid"},
+  {c:"ศ",n:"Sor Sala",   cl:"high",s:"s/t",  m:"Pavilion"},{c:"ษ",n:"Sor Ruesi",  cl:"high",s:"s/t",   m:"Hermit"},
+  {c:"ส",n:"Sor Suea",   cl:"high",s:"s/t",  m:"Tiger"},   {c:"ห",n:"Hor Hip",    cl:"high",s:"h/-",   m:"Chest"},
+  {c:"ค",n:"Khor Khwai", cl:"low", s:"kh/k", m:"Buffalo"}, {c:"ฆ",n:"Khor Rakang",cl:"low", s:"kh/k",  m:"Bell"},
+  {c:"ง",n:"Ngor Ngu",   cl:"low", s:"ng/ng",m:"Snake"},   {c:"ช",n:"Chor Chang", cl:"low", s:"ch/t",  m:"Elephant"},
+  {c:"ซ",n:"Sor So",     cl:"low", s:"s/t",  m:"Chain"},   {c:"ฌ",n:"Chor Chee",  cl:"low", s:"ch/-",  m:"Tree"},
+  {c:"ญ",n:"Yor Ying",   cl:"low", s:"y/n",  m:"Woman"},   {c:"ฑ",n:"Thor Montho",cl:"low", s:"th/t",  m:"Montho"},
+  {c:"ฒ",n:"Thor Phuthao",cl:"low",s:"th/t", m:"Elder"},   {c:"ณ",n:"Nor Nen",    cl:"low", s:"n/n",   m:"Novice"},
+  {c:"ท",n:"Thor Thahan",cl:"low", s:"th/t", m:"Soldier"}, {c:"ธ",n:"Thor Thong", cl:"low", s:"th/t",  m:"Flag"},
+  {c:"น",n:"Nor Nu",     cl:"low", s:"n/n",  m:"Mouse"},   {c:"พ",n:"Phor Phan",  cl:"low", s:"ph/p",  m:"Tray"},
+  {c:"ฟ",n:"For Fan",    cl:"low", s:"f/p",  m:"Teeth"},   {c:"ภ",n:"Phor Samphao",cl:"low",s:"ph/p",  m:"Sailboat"},
+  {c:"ม",n:"Mor Ma",     cl:"low", s:"m/m",  m:"Horse"},   {c:"ย",n:"Yor Yak",    cl:"low", s:"y/y",   m:"Giant"},
+  {c:"ร",n:"Ror Ruea",   cl:"low", s:"r/n",  m:"Boat"},    {c:"ล",n:"Lor Ling",   cl:"low", s:"l/n",   m:"Monkey"},
+  {c:"ว",n:"Wor Waen",   cl:"low", s:"w/w",  m:"Ring"},    {c:"ฬ",n:"Lor Chula",  cl:"low", s:"l/n",   m:"Kite"},
+  {c:"ฮ",n:"Hor Nok",    cl:"low", s:"h/-",  m:"Owl"}
 ];
 
 const VOWS=[
@@ -680,17 +708,17 @@ const VOWS=[
 ];
 
 const OFFLINE=[
-  {w:"คน", t:"mid",    m:"Person",       x:"khon"},  {w:"กิน",t:"mid",    m:"To eat",    x:"gin"},
-  {w:"มา", t:"mid",    m:"To come",      x:"maa"},   {w:"ไป", t:"mid",    m:"To go",     x:"pai"},
-  {w:"ใจ", t:"mid",    m:"Heart",        x:"jai"},   {w:"กา", t:"mid",    m:"Crow",      x:"kaa"},
-  {w:"กบ", t:"low",    m:"Frog",         x:"gop"},   {w:"ไก่",t:"low",    m:"Chicken",   x:"gai"},
-  {w:"สี่",t:"low",    m:"Four",         x:"see"},   {w:"เด็ก",t:"low",   m:"Child",     x:"dek"},
-  {w:"พูด",t:"falling",m:"To speak",     x:"poot"},  {w:"บ้าน",t:"falling",m:"House",    x:"baan"},
-  {w:"พี่",t:"falling",m:"Older sibling",x:"phee"},  {w:"ห้า",t:"falling",m:"Five",      x:"haa"},
-  {w:"รัก",t:"high",   m:"To love",      x:"rak"},   {w:"ม้า",t:"high",   m:"Horse",     x:"maa"},
-  {w:"โต๊ะ",t:"high",  m:"Table",        x:"toh"},
-  {w:"ขา", t:"rising", m:"Leg",          x:"khaa"},  {w:"หมา",t:"rising", m:"Dog",       x:"maa"},
-  {w:"หวาน",t:"rising",m:"Sweet",        x:"waan"},  {w:"ตั๋ว",t:"rising",m:"Ticket",    x:"tua"},
+  {w:"คน", t:"mid",    m:"Person",        x:"khon"}, {w:"กิน",t:"mid",    m:"To eat",    x:"gin"},
+  {w:"มา", t:"mid",    m:"To come",       x:"maa"},  {w:"ไป", t:"mid",    m:"To go",     x:"pai"},
+  {w:"ใจ", t:"mid",    m:"Heart",         x:"jai"},  {w:"กา", t:"mid",    m:"Crow",      x:"kaa"},
+  {w:"กบ", t:"low",    m:"Frog",          x:"gop"},  {w:"ไก่",t:"low",    m:"Chicken",   x:"gai"},
+  {w:"สี่",t:"low",    m:"Four",          x:"see"},  {w:"เด็ก",t:"low",   m:"Child",     x:"dek"},
+  {w:"พูด",t:"falling",m:"To speak",      x:"poot"}, {w:"บ้าน",t:"falling",m:"House",    x:"baan"},
+  {w:"พี่",t:"falling",m:"Older sibling", x:"phee"}, {w:"ห้า",t:"falling",m:"Five",      x:"haa"},
+  {w:"รัก",t:"high",   m:"To love",       x:"rak"},  {w:"ม้า",t:"high",   m:"Horse",     x:"maa"},
+  {w:"โต๊ะ",t:"high",  m:"Table",         x:"toh"},
+  {w:"ขา", t:"rising", m:"Leg",           x:"khaa"}, {w:"หมา",t:"rising", m:"Dog",       x:"maa"},
+  {w:"หวาน",t:"rising",m:"Sweet",         x:"waan"}, {w:"ตั๋ว",t:"rising",m:"Ticket",    x:"tua"},
 ];
 
 const PITCH={
@@ -708,8 +736,7 @@ function drawPitch(id,tone){
   ctx.clearRect(0,0,W,H);
   const lm=document.documentElement.getAttribute('data-theme')==='light';
   ctx.fillStyle=lm?'#f0f4f8':'#1a2030';ctx.fillRect(0,0,W,H);
-  const gc=lm?'rgba(0,0,0,.07)':'rgba(255,255,255,.06)';
-  ctx.strokeStyle=gc;ctx.lineWidth=1;
+  ctx.strokeStyle=lm?'rgba(0,0,0,.07)':'rgba(255,255,255,.06)';ctx.lineWidth=1;
   [.2,.5,.8].forEach(y=>{ctx.beginPath();ctx.moveTo(28,y*H);ctx.lineTo(W-6,y*H);ctx.stroke()});
   ctx.fillStyle=lm?'#7090b0':'#6a82a0';ctx.font='9px monospace';ctx.textAlign='right';
   ctx.fillText('H',22,.2*H+3);ctx.fillText('M',22,.5*H+3);ctx.fillText('L',22,.8*H+3);
@@ -765,19 +792,16 @@ function setP(key,val,el){
 }
 function evalState(){
   const rc=document.getElementById('res-card'),bt=document.getElementById('box-type'),bv=document.getElementById('box-vowel');
-  const hc=document.getElementById('hint-card');
   if(ST.class&&ST.mark){
     if(ST.mark!=='none'){bt.style.display='none';bv.style.display='none';evalKey(`${ST.class}-${ST.mark}`)}
     else{bt.style.display='block';
       if(ST.type==='dead'&&ST.class==='low'){bv.style.display='block';ST.vowel?evalKey(`low-none-dead-${ST.vowel}`):rc.classList.remove('on')}
       else if(ST.type){bv.style.display='none';evalKey(`${ST.class}-none-${ST.type}`)}
       else rc.classList.remove('on')}
-    if(rc.classList.contains('on'))hc.querySelector('#fc-container')&&(hc.style.display='block');
-  }else{rc.classList.remove('on')}
+  }else rc.classList.remove('on');
 }
 function evalKey(k){
-  const rc=document.getElementById('res-card'),m=DB[k];
-  if(!m)return;
+  const rc=document.getElementById('res-card'),m=DB[k];if(!m)return;
   rc.setAttribute('data-t',m.t);
   document.getElementById('res-tone').textContent=m.n;
   document.getElementById('res-rule').textContent=m.d;
@@ -792,7 +816,6 @@ function spkCurrent(){if(lastWord)spk(lastWord)}
 
 function setA(t){document.getElementById('a-inp').value=t;runAnalyzer()}
 function spkInput(){const v=document.getElementById('a-inp').value.trim();if(v)spk(v)}
-
 function runAnalyzer(){
   const raw=document.getElementById('a-inp').value.trim();
   const out=document.getElementById('a-out'),pw=document.getElementById('a-pitch-wrap');
@@ -849,7 +872,7 @@ function srsLog(thai,tone,meaning,details,ok){
 function renderSRS(){
   const d=srsLoad(),tb=document.getElementById('srs-tbody'),ks=Object.keys(d);
   let nn=0,nl=0,nr=0,nm=0;
-  if(!ks.length){tb.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--tx3);padding:28px">No entries yet.</td></tr>'}
+  if(!ks.length)tb.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--tx3);padding:28px">No entries yet.</td></tr>';
   else tb.innerHTML=ks.map(k=>{
     const c=d[k],st=srsStage(c);
     if(st==='new')nn++;else if(st==='learn')nl++;else if(st==='review')nr++;else nm++;
@@ -862,7 +885,7 @@ function renderSRS(){
   document.getElementById('s-rev').textContent=nr;document.getElementById('s-mat').textContent=nm;
 }
 function srsDel(k){const d=srsLoad();delete d[k];srsSave(d);renderSRS()}
-function clearSRS(){if(confirm('Clear ALL SRS data? This cannot be undone.')){localStorage.removeItem('thaiSRS');renderSRS();toast('🗑 SRS cleared.')}}
+function clearSRS(){if(confirm('Clear ALL SRS data?')){localStorage.removeItem('thaiSRS');renderSRS();toast('🗑 Cleared.')}}
 function exportSRS(){
   const b=new Blob([JSON.stringify(srsLoad(),null,2)],{type:'application/json'});
   const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(b),download:'thai_srs.json'});a.click();URL.revokeObjectURL(a.href);
@@ -872,33 +895,21 @@ function importSRS(ev){
   const r=new FileReader();
   r.onload=e=>{
     try{
-      const incoming=JSON.parse(e.target.result);
-      const existing=srsLoad();
-      const merged={...existing};
+      const incoming=JSON.parse(e.target.result),existing=srsLoad(),merged={...existing};
       Object.keys(incoming).forEach(k=>{
-        if(merged[k]){
-          merged[k].correct+=incoming[k].correct||0;
-          merged[k].wrong+=incoming[k].wrong||0;
-          merged[k].streak=Math.max(merged[k].streak,incoming[k].streak||0);
-          merged[k].interval=Math.max(merged[k].interval,incoming[k].interval||1);
-        }else merged[k]=incoming[k];
+        if(merged[k]){merged[k].correct+=incoming[k].correct||0;merged[k].wrong+=incoming[k].wrong||0;merged[k].streak=Math.max(merged[k].streak,incoming[k].streak||0);merged[k].interval=Math.max(merged[k].interval,incoming[k].interval||1)}
+        else merged[k]=incoming[k];
       });
       srsSave(merged);renderSRS();toast(`✅ Merged ${Object.keys(incoming).length} entries!`);
-    }catch{toast('❌ Invalid JSON file')}
-  };
-  r.readAsText(f);ev.target.value='';
+    }catch{toast('❌ Invalid JSON')}
+  };r.readAsText(f);ev.target.value='';
 }
 function srsFromCalc(){
   const rc=document.getElementById('res-card');if(!rc.classList.contains('on'))return;
-  const w=document.getElementById('ex-thai').textContent;
-  const t=rc.getAttribute('data-t');
-  const x=document.getElementById('ex-det').textContent;
+  const w=document.getElementById('ex-thai').textContent,t=rc.getAttribute('data-t'),x=document.getElementById('ex-det').textContent;
   srsLog(w,t,x,x,true);toast(`📚 Logged "${w}"!`);
 }
-function srsFromAnalyzer(){
-  const v=document.getElementById('a-inp').value.trim();if(!v)return;
-  srsLog(v,calcTone(v),'','',true);toast(`📚 Logged "${v}"!`);
-}
+function srsFromAnalyzer(){const v=document.getElementById('a-inp').value.trim();if(!v)return;srsLog(v,calcTone(v),'','',true);toast(`📚 Logged "${v}"!`)}
 
 function buildRef(){
   const ct=c=>`<div class="tile tile-${c.cl}"><div class="tile-h"><div style="display:flex;align-items:baseline;gap:6px"><span class="tg thai">${c.c}</span><span class="tn2">${c.n}</span></div><button class="spk" onclick="spk('${c.c}')">🔊</button></div><div class="tm3"><b>[${c.s}]</b> · ${c.m}</div></div>`;
@@ -924,25 +935,21 @@ let gW=null,gAns=false,gSc=0,gTot=0;
 let cC=null,cAns=false,cSc=0,cTot=0;
 
 function isSingleSyllable(w){
-  const vowels=['า','ิ','ี','ึ','ื','ุ','ู','เ','แ','โ','ไ','ใ','ำ','็','ะ','ั','็','็'];
-  let vc=0;const ch=[...w];
-  for(let i=0;i<ch.length;i++){if(vowels.includes(ch[i]))vc++;if(ch[i]==='า'||ch[i]==='ิ'||ch[i]==='ี'||ch[i]==='ึ'||ch[i]==='ื'||ch[i]==='ุ'||ch[i]==='ู')vc++}
   const cons=[...w].filter(c=>CONS_SET.has(c)).length;
-  return cons<=3&&w.length<=5;
+  return cons<=3&&w.length<=6&&!w.includes(' ');
 }
-
 async function fetchWord(){
   try{
     const r=await fetch('https://raw.githubusercontent.com/aolmio/thcore/main/tone.json');
     if(!r.ok)throw 0;
     const d=await r.json();
     const entries=(Array.isArray(d)?d:d.words||[]).filter(e=>{
-      const w=(e.thai||e.word||'').trim().split(/[(),;]/)[0].trim();
+      const w=(e.thai||e.word||'').trim().split(/[(),;\s]/)[0].trim();
       return w&&isSingleSyllable(w);
     });
     if(!entries.length)throw 0;
     const s=entries[Math.floor(Math.random()*entries.length)];
-    const w=(s.thai||s.word||'').trim().split(/[(),;]/)[0].trim();
+    const w=(s.thai||s.word||'').trim().split(/[(),;\s]/)[0].trim();
     return{w,t:calcTone(w),m:s.english||s.meaning||'',x:s.transliteration||''};
   }catch{return null}
 }
@@ -964,14 +971,28 @@ async function genWordRound(){
   document.getElementById('g-word').textContent=word.w;
   document.getElementById('g-meta').innerHTML=`<b>Meaning:</b> ${word.m||'—'}${word.x?`<br><b>Phonetic:</b> ${word.x}`:''}`;
 }
+
 function gGuess(chosen){
   if(gAns||!gW)return;gAns=true;gTot++;
   const ok=gW.t;
   document.querySelectorAll('#tone-opts .gopt').forEach(b=>{b.disabled=true;if(b.dataset.t===ok)b.classList.add('ok')});
-  if(chosen===ok){gSc++;document.getElementById('g-fb').textContent='🎯 Correct!';document.getElementById('g-fb').style.color='var(--tl)';srsLog(gW.w,ok,gW.m,gW.x,true)}
-  else{document.getElementById('g-fb').textContent=`✗ Answer: ${ok}`;document.getElementById('g-fb').style.color='var(--tf)';document.querySelector(`#tone-opts .gopt[data-t="${chosen}"]`)?.classList.add('ng');srsLog(gW.w,ok,gW.m,gW.x,false)}
-  document.getElementById('g-sc').textContent=gSc;document.getElementById('g-tot').textContent=gTot;
-  document.getElementById('g-next').style.display='block';
+  if(chosen===ok){
+    gSc++;
+    document.getElementById('g-fb').textContent='🎯 Correct!';
+    document.getElementById('g-fb').style.color='var(--tl)';
+    srsLog(gW.w,ok,gW.m,gW.x,true);
+    document.getElementById('g-sc').textContent=gSc;
+    document.getElementById('g-tot').textContent=gTot;
+    setTimeout(genWordRound,900);
+  }else{
+    document.getElementById('g-fb').textContent=`✗ Answer: ${ok}`;
+    document.getElementById('g-fb').style.color='var(--tf)';
+    document.querySelector(`#tone-opts .gopt[data-t="${chosen}"]`)?.classList.add('ng');
+    srsLog(gW.w,ok,gW.m,gW.x,false);
+    document.getElementById('g-sc').textContent=gSc;
+    document.getElementById('g-tot').textContent=gTot;
+    document.getElementById('g-next').style.display='block';
+  }
 }
 function spkGW(){if(gW)spk(gW.w)}
 
@@ -1010,7 +1031,7 @@ function spk(text){
     if(v)u.voice=v;window.speechSynthesis.speak(u);
   }
   if(window.speechSynthesis.getVoices().length)go();
-  else{window.speechSynthesis.addEventListener('voiceschanged',go,{once:true})}
+  else window.speechSynthesis.addEventListener('voiceschanged',go,{once:true});
 }
 
 function switchTab(k){
@@ -1051,94 +1072,53 @@ function changeFont(v){
   if(v!=='sarabun')document.documentElement.setAttribute('data-font',v);
   if(document.getElementById('p-compare').classList.contains('on'))renderCompare();
 }
-
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('on'),2700)}
-
 let dPr=null;
 function doInstall(){if(dPr){dPr.prompt();dPr.userChoice.then(()=>{document.getElementById('installBtn').style.display='none'})}}
 
-/* FLOWCHART */
-let fcScale=1,fcDragging=false,fcDX=0,fcDY=0,fcSX=0,fcSY=0,fcSL=0,fcST=0;
-let fcHidden=false;
-
-function fcZoom(delta){
-  fcScale=Math.min(3,Math.max(.3,fcScale+delta));
-  document.getElementById('fc-svg-wrap').style.transform=`scale(${fcScale})`;
-  document.getElementById('fc-pct').textContent=Math.round(fcScale*100)+'%';
-}
-function fcReset(){fcScale=1;const w=document.getElementById('fc-svg-wrap');w.style.transform='scale(1)';document.getElementById('fc-pct').textContent='100%';const b=document.getElementById('fc-body');b.scrollLeft=0;b.scrollTop=0}
-function toggleFC(){
-  const c=document.getElementById('fc-container'),b=document.getElementById('fc-toggle-btn');
-  fcHidden=!fcHidden;c.style.display=fcHidden?'none':'block';b.textContent=fcHidden?'Show Chart':'Hide Chart';
-}
+let fcScale=1,fcDragging=false,fcDX=0,fcDY=0,fcSL=0,fcST=0,fcHidden=false;
+function fcZoom(d){fcScale=Math.min(3,Math.max(.3,fcScale+d));document.getElementById('fc-svg-wrap').style.transform=`scale(${fcScale})`;document.getElementById('fc-pct').textContent=Math.round(fcScale*100)+'%'}
+function fcReset(){fcScale=1;document.getElementById('fc-svg-wrap').style.transform='scale(1)';document.getElementById('fc-pct').textContent='100%';const b=document.getElementById('fc-body');b.scrollLeft=0;b.scrollTop=0}
+function toggleFC(){const c=document.getElementById('fc-container'),b=document.getElementById('fc-toggle-btn');fcHidden=!fcHidden;c.style.display=fcHidden?'none':'block';b.textContent=fcHidden?'Show Chart':'Hide Chart'}
 
 function buildFC(){
   const lm=document.documentElement.getAttribute('data-theme')==='light';
-  const bg=lm?'#fff':'#111820';
-  const sf=lm?'#f0f4f8':'#1a2030';
-  const br=lm?'#c8d4e0':'#2a3444';
-  const tx=lm?'#0d1520':'#eef2f8';
-  const tx2=lm?'#3d5470':'#9aafc4';
-  const pr=lm?'#0060cc':'#4da6ff';
+  const bg=lm?'#fff':'#111820',sf=lm?'#f0f4f8':'#1a2030',br=lm?'#c8d4e0':'#2a3444',tx=lm?'#0d1520':'#eef2f8',tx2=lm?'#3d5470':'#9aafc4';
   const tones={mid:{c:lm?'#0060cc':'#4da6ff',l:'Mid —'},low:{c:lm?'#0a7a2a':'#3dcc5c',l:'Low ˋ'},falling:{c:lm?'#c0001a':'#ff4f4a',l:'Falling ˆ'},high:{c:lm?'#6020b0':'#c47dff',l:'High ˊ'},rising:{c:lm?'#a05800':'#ffaa44',l:'Rising ˇ'}};
-
   const W=1080,H=900;
-  function box(x,y,w,h,fill,stroke,r=10){return`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`}
-  function txt(x,y,t,col,sz=13,fw='600',anchor='middle'){return`<text x="${x}" y="${y}" text-anchor="${anchor}" font-family="Inter,sans-serif" font-size="${sz}" font-weight="${fw}" fill="${col}">${t}</text>`}
-  function arrow(x1,y1,x2,y2,col='#6a82a0'){
-    const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
-    const ux=dx/len,uy=dy/len,ax=x2-ux*12,ay=y2-uy*12;
-    return`<line x1="${x1}" y1="${y1}" x2="${ax}" y2="${ay}" stroke="${col}" stroke-width="1.8" marker-end="url(#arr)"/>`;
-  }
-  function tone(x,y,type){const to=tones[type];return`${box(x-55,y-17,110,34,to.c+'22',to.c,8)}${txt(x,y+5,to.l,to.c,12,'800')}${txt(x,y+17,'สามัญ/เอก/โท/ตรี/จัตวา'.split('/')[Object.keys(tones).indexOf(type)],to.c,9,'500')}`}
-
+  const box=(x,y,w,h,fill,stroke,r=10)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+  const txt=(x,y,t,col,sz=13,fw='600',anchor='middle')=>`<text x="${x}" y="${y}" text-anchor="${anchor}" font-family="Inter,sans-serif" font-size="${sz}" font-weight="${fw}" fill="${col}">${t}</text>`;
+  const arrow=(x1,y1,x2,y2,col='#6a82a0')=>{const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy),ux=dx/len,uy=dy/len,ax=x2-ux*12,ay=y2-uy*12;return`<line x1="${x1}" y1="${y1}" x2="${ax}" y2="${ay}" stroke="${col}" stroke-width="1.8" marker-end="url(#arr)"/>`;};
+  const tone=(x,y,type)=>{const to=tones[type];return`${box(x-55,y-17,110,34,to.c+'22',to.c,8)}${txt(x,y+5,to.l,to.c,12,'800')}`;};
   let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background:${bg};border-radius:8px">`;
   s+=`<defs><marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#6a82a0"/></marker></defs>`;
-
   const CX=540,cy0=40;
   s+=box(CX-70,cy0,140,38,sf,br);s+=txt(CX,cy0+14,'Initial Consonant',tx,12,'700');s+=txt(CX,cy0+28,'Class',tx2,10,'500');
-
   const midX=180,highX=540,lowX=900,cy1=140;
-  [[midX,'Mid Class',lm?'#0060cc':'#4da6ff'],[highX,'High Class',lm?'#a05800':'#ffaa44'],[lowX,'Low Class',lm?'#c0001a':'#ff7070']].forEach(([x,l,c])=>{
-    s+=box(x-65,cy1-18,130,36,c+'22',c);s+=txt(x,cy1-2,l,c,12,'800');
-  });
+  [[midX,'Mid Class',lm?'#0060cc':'#4da6ff'],[highX,'High Class',lm?'#a05800':'#ffaa44'],[lowX,'Low Class',lm?'#c0001a':'#ff7070']].forEach(([x,l,c])=>{s+=box(x-65,cy1-18,130,36,c+'22',c);s+=txt(x,cy1-2,l,c,12,'800')});
   s+=arrow(CX-30,cy0+38,midX+30,cy1-18,tx2);s+=arrow(CX,cy0+38,highX,cy1-18,tx2);s+=arrow(CX+30,cy0+38,lowX-30,cy1-18,tx2);
-
   const cy2=230;
-  s+=txt(midX,cy2-14,'Tone Mark?',tx2,10,'600');s+=txt(highX,cy2-14,'Tone Mark?',tx2,10,'600');s+=txt(lowX,cy2-14,'Tone Mark?',tx2,10,'600');
-  s+=arrow(midX,cy1+18,midX,cy2-4,tx2);s+=arrow(highX,cy1+18,highX,cy2-4,tx2);s+=arrow(lowX,cy1+18,lowX,cy2-4,tx2);
-
+  [midX,highX,lowX].forEach(x=>{s+=txt(x,cy2-14,'Tone Mark?',tx2,10,'600');s+=arrow(x,cy1+18,x,cy2-4,tx2)});
   const cy3=310;
-  [[midX-90,'ek/tho/tri\nchat'],[midX+90,'none']].forEach(([x,l])=>{s+=box(x-45,cy3-18,90,36,sf,br,8);s+=txt(x,cy3-3,l.split('\n')[0],tx,10,'600');if(l.includes('\n'))s+=txt(x,cy3+11,l.split('\n')[1],tx2,9,'500')});
+  [[midX-90,'ek/tho\ntri/chat'],[midX+90,'none']].forEach(([x,l])=>{s+=box(x-45,cy3-18,90,36,sf,br,8);s+=txt(x,cy3-3,l.split('\n')[0],tx,10,'600');if(l.includes('\n'))s+=txt(x,cy3+11,l.split('\n')[1],tx2,9,'500')});
   s+=arrow(midX-60,cy2+2,midX-90,cy3-18,tx2);s+=arrow(midX+60,cy2+2,midX+90,cy3-18,tx2);
-
   [[highX-90,'ek/tho'],[highX+90,'none']].forEach(([x,l])=>{s+=box(x-45,cy3-18,90,36,sf,br,8);s+=txt(x,cy3,l,tx,10,'600')});
   s+=arrow(highX-60,cy2+2,highX-90,cy3-18,tx2);s+=arrow(highX+60,cy2+2,highX+90,cy3-18,tx2);
-
   [[lowX-90,'ek/tho'],[lowX+90,'none']].forEach(([x,l])=>{s+=box(x-45,cy3-18,90,36,sf,br,8);s+=txt(x,cy3,l,tx,10,'600')});
   s+=arrow(lowX-60,cy2+2,lowX-90,cy3-18,tx2);s+=arrow(lowX+60,cy2+2,lowX+90,cy3-18,tx2);
-
   const cy4=420;
-  s+=tone(midX-90,cy4,'low');s+=arrow(midX-90,cy3+18,midX-90,cy4-17,tx2);
-  s+=txt(midX-90,cy3+32,'ek→Low',tx2,9,'500','middle');
-
-  const cy4b=480;
-  s+=tone(midX-90,cy4b,'falling');
-  s+=txt(midX-90,cy3+46,'tho→Fall',tx2,9,'500','middle');
-  s+=box(midX+50,cy4-30,80,24,sf,br,7);s+=txt(midX+90,cy4-14,'Live/Dead?',tx2,9,'600');
-  s+=arrow(midX+90,cy3+18,midX+90,cy4-30,tx2);
-
+  s+=tone(midX-90,cy4,'low');s+=arrow(midX-90,cy3+18,midX-90,cy4-17,tx2);s+=txt(midX-90,cy3+32,'ek→Low',tx2,9,'500','middle');
+  s+=tone(midX-90,cy4+80,'falling');s+=txt(midX-90,cy3+46,'tho→Fall',tx2,9,'500','middle');
+  s+=box(midX+50,cy4-30,80,24,sf,br,7);s+=txt(midX+90,cy4-14,'Live/Dead?',tx2,9,'600');s+=arrow(midX+90,cy3+18,midX+90,cy4-30,tx2);
   s+=tone(midX+25,cy4+50,'mid');s+=txt(midX+25,cy4+35,'Live→Mid',tx2,9,'500','middle');s+=arrow(midX+60,cy4-6,midX+25,cy4+33,tx2);
   s+=tone(midX+155,cy4+50,'low');s+=txt(midX+155,cy4+35,'Dead→Low',tx2,9,'500','middle');s+=arrow(midX+120,cy4-6,midX+155,cy4+33,tx2);
   s+=tone(midX-15,cy4+130,'high');s+=txt(midX-15,cy4+115,'Tri→High',tx2,9,'500','middle');
   s+=tone(midX+155,cy4+130,'rising');s+=txt(midX+155,cy4+115,'Chat→Rise',tx2,9,'500','middle');
-
   s+=tone(highX-90,cy4,'low');s+=txt(highX-80,cy3+32,'ek→Low',tx2,9,'500','middle');s+=arrow(highX-90,cy3+18,highX-90,cy4-17,tx2);
-  const cy4h=480;s+=tone(highX-90,cy4h,'falling');s+=txt(highX-90,cy3+46,'tho→Fall',tx2,9,'500','middle');
+  s+=tone(highX-90,cy4+80,'falling');s+=txt(highX-90,cy3+46,'tho→Fall',tx2,9,'500','middle');
   s+=box(highX+50,cy4-30,80,24,sf,br,7);s+=txt(highX+90,cy4-14,'Live/Dead?',tx2,9,'600');s+=arrow(highX+90,cy3+18,highX+90,cy4-30,tx2);
   s+=tone(highX+20,cy4+50,'rising');s+=txt(highX+20,cy4+35,'Live→Rise',tx2,9,'500','middle');s+=arrow(highX+65,cy4-6,highX+20,cy4+33,tx2);
   s+=tone(highX+155,cy4+50,'low');s+=txt(highX+155,cy4+35,'Dead→Low',tx2,9,'500','middle');s+=arrow(highX+115,cy4-6,highX+155,cy4+33,tx2);
-
   s+=tone(lowX-90,cy4,'falling');s+=txt(lowX-80,cy3+32,'ek→Fall',tx2,9,'500','middle');s+=arrow(lowX-90,cy3+18,lowX-90,cy4-17,tx2);
   s+=tone(lowX-90,cy4+80,'high');s+=txt(lowX-90,cy3+46,'tho→High',tx2,9,'500','middle');
   s+=box(lowX+50,cy4-30,80,24,sf,br,7);s+=txt(lowX+90,cy4-14,'Live/Dead?',tx2,9,'600');s+=arrow(lowX+90,cy3+18,lowX+90,cy4-30,tx2);
@@ -1146,20 +1126,15 @@ function buildFC(){
   s+=box(lowX+110,cy4+10,88,26,sf,br,7);s+=txt(lowX+154,cy4+27,'Short/Long?',tx2,9,'600');s+=arrow(lowX+115,cy4-6,lowX+154,cy4+10,tx2);
   s+=tone(lowX+90,cy4+110,'high');s+=txt(lowX+90,cy4+95,'Short→High',tx2,9,'500','middle');s+=arrow(lowX+130,cy4+36,lowX+90,cy4+93,tx2);
   s+=tone(lowX+218,cy4+110,'falling');s+=txt(lowX+218,cy4+95,'Long→Fall',tx2,9,'500','middle');s+=arrow(lowX+178,cy4+36,lowX+218,cy4+93,tx2);
-
-  const legendY=840,colors=[tones.mid,tones.low,tones.falling,tones.high,tones.rising];
-  const labels=['Mid —','Low ˋ','Falling ˆ','High ˊ','Rising ˇ'];
-  colors.forEach((to,i)=>{s+=`<rect x="${160+i*156}" y="${legendY}" width="14" height="14" rx="3" fill="${to.c}"/>`;s+=txt(180+i*156,legendY+11,labels[i],to.c,11,'700','start')});
-
+  const legendY=840;
+  Object.entries(tones).forEach(([,to],i)=>{s+=`<rect x="${160+i*156}" y="${legendY}" width="14" height="14" rx="3" fill="${to.c}"/>`;s+=txt(180+i*156,legendY+11,to.l,to.c,11,'700','start')});
   s+='</svg>';
   document.getElementById('fc-svg-wrap').innerHTML=s;
-
   const body=document.getElementById('fc-body');
   body.onwheel=e=>{e.preventDefault();fcZoom(e.deltaY<0?.1:-.1)};
   body.onmousedown=e=>{fcDragging=true;fcDX=e.clientX;fcDY=e.clientY;fcSL=body.scrollLeft;fcST=body.scrollTop};
   body.onmousemove=e=>{if(!fcDragging)return;body.scrollLeft=fcSL-(e.clientX-fcDX);body.scrollTop=fcST-(e.clientY-fcDY)};
-  body.onmouseup=()=>fcDragging=false;body.onmouseleave=()=>fcDragging=false;
-
+  body.onmouseup=body.onmouseleave=()=>fcDragging=false;
   let pinchDist=0;
   body.addEventListener('touchstart',e=>{if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;pinchDist=Math.sqrt(dx*dx+dy*dy)}},{passive:true});
   body.addEventListener('touchmove',e=>{if(e.touches.length===2){e.preventDefault();const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;const nd=Math.sqrt(dx*dx+dy*dy);fcZoom((nd-pinchDist)*.002);pinchDist=nd}},{passive:false});
