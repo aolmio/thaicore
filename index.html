@@ -1,13 +1,10 @@
+html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Thai Tone Master Ultra</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0b0f19">
-<link rel="manifest" href="./manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Sarabun:wght@400;600;700;800&family=Kanit:wght@400;500;700&family=Prompt:wght@400;500;700&family=Mitr:wght@400;500;600&family=Itim&display=swap" rel="stylesheet">
@@ -181,8 +178,7 @@ canvas.pc{width:100%;height:80px;display:block;border-radius:8px}
 .stbl th{background:var(--sf2);font-weight:800;color:var(--tx);font-size:.8rem}
 .stbl td{color:var(--tx2)}.stbl b{color:var(--tx);font-weight:700}
 
-.garena{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:860px){.garena{grid-template-columns:1fr}}
+.garena{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
 .gpod{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r3);padding:26px 22px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;min-height:420px}
 .gph{width:100%;text-align:left}
 .gpt{font-size:.98rem;font-weight:800;margin-bottom:4px;color:var(--tx)}
@@ -221,14 +217,17 @@ canvas.pc{width:100%;height:80px;display:block;border-radius:8px}
 .tr-chip-en{font-size:.78rem;font-weight:700;color:var(--tx)}
 .tr-chip-th{font-family:var(--thai);font-size:.9rem;color:var(--pr)}
 
-.csrch{width:100%;padding:12px 14px;background:var(--sf2);border:1.5px solid var(--br);border-radius:var(--r);color:var(--tx);font-family:var(--ui);font-size:.92rem;outline:none;margin-bottom:14px;transition:.15s}
+.csrch{width:100%;padding:12px 14px;background:var(--sf2);border:1.5px solid var(--br);border-radius:var(--r);color:var(--tx);font-family:var(--ui);font-size:.92rem;outline:none;margin-bottom:0;transition:.15s}
 .csrch:focus{border-color:var(--pr)}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
-.ctile{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r);padding:12px 8px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center;cursor:pointer;transition:.15s}
-.ctile:hover{border-color:var(--pr);transform:translateY(-2px)}
+.ctile{background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r);padding:12px 8px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center;cursor:pointer;transition:.15s;user-select:none}
+.ctile:hover{border-color:var(--pr);transform:translateY(-2px);background:var(--sf2)}
 .ctrad{font-family:'Sarabun',sans-serif;font-size:2rem;font-weight:800;color:var(--tx)}
 .cmod{font-family:var(--thai);font-size:2rem;font-weight:800;color:var(--pr)}
 .cdiv{font-size:.62rem;color:var(--tx3);font-weight:700;text-transform:uppercase}
+
+.char-hover-card{position:fixed;z-index:1000;pointer-events:none;background:var(--sf);border:1.5px solid var(--br);border-radius:var(--r2);padding:12px 16px;box-shadow:0 12px 32px rgba(0,0,0,.4);max-width:280px;width:max-content;opacity:0;transform:translateY(6px) scale(.96);transition:opacity .15s ease,transform .15s ease;display:flex;flex-direction:column;gap:4px}
+.char-hover-card.on{opacity:1;transform:translateY(0) scale(1)}
 
 .modal-wrap{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.65);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:16px}
 .modal-wrap.on{display:flex;animation:fu .2s ease-out}
@@ -309,7 +308,6 @@ canvas.pc{width:100%;height:80px;display:block;border-radius:8px}
       <option value="itim">Itim ✍</option>
     </select>
     <button class="iBtn" id="themeBtn" onclick="toggleTheme()">🌙</button>
-    <button class="iBtn" id="installBtn" style="display:none" onclick="doInstall()">⬇</button>
   </div>
 </div></nav>
 
@@ -648,7 +646,12 @@ canvas.pc{width:100%;height:80px;display:block;border-radius:8px}
 </section>
 
 <section id="p-game" class="panel">
-  <div class="info"><b>Practice:</b> Single-syllable word challenges with instant audio pronunciation. Correct answers auto-advance. All answers log to SRS.</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+    <div class="info" style="margin-bottom:0;flex:1;min-width:240px"><b>Practice:</b> Multiple quiz modes with audio pronunciation. Correct answers auto-advance. All answers log to SRS.</div>
+    <label style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;color:var(--tx);cursor:pointer;background:var(--sf);padding:10px 14px;border:1.5px solid var(--br);border-radius:var(--r);user-select:none">
+      <input type="checkbox" id="game-hint-chk" checked onchange="toggleGameHints()"> Show Hints (Name / Phonetic / Meaning)
+    </label>
+  </div>
   <div class="garena">
     <div class="gpod">
       <div class="gph">
@@ -685,12 +688,41 @@ canvas.pc{width:100%;height:80px;display:block;border-radius:8px}
       <button class="btn btn-p btn-w" id="c-next" style="display:none" onclick="genConRound()">Next Character →</button>
       <button class="btn btn-w" id="c-start" onclick="genConRound()">New Round</button>
     </div>
+    <div class="gpod">
+      <div class="gph">
+        <div class="gpt">🔤 Modern Font Quiz</div>
+        <div class="gsc">Score: <span id="f-sc">0</span> / <span id="f-tot">0</span></div>
+      </div>
+      <div class="gtarget"><span id="f-char" style="font-family:'Sarabun',sans-serif">---</span><button class="spk" style="width:40px;height:40px;font-size:18px" onclick="spkGF()">🔊</button></div>
+      <div class="gmeta" id="f-meta">Tap New Round to start…</div>
+      <div class="gopts" id="f-opts" style="grid-template-columns:repeat(2,1fr)"></div>
+      <div class="gfb" id="f-fb"></div>
+      <button class="btn btn-p btn-w" id="f-next" style="display:none" onclick="genFontRound()">Next Character →</button>
+      <button class="btn btn-w" id="f-start" onclick="genFontRound()">New Round</button>
+    </div>
+    <div class="gpod">
+      <div class="gph">
+        <div class="gpt">🏛 Traditional Font Quiz</div>
+        <div class="gsc">Score: <span id="t-sc">0</span> / <span id="t-tot">0</span></div>
+      </div>
+      <div class="gtarget"><span id="t-char" class="thai">---</span><button class="spk" style="width:40px;height:40px;font-size:18px" onclick="spkGT()">🔊</button></div>
+      <div class="gmeta" id="t-meta">Tap New Round to start…</div>
+      <div class="gopts" id="t-opts" style="grid-template-columns:repeat(2,1fr)"></div>
+      <div class="gfb" id="t-fb"></div>
+      <button class="btn btn-p btn-w" id="t-next" style="display:none" onclick="genTradRound()">Next Character →</button>
+      <button class="btn btn-w" id="t-start" onclick="genTradRound()">New Round</button>
+    </div>
   </div>
 </section>
 
 <section id="p-compare" class="panel">
-  <div class="info"><b>Font &amp; Alphabet Reference:</b> Sorted alphabetically. Tap any character tile to view complete linguistic details, class rules, sounds, and audio pronunciation.</div>
-  <input class="csrch" id="c-search" placeholder="Search Thai character…" oninput="renderCompare()">
+  <div class="info"><b>Font &amp; Alphabet Reference:</b> Hover or tap any character tile to view complete linguistic details. Toggle options to compare font styles.</div>
+  <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
+    <input class="csrch" id="c-search" style="flex:1;min-width:200px" placeholder="Search Thai character…" oninput="renderCompare()">
+    <label style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;color:var(--tx);cursor:pointer;background:var(--sf2);padding:10px 14px;border:1.5px solid var(--br);border-radius:var(--r);user-select:none">
+      <input type="checkbox" id="hide-trad-chk" onchange="renderCompare()"> Hide Traditional Font
+    </label>
+  </div>
   <div class="cgrid" id="c-grid"></div>
 </section>
 
@@ -719,6 +751,8 @@ canvas.pc{width:100%;height:80px;display:block;border-radius:8px}
   </div>
 </section>
 </main>
+
+<div id="char-hover-card" class="char-hover-card"></div>
 
 <div id="char-modal" class="modal-wrap" onclick="closeCharModal(event)">
   <div class="modal-card" onclick="event.stopPropagation()">
@@ -1162,23 +1196,86 @@ function getAllSortedChars(){
 
 function renderCompare(){
   const q=(document.getElementById('c-search')?.value||'').trim();
+  const hideTrad=document.getElementById('hide-trad-chk')?.checked;
   const{sortedCons,sortedVows}=getAllSortedChars();
   const allList=[...sortedCons.map(x=>({...x,type:'con'})),...sortedVows.map(x=>({...x,type:'vow'}))];
   const filtered=allList.filter(item=>!q||item.c.includes(q)||(item.n&&item.n.toLowerCase().includes(q.toLowerCase()))||(item.m&&item.m.toLowerCase().includes(q.toLowerCase())));
   document.getElementById('c-grid').innerHTML=filtered.map(item=>`
-    <div class="ctile" onclick="showCharDetail('${item.c}')">
-      <span class="ctrad">${item.c}</span>
-      <span class="cdiv">Traditional</span>
+    <div class="ctile" 
+      onmouseenter="showCharHover(event, '${item.c}')" 
+      onmouseleave="hideCharHover()" 
+      onclick="showCharDetail('${item.c}'); hideCharHover()">
+      ${hideTrad?'':`<span class="ctrad">${item.c}</span><span class="cdiv">Traditional</span>`}
       <span class="cmod thai">${item.c}</span>
       <span class="cdiv">${item.type==='con'?item.cl.toUpperCase():item.l.toUpperCase()}</span>
     </div>
   `).join('');
 }
 
+function showCharHover(ev, ch) {
+  const con = CONS.find(x => x.c === ch);
+  const vow = VOWS.find(x => x.c === ch);
+  const hc = document.getElementById('char-hover-card');
+  if (!hc || (!con && !vow)) return;
+
+  let html = '';
+  if (con) {
+    const clCol = con.cl === 'mid' ? 'var(--cm)' : con.cl === 'high' ? 'var(--ch)' : 'var(--cl)';
+    html = `
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="thai" style="font-size:2rem;font-weight:900;color:var(--pr);line-height:1">${con.c}</span>
+        <div>
+          <div style="font-size:.88rem;font-weight:800;color:var(--tx)">${con.n}</div>
+          <div style="font-size:.72rem;font-weight:800;color:${clCol}">${con.cl.toUpperCase()} CLASS</div>
+        </div>
+      </div>
+      <div style="font-size:.78rem;color:var(--tx2);margin-top:2px">
+        <b>Sound:</b> [${con.s}] · <b>Meaning:</b> ${con.m}
+      </div>
+      <div style="font-size:.68rem;color:var(--tx3);margin-top:2px">💡 Click tile for full rules & analysis</div>
+    `;
+  } else if (vow) {
+    const vCol = vow.l === 'short' ? 'var(--tf)' : 'var(--tl)';
+    html = `
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="thai" style="font-size:2rem;font-weight:900;color:var(--pr);line-height:1">${vow.c}</span>
+        <div>
+          <div style="font-size:.88rem;font-weight:800;color:var(--tx)">[${vow.t}]</div>
+          <div style="font-size:.72rem;font-weight:800;color:${vCol}">${vow.l.toUpperCase()} VOWEL</div>
+        </div>
+      </div>
+      <div style="font-size:.78rem;color:var(--tx2);margin-top:2px">
+        <b>Sample:</b> <span class="thai" style="font-weight:700">${vow.x}</span>
+      </div>
+      <div style="font-size:.68rem;color:var(--tx3);margin-top:2px">💡 Click tile for full details</div>
+    `;
+  }
+
+  hc.innerHTML = html;
+  hc.classList.add('on');
+
+  const rect = ev.currentTarget.getBoundingClientRect();
+  let left = rect.left + rect.width / 2 - 120;
+  let top = rect.top - hc.offsetHeight - 10;
+
+  if (top < 10) top = rect.bottom + 10;
+  if (left < 10) left = 10;
+  if (left + 260 > window.innerWidth) left = window.innerWidth - 270;
+
+  hc.style.left = left + 'px';
+  hc.style.top = top + 'px';
+}
+
+function hideCharHover() {
+  const hc = document.getElementById('char-hover-card');
+  if (hc) hc.classList.remove('on');
+}
+
 function showCharDetail(ch){
   const con=CONS.find(x=>x.c===ch);
   const vow=VOWS.find(x=>x.c===ch);
   const mContent=document.getElementById('modal-content');
+  if(!mContent)return;
   const esc=ch.replace(/'/g,"\\'");
   
   if(con){
@@ -1268,6 +1365,16 @@ function spkCurrent(){if(lastWord)spk(lastWord)}
 
 let gW=null,gAns=false,gSc=0,gTot=0;
 let cC=null,cAns=false,cSc=0,cTot=0;
+let fC=null,fAns=false,fSc=0,fTot=0;
+let tC=null,tAns=false,tSc=0,tTot=0;
+
+function toggleGameHints(){
+  const show=document.getElementById('game-hint-chk')?.checked;
+  ['c-meta','f-meta','t-meta'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.style.display=show?'block':'none';
+  });
+}
 
 function isSingleSyllable(w){const cons=[...w].filter(c=>CONS_SET.has(c)).length;return cons<=3&&w.length<=6&&!w.includes(' ')}
 async function fetchWord(){
@@ -1326,6 +1433,7 @@ function genConRound(){
   const r=CONS[Math.floor(Math.random()*CONS.length)];cC=r;
   document.getElementById('c-char').textContent=r.c;
   document.getElementById('c-meta').innerHTML=`<b>${r.n}</b> · [${r.s}] · <i>${r.m}</i>`;
+  toggleGameHints();
 }
 function cGuess(chosen){
   if(cAns||!cC)return;cAns=true;cTot++;const ok=cC.cl;
@@ -1346,6 +1454,80 @@ function cGuess(chosen){
 }
 function spkGC(){if(cC)spk(cC.c)}
 
+function genFontRound(){
+  fAns=false;
+  document.getElementById('f-fb').textContent='';
+  document.getElementById('f-next').style.display='none';
+  document.getElementById('f-start').style.display='none';
+  const r=CONS[Math.floor(Math.random()*CONS.length)];fC=r;
+  document.getElementById('f-char').textContent=r.c;
+  document.getElementById('f-meta').innerHTML=`<b>${r.n}</b> · [${r.s}] · <i>${r.m}</i>`;
+  const dists=CONS.filter(c=>c.c!==r.c).sort(()=>.5-Math.random()).slice(0,3);
+  const opts=[r,...dists].sort(()=>.5-Math.random());
+  document.getElementById('f-opts').innerHTML=opts.map(o=>`
+    <button class="gopt thai" style="font-size:1.6rem" data-c="${o.c}" onclick="fGuess('${o.c}')">${o.c}</button>
+  `).join('');
+  toggleGameHints();
+}
+function fGuess(chosen){
+  if(fAns||!fC)return;fAns=true;fTot++;const ok=fC.c;
+  document.querySelectorAll('#f-opts .gopt').forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.c===ok)b.classList.add('ok');
+    if(b.dataset.c===chosen&&chosen!==ok)b.classList.add('ng');
+  });
+  document.getElementById('f-sc').textContent=fSc;
+  document.getElementById('f-tot').textContent=fTot;
+  if(chosen===ok){
+    fSc++;document.getElementById('f-sc').textContent=fSc;
+    document.getElementById('f-fb').textContent=`🎯 Correct! ${fC.c} (${fC.n})`;
+    document.getElementById('f-fb').style.color='var(--tl)';
+    setTimeout(genFontRound,900);
+  }else{
+    document.getElementById('f-fb').textContent=`✗ Incorrect. Correct: ${ok}`;
+    document.getElementById('f-fb').style.color='var(--tf)';
+    document.getElementById('f-next').style.display='block';
+  }
+}
+function spkGF(){if(fC)spk(fC.c)}
+
+function genTradRound(){
+  tAns=false;
+  document.getElementById('t-fb').textContent='';
+  document.getElementById('t-next').style.display='none';
+  document.getElementById('t-start').style.display='none';
+  const r=CONS[Math.floor(Math.random()*CONS.length)];tC=r;
+  document.getElementById('t-char').textContent=r.c;
+  document.getElementById('t-meta').innerHTML=`<b>${r.n}</b> · [${r.s}] · <i>${r.m}</i>`;
+  const dists=CONS.filter(c=>c.c!==r.c).sort(()=>.5-Math.random()).slice(0,3);
+  const opts=[r,...dists].sort(()=>.5-Math.random());
+  document.getElementById('t-opts').innerHTML=opts.map(o=>`
+    <button class="gopt" style="font-family:'Sarabun',sans-serif;font-size:1.6rem" data-c="${o.c}" onclick="tGuess('${o.c}')">${o.c}</button>
+  `).join('');
+  toggleGameHints();
+}
+function tGuess(chosen){
+  if(tAns||!tC)return;tAns=true;tTot++;const ok=tC.c;
+  document.querySelectorAll('#t-opts .gopt').forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.c===ok)b.classList.add('ok');
+    if(b.dataset.c===chosen&&chosen!==ok)b.classList.add('ng');
+  });
+  document.getElementById('t-sc').textContent=tSc;
+  document.getElementById('t-tot').textContent=tTot;
+  if(chosen===ok){
+    tSc++;document.getElementById('t-sc').textContent=tSc;
+    document.getElementById('t-fb').textContent=`🎯 Correct! ${tC.c} (${tC.n})`;
+    document.getElementById('t-fb').style.color='var(--tl)';
+    setTimeout(genTradRound,900);
+  }else{
+    document.getElementById('t-fb').textContent=`✗ Incorrect. Correct: ${ok}`;
+    document.getElementById('t-fb').style.color='var(--tf)';
+    document.getElementById('t-next').style.display='block';
+  }
+}
+function spkGT(){if(tC)spk(tC.c)}
+
 function spk(text){
   if(!text||!('speechSynthesis' in window))return;
   window.speechSynthesis.cancel();
@@ -1362,7 +1544,7 @@ function switchTab(k){
   document.getElementById('p-'+k).classList.add('on');
   document.getElementById('nt-'+k)?.classList.add('on');
   document.getElementById('mt-'+k)?.classList.add('on');
-  if(k==='game'){if(!gW)genWordRound();if(!cC)genConRound()}
+  if(k==='game'){if(!gW)genWordRound();if(!cC)genConRound();if(!fC)genFontRound();if(!tC)genTradRound();toggleGameHints()}
   if(k==='srs')renderSRS();
   if(k==='compare')renderCompare();
 }
@@ -1389,8 +1571,6 @@ function changeFont(v){document.documentElement.removeAttribute('data-font');if(
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('on'),2700)}
 let fcHidden=false;
 function toggleFC(){const c=document.getElementById('fc-container'),b=document.getElementById('fc-toggle-btn');fcHidden=!fcHidden;c.style.display=fcHidden?'none':'block';b.textContent=fcHidden?'Show':'Hide'}
-let dPr=null;
-function doInstall(){if(dPr){dPr.prompt();dPr.userChoice.then(()=>{document.getElementById('installBtn').style.display='none'})}}
 
 document.addEventListener('DOMContentLoaded',()=>{
   const th=localStorage.getItem('ttu-theme');
@@ -1398,10 +1578,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   buildRef();renderSRS();
   if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.addEventListener('voiceschanged',()=>window.speechSynthesis.getVoices())}
 });
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
-  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dPr=e;document.getElementById('installBtn').style.display='flex'});
-}
 </script>
 </body>
 </html>
